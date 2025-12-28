@@ -1,0 +1,8 @@
+{
+  "name": "Kidrise Sky Explorer",
+  "description": "An interactive real-time star map for children, powered by Kidrise. Explore the constellations visible from Hong Kong or your location.",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ]
+}
