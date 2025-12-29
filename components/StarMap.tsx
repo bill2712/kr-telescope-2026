@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import * as d3Geo from 'd3-geo';
-import { Coordinates, Language } from '../types';
+import { Coordinates, Language, Star } from '../types';
 import { BRIGHT_STARS, CONSTELLATION_LINES, CONSTELLATION_ART } from '../utils/starData';
 import { getLocalSiderealTime, raToDegrees } from '../utils/astroUtils';
 import { translations } from '../utils/i18n';
@@ -13,16 +12,17 @@ interface StarMapProps {
   lang: Language;
   showArt: boolean;
   enableGyro: boolean;
+  onStarClick?: (star: Star, x: number, y: number) => void;
 }
 
-const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showArt, enableGyro }) => {
+const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showArt, enableGyro, onStarClick }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(600);
-  const [height, setHeight] = useState(600);
+  const [width, setWidth] = useState(0);
+  const [height, setHeight] = useState(0);
   
   // User interaction states
-  const [rotation, setRotation] = useState<[number, number, number]>([0, -90, 0]); // Init default
+  const [rotation, setRotation] = useState<[number, number, number]>([0, -90, 0]); 
   const [scaleK, setScaleK] = useState(1);
   const [gyroRotation, setGyroRotation] = useState<[number, number, number] | null>(null);
 
@@ -33,8 +33,10 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     if (!wrapperRef.current) return;
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        setWidth(entry.contentRect.width);
-        setHeight(entry.contentRect.height);
+        if (entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+            setWidth(entry.contentRect.width);
+            setHeight(entry.contentRect.height);
+        }
       }
     });
     resizeObserver.observe(wrapperRef.current);
@@ -45,8 +47,7 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
   useEffect(() => {
     if (!enableGyro) {
       const lst = getLocalSiderealTime(date, location.longitude);
-      // Align LST with Center. 
-      // Lat determines tilt.
+      // Align LST with Center. Lat determines tilt.
       setRotation([-lst, -location.latitude, 0]);
     }
   }, [date, location, enableGyro]);
@@ -59,13 +60,8 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     }
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
-      const alpha = event.alpha || 0; // Compass direction (0-360)
-      const beta = event.beta || 0;   // Front-to-back tilt (-180 to 180)
-      
-      // Simple mapping for a kid's toy experience:
-      // Alpha rotates the sky horizontally (Azimuth)
-      // Beta rotates vertically (Altitude)
-      // Note: This is a simplified approximation for "looking through the window"
+      const alpha = event.alpha || 0; 
+      const beta = event.beta || 0;   
       setGyroRotation([-(alpha), -(beta - 90), 0]);
     };
 
@@ -73,8 +69,36 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     return () => window.removeEventListener('deviceorientation', handleOrientation);
   }, [enableGyro]);
 
+  // Create GeoJson features once to avoid re-calculating on every render if data doesn't change
+  const { starFeatures, lineFeatures } = useMemo(() => {
+      const sFeatures = BRIGHT_STARS.map(star => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [raToDegrees(star.ra), star.dec] },
+        properties: star
+      }));
+
+      const getStar = (nameOrId: string) => BRIGHT_STARS.find(s => s.proper === nameOrId || s.id.toString() === nameOrId);
+      const lFeatures = CONSTELLATION_LINES.map(line => {
+        const s1 = getStar(line.source);
+        const s2 = getStar(line.target);
+        if (s1 && s2) {
+            return {
+            type: "Feature" as const,
+            geometry: {
+                type: "LineString" as const,
+                coordinates: [[raToDegrees(s1.ra), s1.dec], [raToDegrees(s2.ra), s2.dec]]
+            }
+            };
+        }
+        return null;
+      }).filter((f): f is NonNullable<typeof f> => f !== null);
+      
+      return { starFeatures: sFeatures, lineFeatures: lFeatures };
+  }, []);
+
+
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!svgRef.current || width === 0 || height === 0) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove(); 
@@ -82,59 +106,56 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     // Determine final rotation and projection
     const finalRotation = gyroRotation || rotation;
 
-    let projection: d3Geo.GeoProjection;
     const baseScale = Math.min(width, height) / 2;
     
+    // Configure Projection
+    let projection: d3.GeoProjection;
     if (viewMode === 'ortho') {
-      projection = d3Geo.geoOrthographic()
+      projection = d3.geoOrthographic()
         .scale(baseScale * scaleK)
         .translate([width / 2, height / 2])
         .clipAngle(90)
         .rotate(finalRotation);
     } else {
-      projection = d3Geo.geoStereographic()
+      projection = d3.geoStereographic()
         .scale(baseScale * scaleK)
         .translate([width / 2, height / 2])
-        .clipAngle(100)
+        .clipAngle(120) // Widen view for better usability
         .rotate(finalRotation);
     }
 
-    const path = d3Geo.geoPath().projection(projection);
+    const pathGenerator = d3.geoPath().projection(projection);
 
-    // Zoom/Pan Behavior
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.8, 8]) // Zoom limits
-      .on("zoom", (event) => {
-        // Handle Scale
-        setScaleK(event.transform.k);
-        
-        // Handle Pan (Drag) -> Rotate
-        // If not gyro mode, allow dragging
-        if (!enableGyro) {
-            // We need to access the drag delta, but d3.zoom gives us a transform.
-            // d3.zoom on sphere is tricky.
-            // Simplified: use d3.drag for rotation, d3.zoom for scaling if possible, 
-            // but standard d3.zoom handles both on a flat plane.
-            // For sphere, we usually separate them or implement Euler rotation math.
-            
-            // Re-implement simpler Drag behavior for rotation, Zoom for scale
-            // See the separate drag implementation below.
+    // Set point radius explicitly based on magnitude property of the feature
+    pathGenerator.pointRadius((d: any) => {
+        // d is the feature. d.properties is our star data.
+        if (d.properties && typeof d.properties.mag === 'number') {
+             // Brighter stars (lower mag) -> larger radius
+             // Mag -1.5 -> radius ~4
+             // Mag 2.0 -> radius ~1.5
+             return Math.max(1.5, 4 - d.properties.mag);
         }
+        return 2; 
+    });
+
+    // Zoom Handling
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 10]) 
+      .on("zoom", (event) => {
+        setScaleK(event.transform.k);
       });
       
-    // We attach zoom for the wheel/pinch event, but we manually handle drag for rotation
-    // to keep the "Globe" feel.
     svg.call(zoom as any)
-       .on("mousedown.zoom", null) // Disable default zoom drag (pan)
+       .on("mousedown.zoom", null) 
        .on("touchstart.zoom", null)
        .on("touchmove.zoom", null)
        .on("touchend.zoom", null);
        
-    // Custom Drag for Rotation
+    // Rotation Drag
     const drag = d3.drag<SVGSVGElement, unknown>()
       .on("drag", (event) => {
-        if (enableGyro) return; // Disable drag if gyro is on
-        const k = 0.5 / scaleK; // Slower rotation when zoomed in
+        if (enableGyro) return;
+        const k = 0.5 / scaleK; 
         const [r0, r1, r2] = projection.rotate();
         const newRot: [number, number, number] = [r0 + event.dx * k, r1 - event.dy * k, r2];
         setRotation(newRot);
@@ -145,196 +166,168 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
 
     // --- RENDERING ---
 
-    // 1. Background (Space)
+    // 1. Background Sphere (Clickable area)
     svg.append("path")
       .datum({type: "Sphere"})
-      .attr("d", path)
+      .attr("d", pathGenerator)
       .attr("fill", "#0b0d17")
       .attr("stroke", "#444")
-      .attr("stroke-width", 2);
+      .attr("stroke-width", 1)
+      .attr("cursor", enableGyro ? "default" : "grab");
 
     // 2. Graticule
-    const graticule = d3Geo.geoGraticule();
+    const graticule = d3.geoGraticule();
     svg.append("path")
       .datum(graticule)
-      .attr("d", path)
+      .attr("d", pathGenerator)
       .attr("fill", "none")
-      .attr("stroke", "#1c1e33")
+      .attr("stroke", "#2d304a") 
       .attr("stroke-width", 0.5)
-      .attr("opacity", 0.5);
+      .attr("opacity", 0.4);
 
-    // 3. Constellation Art (If Enabled)
+    // 3. Constellation Lines
+    svg.append("g")
+        .selectAll("path")
+        .data(lineFeatures)
+        .enter()
+        .append("path")
+        .attr("d", pathGenerator as any)
+        .attr("stroke", showArt ? "rgba(255, 160, 50, 0.4)" : "rgba(100, 200, 255, 0.3)")
+        .attr("stroke-width", 1)
+        .attr("stroke-dasharray", "4,2")
+        .attr("fill", "none")
+        .attr("pointer-events", "none");
+
+    // 4. Constellation Art (Icons)
     if (showArt) {
-        // Since we don't have real SVG paths for the sky sphere, we map Art to specific star centroids or areas.
-        // For this demo, we will check if "Betelgeuse" (Orion) is visible and draw a graphic near it.
-        const orionCenter = BRIGHT_STARS.find(s => s.proper === "Betelgeuse");
-        if (orionCenter) {
-            const coords = projection([raToDegrees(orionCenter.ra), orionCenter.dec]);
-            if (coords) {
-                // Draw a simple Hunter Icon
-                 svg.append("text")
-                    .attr("x", coords[0])
-                    .attr("y", coords[1])
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "100px")
-                    .attr("opacity", 0.2)
-                    .attr("pointer-events", "none")
-                    .text("🏹"); // Using Emoji as a kid-friendly fallback for "Art"
+        CONSTELLATION_ART.forEach(art => {
+            const star = BRIGHT_STARS.find(s => s.con === art.con && (s.proper === 'Betelgeuse' || s.proper === 'Dubhe' || s.proper === 'Alioth' || s.proper === 'Rigel')); 
+            // Simplified positioning: find a bright star in that constellation to anchor the art
+            if(star) {
+                const coords = projection([raToDegrees(star.ra), star.dec]);
+                if (coords) {
+                     svg.append("text")
+                        .attr("x", coords[0])
+                        .attr("y", coords[1])
+                        .attr("text-anchor", "middle")
+                        .attr("dominant-baseline", "central")
+                        .attr("font-size", (100 * scaleK) + "px") // Scale art with zoom
+                        .attr("opacity", 0.15)
+                        .attr("pointer-events", "none")
+                        .text(art.con === 'Ori' ? '🏹' : '🐻'); 
+                }
             }
-        }
-        
-         const bearCenter = BRIGHT_STARS.find(s => s.proper === "Dubhe");
-         if (bearCenter) {
-            const coords = projection([raToDegrees(bearCenter.ra), bearCenter.dec]);
-            if (coords) {
-                 svg.append("text")
-                    .attr("x", coords[0])
-                    .attr("y", coords[1])
-                    .attr("text-anchor", "middle")
-                    .attr("font-size", "100px")
-                    .attr("opacity", 0.2)
-                    .attr("pointer-events", "none")
-                    .text("🐻");
-            }
-        }
+        });
     }
 
-    // 4. Lines
-    const getStar = (nameOrId: string) => BRIGHT_STARS.find(s => s.proper === nameOrId || s.id.toString() === nameOrId);
-    const lineFeatures = CONSTELLATION_LINES.map(line => {
-      const s1 = getStar(line.source);
-      const s2 = getStar(line.target);
-      if (s1 && s2) {
-        return {
-          type: "Feature",
-          geometry: {
-            type: "LineString",
-            coordinates: [[raToDegrees(s1.ra), s1.dec], [raToDegrees(s2.ra), s2.dec]]
-          }
-        };
-      }
-      return null;
-    }).filter(Boolean);
+    // 5. Stars (Glow Effect Layer)
+    // Add a glow filter definition
+    const defs = svg.append("defs");
+    const filter = defs.append("filter")
+        .attr("id", "glow");
+    filter.append("feGaussianBlur")
+        .attr("stdDeviation", "2.5")
+        .attr("result", "coloredBlur");
+    const feMerge = filter.append("feMerge");
+    feMerge.append("feMergeNode").attr("in", "coloredBlur");
+    feMerge.append("feMergeNode").attr("in", "SourceGraphic");
 
-    svg.append("g")
-      .selectAll("path")
-      .data(lineFeatures)
-      .enter()
-      .append("path")
-      .attr("d", path as any)
-      .attr("stroke", showArt ? "rgba(255, 140, 0, 0.6)" : "rgba(75, 192, 192, 0.5)")
-      .attr("stroke-width", showArt ? 2 : 1.5)
-      .attr("stroke-dasharray", showArt ? "none" : "4,2")
-      .attr("fill", "none");
-
-    // 5. Stars
-    const starFeatures = BRIGHT_STARS.map(star => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [raToDegrees(star.ra), star.dec] },
-      properties: star
-    }));
-
+    // Draw Stars
     const starsGroup = svg.append("g");
     
     starsGroup.selectAll("path")
       .data(starFeatures)
       .enter()
       .append("path")
-      .attr("d", path as any)
-      .attr("fill", (d: any) => "#ffe87f")
+      .attr("d", pathGenerator as any)
+      .attr("className", "star-point") 
+      .attr("fill", (d) => {
+         // Color hint based on index or type? For now just slight variations
+         const colors = ["#ffffff", "#ffe87f", "#a0cfff"];
+         return colors[d.properties.id % 3];
+      })
       .attr("stroke", "none")
-      .attr("opacity", 0.9);
+      .attr("filter", "url(#glow)")
+      .attr("cursor", "pointer")
+      .on("click", (event, d) => {
+         event.stopPropagation();
+         if (d.properties && onStarClick) {
+             onStarClick(d.properties, event.clientX, event.clientY);
+         }
+      })
+      .on("mouseover", function() {
+          d3.select(this).attr("fill", "#ff8c00").attr("opacity", 1);
+      })
+      .on("mouseout", function(event, d) {
+          const colors = ["#ffffff", "#ffe87f", "#a0cfff"];
+          d3.select(this).attr("fill", colors[d.properties.id % 3]);
+      });
 
-    // Labels
+
+    // 6. Labels
     starsGroup.selectAll("text")
-      .data(starFeatures.filter((d: any) => d.properties.mag < 1.8)) 
+      .data(starFeatures.filter(d => d.properties.mag < 1.6)) 
       .enter()
       .append("text")
-      .attr("transform", (d: any) => {
+      .attr("transform", (d) => {
         const coords = projection(d.geometry.coordinates as [number, number]);
         return coords ? `translate(${coords[0] + 8},${coords[1] + 4})` : null;
       })
-      .text((d: any) => lang === 'zh-HK' && d.properties.proper_zh ? d.properties.proper_zh : d.properties.proper)
-      .attr("fill", "#e0e0e0")
-      .attr("font-size", "11px")
-      .attr("font-weight", "bold")
-      .attr("font-family", "Inter, sans-serif")
-      .attr("text-shadow", "0px 0px 3px black")
-      .style("display", (d: any) => {
+      .text((d) => lang === 'zh-HK' && d.properties.proper_zh ? d.properties.proper_zh : d.properties.proper)
+      .attr("fill", "rgba(255,255,255,0.7)")
+      .attr("font-size", "10px")
+      .attr("font-weight", "500")
+      .attr("font-family", "system-ui")
+      .style("display", (d) => {
+        // Hide label if star is clipped (not projected)
+        // d3.geoPath returns null for clipped features if configured, but here we check projection result manually for center
         const coords = projection(d.geometry.coordinates as [number, number]);
         return coords ? "block" : "none";
-      });
+      })
+      .attr("pointer-events", "none");
 
-    // 6. Compass Directions (Horizon)
-    // We draw these on the SVG overlay, not part of the projection, 
-    // but positioned relative to the circle.
-    // In Celestial Sphere looking up: North is Top, East is Left.
-    const r = (baseScale * scaleK); // current radius
-    const cx = width / 2;
-    const cy = height / 2;
-    
-    // Only show compass if we are zoomed out enough to see the horizon or close to it
-    if (scaleK < 3) {
+    // 7. Compass / Horizon only if zoomed out
+    if (scaleK < 2.5) {
+        const r = (baseScale * scaleK);
+        const cx = width / 2;
+        const cy = height / 2;
         const directions = [
-            { label: t.dirN, x: cx, y: cy - r - 15 },
-            { label: t.dirS, x: cx, y: cy + r + 25 },
-            { label: t.dirE, x: cx - r - 20, y: cy + 5 }, // East is Left in sky maps
-            { label: t.dirW, x: cx + r + 20, y: cy + 5 },
+            { label: t.dirN, x: cx, y: cy - r - 20 },
+            { label: t.dirS, x: cx, y: cy + r + 20 },
+            { label: t.dirE, x: cx - r - 20, y: cy }, 
+            { label: t.dirW, x: cx + r + 20, y: cy },
         ];
         
-        svg.append("g")
-           .selectAll("text")
-           .data(directions)
-           .enter()
-           .append("text")
-           .attr("x", d => d.x)
-           .attr("y", d => d.y)
-           .text(d => d.label)
-           .attr("text-anchor", "middle")
-           .attr("fill", "#ff8c00")
-           .attr("font-weight", "bold")
-           .attr("font-size", "14px");
-           
-        // Draw Horizon circle outline
-        svg.append("circle")
-           .attr("cx", cx)
-           .attr("cy", cy)
-           .attr("r", r)
-           .attr("fill", "none")
-           .attr("stroke", "#ff8c00")
-           .attr("stroke-width", 2)
-           .attr("opacity", 0.3)
-           .attr("pointer-events", "none");
+        const compass = svg.append("g").attr("class", "compass");
+        compass.selectAll("text")
+               .data(directions)
+               .enter()
+               .append("text")
+               .attr("x", d => d.x)
+               .attr("y", d => d.y)
+               .text(d => d.label)
+               .attr("text-anchor", "middle")
+               .attr("dominant-baseline", "middle")
+               .attr("fill", "#ff8c00")
+               .attr("font-weight", "bold")
+               .attr("font-size", "12px");
+               
+        compass.append("circle")
+               .attr("cx", cx)
+               .attr("cy", cy)
+               .attr("r", r)
+               .attr("fill", "none")
+               .attr("stroke", "#ff8c00")
+               .attr("stroke-width", 1)
+               .attr("stroke-dasharray", "4,4")
+               .attr("opacity", 0.5);
     }
 
-  }, [location, date, viewMode, width, height, rotation, lang, showArt, enableGyro, scaleK]);
+  }, [width, height, rotation, gyroRotation, scaleK, viewMode, showArt, enableGyro, lang, onStarClick, starFeatures, lineFeatures, t]);
 
   return (
-    <div ref={wrapperRef} className="w-full h-full relative bg-space-black overflow-hidden rounded-3xl shadow-[0_0_30px_rgba(28,30,51,0.5)] border-2 border-white/10 group">
-      <svg ref={svgRef} width={width} height={height} className="block cursor-move active:cursor-grabbing touch-none" />
-      
-      {/* Overlay Info */}
-      <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-2xl text-xs md:text-sm text-gray-300 pointer-events-none border border-white/10">
-        <p><span className="text-kidrise-orange font-bold">{t.lat}:</span> {location.latitude.toFixed(2)}°</p>
-        <p><span className="text-kidrise-orange font-bold">{t.lon}:</span> {location.longitude.toFixed(2)}°</p>
-      </div>
-      
-      {/* Zoom hint */}
-      {scaleK === 1 && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none text-white/10 text-6xl animate-pulse">
-            <i className="fas fa-arrows-alt"></i>
-        </div>
-      )}
-
-      {enableGyro && (
-        <div className="absolute top-4 right-4 bg-red-500/80 text-white px-3 py-1 rounded-full text-xs font-bold animate-pulse">
-            Gyroscope ON
-        </div>
-      )}
-
-      <div className="absolute bottom-4 right-4 text-white/20 text-[10px] font-mono pointer-events-none">
-        {t.rendering}: D3-Geo
-      </div>
+    <div ref={wrapperRef} className="w-full h-full relative cursor-move overflow-hidden">
+      <svg ref={svgRef} width={width} height={height} className="block w-full h-full touch-none" />
     </div>
   );
 };
