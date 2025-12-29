@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import StarMap from './components/StarMap';
-import AIChat from './components/AIChat';
+
 import Tutorial from './components/Tutorial';
 import MissionControl from './components/MissionControl';
 import StarInfoCard from './components/StarInfoCard';
@@ -175,8 +175,6 @@ function App() {
         onLocationUpdate={handleGeolocation}
       />
 
-      {/* AI Chat (Floating) */}
-      <AIChat lang={lang} />
 
     </div>
   );
