@@ -20,7 +20,8 @@ export interface ConstellationLine {
 
 export interface ConstellationArt {
   con: string; // Constellation code (e.g. "Ori")
-  path: string; // SVG path data
+  path?: string; // Legacy SVG path string (screen space)
+  geojson?: any; // GeoJSON Feature (Sphere coordinates)
   name_zh: string;
 }
 

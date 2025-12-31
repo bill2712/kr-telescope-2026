@@ -241,8 +241,14 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
 
       // Update Art
       if (showArt) {
-          svg.select(".art-group")
-             .selectAll("text")
+          const artGroup = svg.select(".art-group");
+          
+          // Update Paths (GeoJSON)
+          artGroup.selectAll("path")
+             .attr("d", pathGenerator as any);
+
+          // Update Emojis (Legacy or Fallback)
+          artGroup.selectAll(".art-emoji")
              .attr("display", "none") // Hide all first
              .each(function(d: any) {
                  const star = BRIGHT_STARS.find(s => s.con === d.con && (s.proper === 'Betelgeuse' || s.proper === 'Dubhe' || s.proper === 'Alioth' || s.proper === 'Rigel'));
@@ -254,6 +260,19 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
                            .attr("x", coords[0])
                            .attr("y", coords[1])
                            .attr("font-size", (100 * scaleRef.current) + "px");
+                     }
+                 } else {
+                     // Try finding ANY star in con
+                     const anyStar = BRIGHT_STARS.find(s => s.con === d.con);
+                     if(anyStar) {
+                        const coords = projection([raToDegrees(anyStar.ra), anyStar.dec]);
+                        if(coords) {
+                             d3.select(this)
+                               .attr("display", "block")
+                               .attr("x", coords[0])
+                               .attr("y", coords[1])
+                               .attr("font-size", (50 * scaleRef.current) + "px");
+                        }
                      }
                  }
              });
@@ -347,19 +366,39 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
 
     // 5. Art Group
     const artGroup = svg.append("g").attr("class", "art-group");
-    CONSTELLATION_ART.forEach(art => {
-         artGroup.append("text")
-            .datum(art) // Bind data for update loop
-            .attr("text-anchor", "middle")
-            .attr("dominant-baseline", "central")
-            .attr("opacity", 0.15)
-            .attr("pointer-events", "none")
-            .text(art.con === 'Ori' ? '🏹' : '🐻'); 
-    });
-
+    
+    // Process Art Data
+    if(showArt) {
+        CONSTELLATION_ART.forEach(art => {
+            if (art.geojson) {
+                // If GeoJSON is provided, use geoPath
+                artGroup.append("path")
+                    .datum(art.geojson)
+                    .attr("class", "art-path")
+                    .attr("fill", "rgba(255, 255, 255, 0.05)")
+                    .attr("stroke", "rgba(255, 255, 255, 0.1)")
+                    .attr("stroke-width", 1)
+                    .attr("pointer-events", "none");
+            } else {
+                 // Fallback to Emoji Text (Legacy) for now if no geojson
+                 // We place it at the centroid or first star of constellation
+                 const star = BRIGHT_STARS.find(s => s.con === art.con);
+                 if(star) {
+                     // We need to project it in the render loop or here?
+                     // Here we're inside useEffect (setup), we need it in draw() or use data binding
+                     // Data binding is better
+                     artGroup.append("text")
+                        .datum(art)
+                        .attr("class", "art-emoji")
+                        .text(art.con === 'Ori' ? '🏹' : (art.con === 'UMa' ? '🐻' : '✨'));
+                 }
+            }
+        });
+    }
 
     // 6. Stars
     const starsGroup = svg.append("g").attr("class", "stars-group");
+    // ... existing stars code ... 
     starsGroup.selectAll("path")
       .data(starFeatures)
       .enter()
@@ -461,6 +500,22 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     // Zoom
     const zoomBehavior = d3.zoom<SVGSVGElement, unknown>()
       .scaleExtent([0.5, 10]) 
+      .filter((event) => {
+         // Allow wheel
+         if (event.type === 'wheel') return true;
+         // Allow multi-touch (pinch)
+         // Note: d3-zoom internally checks checks touches length for pinch
+         // But we want to BLOCK single touch drag (which corresponds to panning in d3-zoom)
+         // d3-zoom treats single touch as drag-pan.
+         // We want drag-pan to be handled by d3-drag (for rotation).
+         // So we block single touch from d3-zoom.
+         if (event.type === 'touchstart' && event.touches.length <= 1) return false;
+         // Also block mousedown (mouse drag) from d3-zoom?
+         // Yes, mouse drag should rotate, not pan x/y.
+         if (event.type === 'mousedown') return false;
+         
+         return true;
+      })
       .on("start", () => { isInteractingRef.current = true; })
       .on("zoom", (event) => {
           scaleRef.current = event.transform.k;
@@ -469,12 +524,8 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
       })
       .on("end", () => { isInteractingRef.current = false; });
       
-    // Apply zoom identity if needed? 
-    // Usually we want to maintain zoom level if component re-renders but we are avoiding re-renders.
-    // However, if width/height changed, we might need to re-apply.
     
     svg.call(zoomBehavior as any)
-       .on("mousedown.zoom", null) 
        .on("dblclick.zoom", null); // Disable double click zoom
 
     // Manually handle Drag for Rotation (because d3.zoom handles pan as translation, but we want rotation)
@@ -500,6 +551,10 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     draw();
 
   }, [width, height, starFeatures, lineFeatures, showArt, viewMode, enableGyro, lang, t, sunFeature, moonFeature]); 
+
+  // Update Draw function to render art-emoji correctly
+  // Line 243 in original file
+ 
 
   // Secondary effect removed as the main effect now handles all prop changes by rebuilding/rebinding.
   // This ensures 'draw' in the event closures always has the fresh props.

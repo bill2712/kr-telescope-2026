@@ -67,13 +67,59 @@ export const CONSTELLATION_ART: ConstellationArt[] = [
     {
         con: "Ori",
         name_zh: "獵戶座",
-        // A simple "Hunter" shield and club shape around Orion
-        path: "M 85 -5 L 90 5 L 80 10 L 85 -5 M 80 0 L 70 0 L 75 -10" 
+        // GeoJSON Feature for Orion (Simplified outline)
+        geojson: {
+             type: "Feature",
+             geometry: {
+                 type: "Polygon",
+                 coordinates: [[
+                    [78, 10], [80, 5], [88, -8], [85, -10], [75, 0], [78, 10] // Rough box around Orion
+                 ]]
+             }
+        }
     },
     {
         con: "UMa",
         name_zh: "大熊座",
-        // A simple Bear outline
-        path: "M 160 50 L 170 60 L 190 60 L 180 50 Z"
+        geojson: {
+             type: "Feature",
+             geometry: {
+                 type: "Polygon", 
+                 coordinates: [[
+                     [160, 60], [170, 65], [195, 55], [180, 50], [160, 60] // Rough Bear
+                 ]]
+             }
+        }
+    },
+    {
+        con: "Cas",
+        name_zh: "仙后座",
+        // W shape
+        geojson: {
+            type: "Feature",
+            geometry: {
+                type: "LineString",
+                coordinates: [[15, 60], [20, 55], [25, 60], [30, 55], [35, 60]] 
+            }
+        }
+    },
+    {
+        con: "Cyg",
+        name_zh: "天鵝座",
+        // Cross / Swan
+        geojson: {
+            type: "Feature",
+            geometry: {
+                type: "Polygon",
+                coordinates: [[
+                    [300, 40], [310, 50], [300, 60], [290, 50], [300, 40]
+                ]]
+            }
+        }
+    },
+    {
+        con: 'Sco',
+        name_zh: '天蠍座',
+        geojson: null // Fallback to emoji if needed
     }
 ];

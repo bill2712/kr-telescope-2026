@@ -4,6 +4,10 @@ import StarMap from './components/StarMap';
 import Tutorial from './components/Tutorial';
 import MissionControl from './components/MissionControl';
 import StarInfoCard from './components/StarInfoCard';
+import FloatingMenu from './components/FloatingMenu';
+import Planner from './components/Planner';
+import Knowledge from './components/Knowledge';
+import Quiz from './components/Quiz';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
 
@@ -21,6 +25,9 @@ function App() {
   const [usingLiveLocation, setUsingLiveLocation] = useState(false);
   const [isLiveTime, setIsLiveTime] = useState(true);
   const [showTutorial, setShowTutorial] = useState(true);
+
+  // Navigation State
+  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'compass' | 'knowledge' | 'quiz'>('starmap');
 
   // New States
   const [showArt, setShowArt] = useState(false);
@@ -113,27 +120,87 @@ function App() {
   return (
     <div className="flex flex-col h-screen w-screen bg-space-black text-white overflow-hidden relative font-sans selection:bg-kidrise-orange selection:text-white">
 
-      {showTutorial && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
+      {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
 
-      {/* Background Star Map */}
-      <div className="absolute inset-0 z-0">
-        <StarMap
-          location={location}
-          date={currentDate}
-          viewMode={viewMode}
-          lang={lang}
-          showArt={showArt}
-          enableGyro={enableGyro}
-          onStarClick={(star) => setSelectedStar(star)}
-        />
-      </div>
+      {/* Pages */}
+      {currentPage === 'starmap' && (
+        <>
+            <div className="absolute inset-0 z-0">
+                <StarMap
+                location={location}
+                date={currentDate}
+                viewMode={viewMode}
+                lang={lang}
+                showArt={showArt}
+                enableGyro={enableGyro}
+                onStarClick={(star) => setSelectedStar(star)}
+                />
+            </div>
+             {/* Selected Star Info Popup */}
+            {selectedStar && (
+                <StarInfoCard
+                star={selectedStar}
+                lang={lang}
+                onClose={() => setSelectedStar(null)}
+                />
+            )}
+            
+            {/* Mission Control - Only show if NOT in Compass mode? Actually keep it. but move it up a bit if menu overlaps */}
+            <div className="absolute bottom-24 left-0 right-0 z-20 pointer-events-none">
+                 <div className="pointer-events-auto">
+                     <MissionControl
+                        lang={lang}
+                        currentDate={currentDate}
+                        location={location}
+                        viewMode={viewMode}
+                        isLiveTime={isLiveTime}
+                        enableGyro={enableGyro}
+                        locationName={locationName}
+                        onSetViewMode={setViewMode}
+                        onShiftTime={shiftTime}
+                        onSetLiveTime={() => {
+                        setIsLiveTime(true);
+                        setCurrentDate(new Date());
+                        }}
+                        onToggleGyro={toggleGyro}
+                        onLocationUpdate={handleGeolocation}
+                    />
+                 </div>
+            </div>
+        </>
+      )}
 
-      {/* Floating Header */}
+      {currentPage === 'planner' && <Planner />}
+      {currentPage === 'compass' && (
+           /* Compass Page effectively just Star Map with Gyro ON and minimal UI */
+           <div className="absolute inset-0 z-0">
+               <div className="absolute top-20 left-0 right-0 z-20 text-center pointer-events-none">
+                   <div className="inline-block bg-black/50 backdrop-blur px-4 py-2 rounded-full border border-white/20">
+                       <span className="text-kidrise-orange font-bold tracking-widest uppercase text-xs animate-pulse">● Live Compass Mode</span>
+                   </div>
+                   <p className="text-xs text-gray-300 mt-2">Point your device at the sky</p>
+               </div>
+                <StarMap
+                    location={location}
+                    date={currentDate}
+                    viewMode={viewMode} // Force stereo?
+                    lang={lang}
+                    showArt={showArt}
+                    enableGyro={true} // Force True
+                    onStarClick={(star) => setSelectedStar(star)}
+                />
+           </div>
+      )}
+      {currentPage === 'knowledge' && <Knowledge />}
+      {currentPage === 'quiz' && <Quiz />}
+
+
+      {/* Floating Header (Always Visible) */}
       <header className="absolute top-0 left-0 right-0 z-30 p-4 pointer-events-none">
         <div className="max-w-7xl mx-auto flex justify-between items-start">
 
           {/* Logo Area */}
-          <div className="pointer-events-auto bg-[#161825]/90 backdrop-blur-md rounded-2xl p-2 pr-4 flex items-center gap-3 border border-white/10 shadow-lg">
+          <div className="pointer-events-auto bg-[#161825]/90 backdrop-blur-md rounded-2xl p-2 pr-4 flex items-center gap-3 border border-white/10 shadow-lg" onClick={() => setCurrentPage('starmap')}>
             <div className="w-10 h-10 bg-gradient-to-br from-kidrise-orange to-yellow-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/20">
               <i className="fas fa-meteor text-white text-xl"></i>
             </div>
@@ -168,35 +235,19 @@ function App() {
 
         </div>
       </header>
-
-      {/* Selected Star Info Popup */}
-      {selectedStar && (
-        <StarInfoCard
-          star={selectedStar}
-          lang={lang}
-          onClose={() => setSelectedStar(null)}
-        />
-      )}
-
-      {/* Main Controls Dock (Mission Control) */}
-      <MissionControl
-        lang={lang}
-        currentDate={currentDate}
-        location={location}
-        viewMode={viewMode}
-        isLiveTime={isLiveTime}
-        enableGyro={enableGyro}
-        locationName={locationName}
-        onSetViewMode={setViewMode}
-        onShiftTime={shiftTime}
-        onSetLiveTime={() => {
-          setIsLiveTime(true);
-          setCurrentDate(new Date());
+      
+      {/* Main Navigation */}
+      <FloatingMenu 
+        currentPage={currentPage}
+        onNavigate={(page) => {
+            setCurrentPage(page);
+            if(page === 'compass') {
+                setEnableGyro(true);
+            } else if (page === 'starmap') {
+                setEnableGyro(false); // Optional: Disable gyro when going back to map or keep as user left it? User asked for separate feature. I'll default to off for standard map.
+            }
         }}
-        onToggleGyro={toggleGyro}
-        onLocationUpdate={handleGeolocation}
       />
-
 
     </div>
   );
