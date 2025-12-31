@@ -1,40 +1,63 @@
-
 import React from 'react';
+import { translations } from '../utils/i18n';
+import { Language } from '../types';
 
 type Page = 'starmap' | 'planner' | 'compass' | 'knowledge' | 'quiz';
 
 interface FloatingMenuProps {
   currentPage: Page;
   onNavigate: (page: Page) => void;
+  lang: Language;
 }
 
-const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPage, onNavigate }) => {
-  const menuItems: { id: Page; label: string; icon: string }[] = [
-    { id: 'starmap', label: 'Star Map', icon: 'fa-map' },
-    { id: 'planner', label: 'Planner', icon: 'fa-calendar-alt' },
-    { id: 'compass', label: 'Compass', icon: 'fa-compass' },
-    { id: 'knowledge', label: 'Learn', icon: 'fa-book-open' },
-    { id: 'quiz', label: 'Quiz', icon: 'fa-puzzle-piece' },
+const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPage, onNavigate, lang }) => {
+    const t = translations[lang];
+    const [isExpanded, setIsExpanded] = React.useState(false);
+
+    const menuItems: { id: Page; label: string; icon: string }[] = [
+    { id: 'starmap', label: t.menuMap || 'Star Map', icon: 'fa-map' },
+    { id: 'planner', label: t.menuPlanner || 'Planner', icon: 'fa-calendar-alt' },
+    { id: 'compass', label: t.menuCompass || 'Compass', icon: 'fa-compass' },
+    { id: 'knowledge', label: t.menuLearn || 'Learn', icon: 'fa-book-open' },
+    { id: 'quiz', label: t.menuQuiz || 'Quiz', icon: 'fa-puzzle-piece' },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 pb-8 flex justify-center pointer-events-none">
-      <div className="pointer-events-auto bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-full px-4 py-2 shadow-2xl flex items-center gap-1 md:gap-4">
-        {menuItems.map((item) => (
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
+      
+      {/* Expanded Menu */}
+      <div className={`flex flex-col gap-3 mb-4 transition-all duration-300 origin-bottom-right ${isExpanded ? 'scale-100 opacity-100' : 'scale-0 opacity-0'} pointer-events-auto`}>
+         {menuItems.map((item) => (
           <button
             key={item.id}
-            onClick={() => onNavigate(item.id)}
-            className={`flex flex-col items-center justify-center w-14 h-14 rounded-full transition-all duration-300 ${
+            onClick={() => {
+                onNavigate(item.id);
+                setIsExpanded(false);
+            }}
+            className={`flex items-center gap-3 px-4 py-3 rounded-full shadow-xl transition-all ${
               currentPage === item.id
-                ? 'bg-gradient-to-br from-kidrise-orange to-red-500 text-white shadow-lg scale-110 -translate-y-2'
-                : 'text-gray-400 hover:text-white hover:bg-white/5'
+                ? 'bg-kidrise-orange text-white'
+                : 'bg-[#161825]/90 backdrop-blur-md text-gray-200 hover:bg-white/10'
             }`}
           >
-            <i className={`fas ${item.icon} text-lg mb-0.5`}></i>
-            <span className="text-[9px] font-bold tracking-wide">{item.label}</span>
+            <span className="text-sm font-bold">{item.label}</span>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentPage === item.id ? 'bg-white/20' : 'bg-white/5'}`}>
+                 <i className={`fas ${item.icon}`}></i>
+            </div>
           </button>
         ))}
       </div>
+
+      {/* Toggle Button */}
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`pointer-events-auto w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-xl transition-all duration-300 hover:scale-110 active:scale-95 ${
+            isExpanded ? 'bg-gray-700 text-white rotate-90' : 'bg-kidrise-orange text-white'
+        }`}
+      >
+        <i className={`fas ${isExpanded ? 'fa-times' : 'fa-bars'}`}></i>
+      </button>
+
     </div>
   );
 };

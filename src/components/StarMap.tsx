@@ -57,21 +57,64 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
     }
   }, [date, location, enableGyro]);
 
+  const [isPermissionGranted, setIsPermissionGranted] = useState(false);
+  const [debugInfo, setDebugInfo] = useState({ alpha: 0, beta: 0, gamma: 0 });
+
+  // iOS 13+ Request Permission
+  const requestAccess = async () => {
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+          try {
+              const permissionState = await (DeviceOrientationEvent as any).requestPermission();
+              if (permissionState === 'granted') {
+                  setIsPermissionGranted(true);
+              } else {
+                  alert('Gyroscope permission denied.');
+              }
+          } catch (e) {
+              console.error(e);
+              // Non-secure context or other error
+              setIsPermissionGranted(true); // Fallback for non-iOS or dev env
+          }
+      } else {
+          // Non-iOS 13+ devices don't need permission
+          setIsPermissionGranted(true);
+      }
+  };
+
+  // Auto-request or check on mount if gyro enabled? 
+  // Browser requires user interaction for requestPermission. 
+  // So we show a button if enableGyro is true but !isPermissionGranted.
+
   // Handle Gyroscope
   useEffect(() => {
-    if (!enableGyro) return;
+    if (!enableGyro || !isPermissionGranted) return;
 
     const handleOrientation = (event: DeviceOrientationEvent) => {
       const alpha = event.alpha || 0; 
-      const beta = event.beta || 0;   
-      // Update ref directly
-      rotationRef.current = [-(alpha), -(beta - 90), 0];
+      const beta = event.beta || 0;
+      const gamma = event.gamma || 0;
+      
+      setDebugInfo({ alpha: Math.round(alpha), beta: Math.round(beta), gamma: Math.round(gamma) });
+
+      // Calculate Rotation
+      // Simple logic: alpha varies 0-360 (compass heading)
+      // beta varies -180 to 180 (front/back tilt)
+      // We map this to projection rotation [lambda, phi, gamma]
+      // Rotation order? d3.geoProjection.rotate([lambda, phi, gamma])
+      // Typically:
+      // lambda (yaw) = -alpha
+      // phi (pitch) = -beta + 90 (horizon correction)
+      // gamma (roll) = -gamma
+      
+      // Note: Device orientation reference frame may vary.
+      // For now, use simple mapping:
+      rotationRef.current = [-alpha, -(beta - 90), -gamma];
       draw();
     };
 
     window.addEventListener('deviceorientation', handleOrientation);
     return () => window.removeEventListener('deviceorientation', handleOrientation);
-  }, [enableGyro]);
+  }, [enableGyro, isPermissionGranted]);
 
   // Data Preparation
   const { starFeatures, lineFeatures } = useMemo(() => {
@@ -564,6 +607,26 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
   return (
     <div ref={wrapperRef} className="w-full h-full relative cursor-move overflow-hidden">
       <svg ref={svgRef} width={width} height={height} className="block w-full h-full touch-none" />
+      
+      {/* Compass / Gyro UI Layer */}
+      {enableGyro && (
+          <div className="absolute inset-0 z-50 pointer-events-none flex flex-col items-center justify-center">
+              {!isPermissionGranted ? (
+                  <button 
+                    onClick={() => requestAccess()} // Must be direct user action
+                    className="pointer-events-auto bg-kidrise-orange text-white px-8 py-4 rounded-full text-xl font-bold shadow-lg animate-bounce"
+                  >
+                      <i className="fas fa-compass mr-2"></i> {t.btnGyro} / Start Compass
+                  </button>
+              ) : (
+                  <div className="absolute bottom-32 left-0 right-0 text-center opacity-50">
+                      <p className="text-[10px] text-green-400 font-mono">
+                          SENSOR: a:{debugInfo.alpha} b:{debugInfo.beta} g:{debugInfo.gamma}
+                      </p>
+                  </div>
+              )}
+          </div>
+      )}
     </div>
   );
 };

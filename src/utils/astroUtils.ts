@@ -118,3 +118,37 @@ export function getMoonPosition(date: Date): { ra: number, dec: number } {
 
     return { ra: (ra < 0 ? ra + 24 : ra), dec };
 }
+
+export const getMoonPhase = (date: Date) => {
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+
+    if (month < 3) {
+        year--;
+        month += 12;
+    }
+
+    const c = 365.25 * year;
+    const e = 30.6 * month;
+    const jd = c + e + day - 694039.09; // jd is total days elapsed
+    const b = jd / 29.5305882; // divide by the moon cycle
+    const ip = b - Math.floor(b); // Get the fractional part
+    const age = Math.round(ip * 29.53); // Scale it to 0-29
+
+    let phaseName = "";
+    if (age < 1) phaseName = "New Moon";
+    else if (age < 7) phaseName = "Waxing Crescent";
+    else if (age === 7) phaseName = "First Quarter";
+    else if (age < 15) phaseName = "Waxing Gibbous";
+    else if (age === 15) phaseName = "Full Moon";
+    else if (age < 22) phaseName = "Waning Gibbous";
+    else if (age === 22) phaseName = "Last Quarter";
+    else phaseName = "Waning Crescent";
+
+    return {
+        phase: phaseName,
+        age: age,
+        illumination: Math.round((1 - Math.cos(((age / 29.53) * 2) * Math.PI)) / 2 * 100)
+    };
+};

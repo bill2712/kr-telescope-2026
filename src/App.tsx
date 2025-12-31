@@ -170,7 +170,7 @@ function App() {
         </>
       )}
 
-      {currentPage === 'planner' && <Planner />}
+      {currentPage === 'planner' && <Planner lang={lang} />}
       {currentPage === 'compass' && (
            /* Compass Page effectively just Star Map with Gyro ON and minimal UI */
            <div className="absolute inset-0 z-0">
@@ -191,8 +191,8 @@ function App() {
                 />
            </div>
       )}
-      {currentPage === 'knowledge' && <Knowledge />}
-      {currentPage === 'quiz' && <Quiz />}
+      {currentPage === 'knowledge' && <Knowledge lang={lang} />}
+      {currentPage === 'quiz' && <Quiz lang={lang} />}
 
 
       {/* Floating Header (Always Visible) */}
@@ -239,12 +239,13 @@ function App() {
       {/* Main Navigation */}
       <FloatingMenu 
         currentPage={currentPage}
+        lang={lang}
         onNavigate={(page) => {
             setCurrentPage(page);
             if(page === 'compass') {
                 setEnableGyro(true);
             } else if (page === 'starmap') {
-                setEnableGyro(false); // Optional: Disable gyro when going back to map or keep as user left it? User asked for separate feature. I'll default to off for standard map.
+                setEnableGyro(false);
             }
         }}
       />
