@@ -47,6 +47,8 @@ export const translations = {
     dirW: '西',
     gyroNotSupported: '您的裝置不支援或未授權陀螺儀功能。',
     locUpdated: '位置已更新！',
+    sun: '太陽',
+    moon: '月亮',
   },
   'en': {
     appTitle: 'Kidrise Sky Explorer',
@@ -94,5 +96,7 @@ export const translations = {
     dirW: 'W',
     gyroNotSupported: 'Gyroscope not supported or permission denied.',
     locUpdated: 'Location Updated!',
+    sun: 'Sun',
+    moon: 'Moon',
   }
 };

@@ -1,13 +1,15 @@
 import React from 'react';
 import { translations } from '../utils/i18n';
-import { Language } from '../types';
+import { Language, Coordinates } from '../types';
 
 interface MissionControlProps {
     lang: Language;
     currentDate: Date;
+    location: Coordinates;
     viewMode: 'stereo' | 'ortho';
     isLiveTime: boolean;
     enableGyro: boolean;
+    locationName?: string;
     onSetViewMode: (mode: 'stereo' | 'ortho') => void;
     onShiftTime: (hours: number) => void;
     onSetLiveTime: () => void;
@@ -16,7 +18,7 @@ interface MissionControlProps {
 }
 
 const MissionControl: React.FC<MissionControlProps> = ({
-    lang, currentDate, viewMode, isLiveTime, enableGyro,
+    lang, currentDate, location, viewMode, isLiveTime, enableGyro, locationName,
     onSetViewMode, onShiftTime, onSetLiveTime, onToggleGyro, onLocationUpdate
 }) => {
     const t = translations[lang];
@@ -68,6 +70,17 @@ const MissionControl: React.FC<MissionControlProps> = ({
 
                 {/* Tools */}
                 <div className="flex items-center gap-2 flex-shrink-0 pr-2">
+                    
+                    {/* Location Info */}
+                    <div className="flex flex-col items-end mr-1">
+                        {locationName && (
+                             <span className="text-[10px] font-bold text-blue-200">{locationName}</span>
+                        )}
+                        <span className="text-[9px] font-mono text-gray-400">
+                             {location.latitude.toFixed(2)}°, {location.longitude.toFixed(2)}°
+                        </span>
+                    </div>
+
                     {/* Gyro */}
                     <button
                         onClick={onToggleGyro}

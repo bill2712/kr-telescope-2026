@@ -26,6 +26,7 @@ function App() {
   const [showArt, setShowArt] = useState(false);
   const [enableGyro, setEnableGyro] = useState(false);
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
+  const [locationName, setLocationName] = useState<string>("");
 
   const t = translations[lang];
 
@@ -47,17 +48,33 @@ function App() {
     }
 
     setUsingLiveLocation(true);
+    setLocationName("Locating..."); // Temporary state
+    
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        });
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setLocation({ latitude, longitude });
+
+        // Reverse Geocoding
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&accept-language=${lang === 'zh-HK' ? 'zh-HK' : 'en'}`);
+          const data = await response.json();
+          if (data && data.address) {
+             // Prefer City -> Town -> Village -> County -> Display Name
+             const name = data.address.city || data.address.town || data.address.village || data.address.county || data.display_name.split(',')[0];
+             setLocationName(name);
+          } else {
+             setLocationName(lang === 'zh-HK' ? '未知位置' : 'Unknown Location');
+          }
+        } catch (error) {
+           console.error("Geocoding error:", error);
+           setLocationName(lang === 'zh-HK' ? '未知位置' : 'Unknown Location');
+        }
       },
       (error) => {
         console.error("Error getting location:", error);
         setUsingLiveLocation(false);
-        // Fallback or alert silently
+        setLocationName("");
       }
     );
   };
@@ -165,12 +182,17 @@ function App() {
       <MissionControl
         lang={lang}
         currentDate={currentDate}
+        location={location}
         viewMode={viewMode}
         isLiveTime={isLiveTime}
         enableGyro={enableGyro}
+        locationName={locationName}
         onSetViewMode={setViewMode}
         onShiftTime={shiftTime}
-        onSetLiveTime={() => setIsLiveTime(true)}
+        onSetLiveTime={() => {
+          setIsLiveTime(true);
+          setCurrentDate(new Date());
+        }}
         onToggleGyro={toggleGyro}
         onLocationUpdate={handleGeolocation}
       />
