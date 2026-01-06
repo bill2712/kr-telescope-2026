@@ -2,7 +2,7 @@ import React from 'react';
 import { translations } from '../utils/i18n';
 import { Language } from '../types';
 
-type Page = 'starmap' | 'planner' | 'compass' | 'knowledge' | 'quiz';
+type Page = 'starmap' | 'planner' | 'compass' | 'knowledge' | 'guide' | 'quiz';
 
 interface FloatingMenuProps {
   currentPage: Page;
@@ -19,6 +19,7 @@ const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPage, onNavigate, la
     { id: 'planner', label: t.menuPlanner || 'Planner', icon: 'fa-calendar-alt' },
     { id: 'compass', label: t.menuCompass || 'Compass', icon: 'fa-compass' },
     { id: 'knowledge', label: t.menuLearn || 'Learn', icon: 'fa-book-open' },
+    { id: 'guide', label: t.menuGuide || 'Guide', icon: 'fa-binoculars' },
     { id: 'quiz', label: t.menuQuiz || 'Quiz', icon: 'fa-puzzle-piece' },
   ];
 

@@ -7,6 +7,7 @@ import StarInfoCard from './components/StarInfoCard';
 import FloatingMenu from './components/FloatingMenu';
 import Planner from './components/Planner';
 import Knowledge from './components/Knowledge';
+import StarGuide from './components/StarGuide';
 import Quiz from './components/Quiz';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
@@ -27,7 +28,7 @@ function App() {
   const [showTutorial, setShowTutorial] = useState(true);
 
   // Navigation State
-  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'compass' | 'knowledge' | 'quiz'>('starmap');
+  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'compass' | 'knowledge' | 'guide' | 'quiz'>('starmap');
 
   // New States
   const [showArt, setShowArt] = useState(false);
@@ -192,6 +193,7 @@ function App() {
            </div>
       )}
       {currentPage === 'knowledge' && <Knowledge lang={lang} />}
+      {currentPage === 'guide' && <StarGuide lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
 
 

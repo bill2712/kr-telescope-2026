@@ -24,75 +24,24 @@ const SimpleModule: React.FC<Props> = ({ lang, type }) => {
 
   // Unique Simulations
   const renderVisual = () => {
-      if (type === 'blackhole') {
-          return (
-              <div className="relative w-48 h-48 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-black rounded-full shadow-[0_0_50px_#4b0082]"></div>
-                  <div className="absolute inset-2 border-4 border-white/20 rounded-full animate-spin-slow" style={{ borderRadius: '40% 60% 70% 30% / 40% 50% 60% 50%' }}></div>
-                  <div className="absolute inset-0 border border-white/10 rounded-full animate-ping opacity-20"></div>
-                  {/* Accretion Disk */}
-                   <div 
-                     className="absolute w-[140%] h-[20%] bg-gradient-to-r from-transparent via-orange-500 to-transparent blur-md"
-                     style={{ top: '50%', transform: 'translateY(-50%) rotate(-15deg)' }}
-                   ></div>
-              </div>
-          );
-      }
-      if (type === 'meteor') {
-          return (
-              <div className="relative w-full h-48 overflow-hidden bg-gradient-to-b from-[#0b0d17] to-[#1a1d2d]">
-                  {[...Array(5)].map((_, i) => (
-                      <div 
-                        key={i}
-                        className="absolute h-0.5 bg-gradient-to-l from-transparent to-white animate-meteor"
-                        style={{
-                            width: '100px',
-                            top: `${Math.random() * 100}%`,
-                            left: `${Math.random() * 100}%`,
-                            animationDelay: `${Math.random() * 3}s`,
-                            opacity: 0
-                        }}
-                      ></div>
-                  ))}
-                  <style>{`
-                    @keyframes meteor {
-                        0% { transform: translateX(200px) translateY(-200px) rotate(-45deg); opacity: 1; }
-                        100% { transform: translateX(-200px) translateY(200px) rotate(-45deg); opacity: 0; }
-                    }
-                    .animate-meteor {
-                        animation: meteor 2s linear infinite;
-                    }
-                  `}</style>
-              </div>
-          );
-      }
-      if (type === 'galaxy') {
-          return (
-             <div className="relative w-48 h-48 animate-spin-slow">
-                 <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 via-blue-500/20 to-transparent rounded-full blur-xl"></div>
-                 {/* Arms */}
-                 {[...Array(3)].map((_, i) => (
-                     <div 
-                       key={i}
-                       className="absolute top-1/2 left-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-white to-transparent blur-sm"
-                       style={{ 
-                           transform: `translate(-50%, -50%) rotate(${i * 60}deg)`,
-                           borderRadius: '50%'
-                        }}
-                     ></div>
-                 ))}
-                 {/* Spiral Logic is hard in pure CSS without an image, using a placeholder "Swirl" */}
-                  <div className="absolute inset-0 flex items-center justify-center text-6xl opacity-80">🌀</div>
-             </div>
-          );
-      }
-      // Basics for others...
+      const images: Record<string, string> = {
+          blackhole: new URL('../../assets/knowledge/blackhole.png', import.meta.url).href,
+          meteor: new URL('../../assets/knowledge/meteor.png', import.meta.url).href,
+          comet: new URL('../../assets/knowledge/comet.png', import.meta.url).href,
+          galaxy: new URL('../../assets/knowledge/galaxy.png', import.meta.url).href,
+          nebula: new URL('../../assets/knowledge/nebula.png', import.meta.url).href,
+          eclipse: new URL('../../assets/knowledge/eclipse.png', import.meta.url).href,
+          constellation: new URL('../../assets/knowledge/constellation.png', import.meta.url).href,
+      };
+
       return (
-          <div className="text-6xl animate-bounce">
-              {type === 'comet' && '☄️'}
-              {type === 'nebula' && '🌫️'}
-              {type === 'eclipse' && '🌑'}
-              {type === 'constellation' && '✨'}
+          <div className="relative w-full h-48 md:h-64 flex items-center justify-center overflow-hidden rounded-2xl border border-white/10 group">
+              <img 
+                  src={images[type]} 
+                  alt={config.title} 
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none"></div>
           </div>
       );
   };

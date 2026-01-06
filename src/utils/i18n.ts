@@ -113,6 +113,55 @@ export const translations = {
     moonContext: '月亮其實不會變形！它像一個被手電筒（太陽）照著的球。當它繞著地球轉時，我們看到的亮面就會改變。',
     starContext: '星星是大火球。就像蠟燭的火焰一樣，藍色的部分其實最熱，紅色的部分反而比較「冷」喔！',
 
+    // Star Guide
+    // Guide
+    menuGuide: '觀星指南',
+    btnBack: '返回',
+    lblFind: '如何尋找',
+    lblObserve: '觀測技巧',
+    planetFact: '你知道嗎？',
+    guideIntro: '探索著名恆星和天體。點擊卡片了解更多。',
+
+    // Polaris
+    guidePolaris: '北極星 (Polaris)',
+    guidePolarisSub: '指北之星',
+    guidePolarisDesc: '北極星非常特別，因為它在天空中的位置幾乎不變，而其他星星都繞著它轉。數百年來，水手們一直依靠它來辨別北方。',
+    guidePolarisFind: '先找到北斗七星。將斗勺外側的兩顆星連成一線，向斗口方向延伸約五倍距離，就能找到北極星。',
+    guidePolarisObserve: '它是一顆中等亮度的星星。即使在城市中，肉眼也能看見，但不算非常亮。',
+    guidePolarisFact: '北極星其實是一個三合星系統，但它的伴星太暗了，需要望遠鏡才能看見。',
+
+    // Sirius
+    guideSirius: '天狼星 (Sirius)',
+    guideSiriusSub: '夜空中最亮的星',
+    guideSiriusDesc: '天狼星是全天最亮的恆星。它的名字源於希臘語，意為「發光」或「灼熱」。',
+    guideSiriusFind: '先找到獵戶座腰帶（三顆連成一線的星）。沿著腰帶向左下方延伸，最亮的那顆就是天狼星。',
+    guideSiriusObserve: '發出耀眼的藍白光芒。當它位置較低時，常會因為大氣擾動而閃爍出七彩光芒。',
+    guideSiriusFact: '英語中「炎熱的狗日子」(Dog Days) 指的就是天狼星，因為古人認為它的熱量與太陽疊加導致了夏天的酷熱。',
+
+    // Betelgeuse
+    guideBetelgeuse: '參宿四 (Betelgeuse)',
+    guideBetelgeuseSub: '紅色超巨星',
+    guideBetelgeuseDesc: '參宿四是一顆巨大的紅色超巨星。如果不把它放在我們太陽系中心，它的表面會延伸到木星軌道之外！',
+    guideBetelgeuseFind: '它是獵戶座左上角那顆明亮的橙紅色星星（獵人的肩膀）。',
+    guideBetelgeuseObserve: '肉眼可見明顯的橙紅色。它是天空中最容易通過顏色辨認的星星之一。',
+    guideBetelgeuseFact: '參宿四「很快」就會演化成超新星——在天文學上，「很快」意味著未來十萬年內。',
+
+    // Orion Nebula
+    guideOrionNebula: '獵戶座大星雲',
+    guideOrionNebulaSub: '恆星托兒所',
+    guideOrionNebulaDesc: '獵戶座大星雲是一團巨大的氣體和塵埃雲，新恆星正在那裡誕生。它是肉眼可見最亮的星雲之一。',
+    guideOrionNebulaFind: '在獵戶座腰帶下方尋找「寶劍」。星雲位於寶劍中間那顆看起來毛茸茸的星星位置。',
+    guideOrionNebulaObserve: '肉眼看去像一顆模糊的星星。用雙筒望遠鏡可以看到淡淡的霧氣。透過天文望遠鏡可見其扇形結構。',
+    guideOrionNebulaFact: '它的直徑約 24 光年。我們今天看到的光，是在羅馬帝國衰落時期發出的。',
+
+    // Pleiades
+    guidePleiades: '以此七星團 (Pleiades)',
+    guidePleiadesSub: '七姊妹星團',
+    guidePleiadesDesc: '昴宿星團是一個美麗的疏散星團，由中年、高溫的 B 型恆星組成。通常人們會挑戰自己能數出幾顆星星。',
+    guidePleiadesFind: '沿著獵戶座腰帶向右下方延伸，經過畢宿五，就能找到這個小小的星團。',
+    guidePleiadesObserve: '看起來像一個迷你的斗勺。大多數人肉眼能看到 6 顆星，但用雙筒望遠鏡能看到數十顆。',
+    guidePleiadesFact: '在日本，這個星團被稱為「Subaru」（昴），也是著名汽車品牌的標誌。',
+
     // New Content
     blackHoleContext: '黑洞的引力超級強，連光都跑不掉！它就像宇宙原本的一個超大吸塵器。',
     meteorContext: '流星其實是太空中的小石頭，撞到地球空氣燃燒發光，看起來就像畫過天空的線！',
@@ -270,6 +319,55 @@ export const translations = {
     solarContext: 'Imagine a giant family running around a bonfire. The Sun is the fire, and the planets are the kids running around it!',
     moonContext: 'The Moon is like a ball that gets lit up by a flashlight (The Sun). As it moves around us, we see different parts lit up!',
     starContext: 'Stars are huge balls of fire. Just like a candle flame, the blue part is actually the hottest, and the red part is "cool"!',
+
+    // Star Guide
+    // Guide
+    menuGuide: 'Guide',
+    btnBack: 'Back',
+    lblFind: 'How to Find',
+    lblObserve: 'How to Observe',
+    planetFact: 'Did You Know?',
+    guideIntro: 'Explore famous stars and celestial objects. Tap on a card to learn more.',
+
+    // Polaris
+    guidePolaris: 'Polaris',
+    guidePolarisSub: 'The North Star',
+    guidePolarisDesc: 'Polaris is a very special star because it stays in almost the same spot in the sky while other stars rotate around it. It has been used by sailors for centuries to find North.',
+    guidePolarisFind: 'Find the Big Dipper first. Draw a line through the outer two stars of the Dipper\'s bowl, and it points straight to Polaris.',
+    guidePolarisObserve: 'It is a medium brightness star. Easy to see with the naked eye even in the city.',
+    guidePolarisFact: 'Polaris is actually a triple star system, but the companions are too faint to see without a telescope.',
+
+    // Sirius
+    guideSirius: 'Sirius',
+    guideSiriusSub: 'The Dog Star',
+    guideSiriusDesc: 'Sirius is the brightest star in the night sky. Its name comes from the Greek word "Seirios," meaning "glowing" or "scorcher."',
+    guideSiriusFind: 'Look for Orion\'s Belt (three stars in a row). Follow the line of the belt down to the left to find Sirius.',
+    guideSiriusObserve: 'Shines very brightly with a blue-white color. It often twinkles with many colors when it is low in the sky.',
+    guideSiriusFact: 'The phrase "Dog Days of Summer" refers to Sirius, because the ancients thought its heat added to the sun\'s heat in summer.',
+
+    // Betelgeuse
+    guideBetelgeuse: 'Betelgeuse',
+    guideBetelgeuseSub: 'The Red Giant',
+    guideBetelgeuseDesc: 'Betelgeuse is a massive red supergiant star. If it were placed at the center of our solar system, it would extend past the orbit of Jupiter!',
+    guideBetelgeuseFind: 'It is the bright orange-red star at the top left shoulder of the Orion constellation.',
+    guideBetelgeuseObserve: 'Distinctly orange-red to the naked eye. It is one of the easiest stars to recognize by color.',
+    guideBetelgeuseFact: 'Betelgeuse will essentially explode as a supernova "soon" - which in astronomy means sometime in the next 100,000 years.',
+
+    // Orion Nebula
+    guideOrionNebula: 'Orion Nebula',
+    guideOrionNebulaSub: 'Star Factory',
+    guideOrionNebulaDesc: 'The Orion Nebula is a vast cloud of dust and gas where new stars are being born. It is one of the brightest nebulae visible to the naked eye.',
+    guideOrionNebulaFind: 'Look below Orion\'s Belt for the "Sword" of Orion. The nebula is the fuzzy middle "star" of the sword.',
+    guideOrionNebulaObserve: 'Looks like a fuzzy star to the naked eye. Binoculars reveal a faint gray mist. A telescope shows its fan shape.',
+    guideOrionNebulaFact: 'It is about 24 light-years across. The light we see from it today left during the fall of the Roman Empire.',
+
+    // Pleiades
+    guidePleiades: 'Pleiades',
+    guidePleiadesSub: 'The Seven Sisters',
+    guidePleiadesDesc: 'Discussion of the Pleiades often leads to the question "how many stars can you see?". It is a beautiful open star cluster containing middle-aged, hot B-type stars.',
+    guidePleiadesFind: 'Follow the line of Orion\'s belt upwards to the right, past Aldebaran, to find this small cluster of stars.',
+    guidePleiadesObserve: 'Looks like a tiny dipper shape. Most people see 6 stars with the naked eye, but binoculars show dozens.',
+    guidePleiadesFact: 'In Japan, this star cluster is known as "Subaru" and is the logo of the car manufacturer.',
     
     // New Content
     blackHoleContext: 'A Black Hole has gravity so strong that nothing, not even light, can escape! It pulls everything in like a giant drain.',
