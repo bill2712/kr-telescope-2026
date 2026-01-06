@@ -162,6 +162,62 @@ export const translations = {
     guidePleiadesObserve: '看起來像一個迷你的斗勺。大多數人肉眼能看到 6 顆星，但用雙筒望遠鏡能看到數十顆。',
     guidePleiadesFact: '在日本，這個星團被稱為「Subaru」（昴），也是著名汽車品牌的標誌。',
 
+    // Rigel
+    guideRigel: '參宿七 (Rigel)',
+    guideRigelSub: '藍色超巨星',
+    guideRigelDesc: '參宿七是獵戶座中最亮的星 (比參宿四還亮)。它是一顆年輕、熾熱的藍色超巨星。',
+    guideRigelFind: '它是獵戶座右下角那顆明亮的藍白色星星（獵人的腳）。',
+    guideRigelObserve: '它發出強烈的藍白光。與橙紅色的參宿四形成強烈對比。',
+    guideRigelFact: '參宿七非常亮，如果把它放在太陽的位置，我們都會被瞬間烤焦！它的亮度是太陽的數萬倍。',
+
+    // Aldebaran
+    guideAldebaran: '畢宿五 (Aldebaran)',
+    guideAldebaranSub: '金牛座之眼',
+    guideAldebaranDesc: '畢宿五是一顆橙色巨星，代表金牛座那一隻憤怒的眼睛。它的名字來自阿拉伯語，意為「追隨者」（追隨昴宿星團）。',
+    guideAldebaranFind: '沿著獵戶座腰帶向右上方延伸，第一顆遇到的亮橙色星星就是它。',
+    guideAldebaranObserve: '顏色是明顯的橙色。它位於一個V字形的星群（畢宿星團）中，但其實它比那個星團更靠近我們。',
+    guideAldebaranFact: '先鋒10號探測器正朝著畢宿五的方向飛去，預計兩百萬年後會到達那裡。',
+
+    // Arcturus
+    guideArcturus: '大角星 (Arcturus)',
+    guideArcturusSub: '牧夫座守護者',
+    guideArcturusDesc: '大角星是北半球夜空中最亮的恆星（全天第四亮）。它是一顆橙色巨星。',
+    guideArcturusFind: '沿著北斗七星斗柄的曲線延伸出去（春季大曲線），第一顆遇到的亮星就是大角星。',
+    guideArcturusObserve: '它閃爍著金黃色或橙色的光芒。',
+    guideArcturusFact: '大角星並不是「本地人」，它來自一個被銀河系吞併的矮星系，正快速穿越我們的銀河盤面。',
+    
+    // Vega
+    guideVega: '織女一 (Vega)',
+    guideVegaSub: '夏夜女王',
+    guideVegaDesc: '織女一是夏季大三角中最亮的一顆星。它發出藍白色的光芒，曾經是我們的北極星（以後也會是）。',
+    guideVegaFind: '在夏季的頭頂附近，尋找最亮的那顆藍白星。',
+    guideVegaObserve: '非常明亮且呈現藍白色。它是天文學家用來定義「0等星」的標準星。',
+    guideVegaFact: '因為地球自轉軸的擺動，大約在西元14000年，織女一將會取代現在的勾陳一成為新的北極星。',
+
+    // Altair
+    guideAltair: '河鼓二 (Altair)',
+    guideAltairSub: '牛郎星',
+    guideAltairDesc: '河鼓二（牛郎星）是天鷹座的主星，也是夏季大三角的其中一角。它自轉速度非常快！',
+    guideAltairFind: '在夏季大三角中，位於織女星對面，兩旁各有一顆暗星伴隨的就是牛郎星。',
+    guideAltairObserve: '一顆明亮的白色恆星。',
+    guideAltairFact: '它自轉極快，赤道部分的轉速達到每小時90萬公里，導致它變成了一個扁扁的橢球體。',
+
+    // Antares
+    guideAntares: '心宿二 (Antares)',
+    guideAntaresSub: '火星的對手',
+    guideAntaresDesc: '心宿二是一顆紅超巨星，代表天蠍座的心臟。它的名字意為「阿瑞斯（火星）的對手」，因為它們顏色很像。',
+    guideAntaresFind: '在夏季南方的天空中，尋找一顆紅色的亮星。如果你看到像鉤子一樣的星星排列，那就是天蠍座。',
+    guideAntaresObserve: '明顯的紅色。當它和火星靠得很近時，可以比較一下它們的顏色。',
+    guideAntaresFact: '它非常巨大，如果放在太陽系中心，它的表面會吞沒火星軌道！',
+
+    // Andromeda Galaxy
+    guideAndromedaGalaxy: '仙女座大星系 (Andromeda)',
+    guideAndromedaGalaxySub: '我們的鄰居',
+    guideAndromedaGalaxyDesc: '仙女座大星系是距離我們最近的巨大螺旋星系。它是肉眼能看到最遠的物體（距離250萬光年）。',
+    guideAndromedaGalaxyFind: '先找到仙女座，在奎宿九（Mirach）上方尋找一團模糊的光斑。秋季觀測最佳。',
+    guideAndromedaGalaxyObserve: '肉眼看像一團模糊的棉花球。雙筒望遠鏡可以看見橢圓的光暈。',
+    guideAndromedaGalaxyFact: '它正以每秒110公里的速度衝向我們！預計45億年後會和我們的銀河系主要發生碰撞。',
+
     // New Content
     blackHoleContext: '黑洞的引力超級強，連光都跑不掉！它就像宇宙原本的一個超大吸塵器。',
     meteorContext: '流星其實是太空中的小石頭，撞到地球空氣燃燒發光，看起來就像畫過天空的線！',
@@ -191,7 +247,75 @@ export const translations = {
     saturnFact: '土星有最漂亮的呼啦圈（光環），是由冰塊和石頭組成的。',
     uranusFact: '天王星是躺著轉的！它是最冷的行星之一。',
     neptuneFact: '海王星離太陽最遠，那裡的風超級大，是音速的5倍！',
-    // Moon Phase
+    // Quiz
+    quizTitle: '太空學員訓練',
+    quizIntro: '準備好成為一位太空探險家了嗎？回答問題來升級！',
+    quizStart: '開始任務',
+    quizNext: '下一題',
+    quizRetry: '再玩一次',
+    quizScore: '得分',
+    quizRank: '軍階',
+    quizCorrect: '答對了！太棒了！🎉',
+    quizWrong: '哎呀！再接再厲！💪',
+    quizComplete: '訓練完成！',
+    
+    // Ranks
+    rank1: '太空菜鳥 (Space Rookie)',
+    rank2: '星際探險家 (Star Explorer)',
+    rank3: '火箭隊長 (Rocket Captain)',
+    rank4: '銀河守護者 (Galactic Guardian)',
+    rank5: '宇宙大師 (Universe Master)',
+
+    // Questions
+    q1: '哪顆星星是夜空中最亮的？',
+    q1a: ['天狼星', '織女星', '北極星'],
+    q2: '距離太陽最近的行星是哪一顆？',
+    q2a: ['金星', '火星', '水星'],
+    q3: '月亮變圓的時候，我們叫它什麼？',
+    q3a: ['新月', '滿月', '上弦月'],
+    q4: '太陽系最大的行星是誰？',
+    q4a: ['地球', '木星', '土星'],
+    q5: '我們居住的星系叫什麼名字？',
+    q5a: ['仙女座星系', '銀河系', '黑眼星系'],
+    q6: '什麼顏色的星星溫度最高？',
+    q6a: ['紅色', '黃色', '藍色'],
+    q7: '地球有多少顆天然衛星（月亮）？',
+    q7a: ['1顆', '2顆', '0顆'],
+    q8: '被稱為「紅色星球」的是哪一顆？',
+    q8a: ['火星', '金星', '木星'],
+    q9: '太陽主要是由什麼氣體組成的？',
+    q9a: ['氧氣', '氫氣和氦氣', '二氧化碳'],
+    q10: '誰有美麗的行星光環（呼啦圈）？',
+    q10a: ['土星', '火星', '水星'],
+    q11: '流星其實是什麼？',
+    q11a: ['掉下來的星星', '燃燒的太空石頭', '外星人的飛船'],
+    q12: '什麼東西連光都逃不掉？',
+    q12a: ['太陽', '黑洞', '月亮'],
+    q13: '我們看星星的時候，其實是在看？',
+    q13a: ['過去的樣子', '未來的樣子', '現在的樣子'],
+    q14: '北極星可以幫我們找到哪個方向？',
+    q14a: ['南方', '北方', '東方'],
+    q15: '人類第一次登陸月球是在哪一年？',
+    q15a: ['1969年', '2000年', '1800年'],
+
+    // Explanations
+    q1_explain: '沒錯！天狼星是除了太陽以外，我們能看到最亮的恆星。它其實是兩顆星星在一起喔！',
+    q2_explain: '答對了！水星離太陽最近，所以它白天超級熱，但因為沒有大氣層保溫，晚上又超級冷！',
+    q3_explain: '正確！當我們看到圓圓的月亮時，那就是滿月。這是因為太陽光直接照亮了月亮的正面。',
+    q4_explain: '太棒了！木星是太陽系裡的大巨人，比所有其他行星加起來還要大兩倍以上！',
+    q5_explain: '沒錯！我們住在銀河系，它看起來像一條流過夜空的銀色河流。',
+    q6_explain: '答對了！藍色的星星燃燒得最劇烈，溫度最高。紅色的星星反而比較冷喔。',
+    q7_explain: '正確！地球只有一顆天然衛星，就是我們的月亮。',
+    q8_explain: '沒錯！火星表面有很多氧化鐵（就像生鏽一樣），所以看起來紅紅的。',
+    q9_explain: '答對了！太陽是個巨大的氣體球，主要由氫氣和氦氣組成，不停地進行核融合反應發光發熱。',
+    q10_explain: '正確！土星環非常壯觀，主要由冰塊、石頭和灰塵組成。',
+    q11_explain: '沒錯！流星是太空中的小石頭掉進大氣層時，摩擦燃燒產生的光芒。',
+    q12_explain: '答對了！黑洞的引力非常強大，連速度最快的光都被吸進去，所以我們看不見它。',
+    q13_explain: '正確！星星離我們很遠，光走過來需要時間。所以我們看到的是它們過去的樣子！',
+    q14_explain: '沒錯！北極星幾乎就在地球北極的正上方，所以它能幫我們指引北方。',
+    q15_explain: '太棒了！1969年，阿姆斯壯成為第一個踏上月球的人類。他說：「這是我的一小步，卻是人類的一大步。」',
+
+    // Old Moon content kept below
     moonPhaseTitle: '拖動滑桿看看月亮怎麼變！',
     moonDay: '農曆初',
     moonReasonNew: '月亮躲在地球和太陽中間，我們看不到它！',
@@ -199,6 +323,7 @@ export const translations = {
     moonReasonFull: '月亮跑到地球後面，太陽光把它的臉照得圓圓的！',
     moonReasonWan: '月亮慢慢變小了，要回家睡覺了。',
     // Star Color
+    starColorTitleWhy: '為什麼星星有不同顏色？',
     starColorTitle: '星星顏色與溫度',
     tempLow: '低溫 (約 3,000°C)',
     tempMid: '中溫 (約 6,000°C)',
@@ -368,6 +493,62 @@ export const translations = {
     guidePleiadesFind: 'Follow the line of Orion\'s belt upwards to the right, past Aldebaran, to find this small cluster of stars.',
     guidePleiadesObserve: 'Looks like a tiny dipper shape. Most people see 6 stars with the naked eye, but binoculars show dozens.',
     guidePleiadesFact: 'In Japan, this star cluster is known as "Subaru" and is the logo of the car manufacturer.',
+
+    // Rigel
+    guideRigel: 'Rigel',
+    guideRigelSub: 'Blue Supergiant',
+    guideRigelDesc: 'Rigel is the brightest star in Orion (brighter than Betelgeuse!). It is a young, hot, blue supergiant star.',
+    guideRigelFind: 'It is the bright blue-white star at the bottom right foot of the Hunter (Orion).',
+    guideRigelObserve: 'Shines with an intense blue-white light. Contrasts beautifully with orange Betelgeuse.',
+    guideRigelFact: 'Rigel is so luminous that if it replaced our Sun, we would be instantly incinerated. It shines tens of thousands of times brighter than the Sun.',
+
+    // Aldebaran
+    guideAldebaran: 'Aldebaran',
+    guideAldebaranSub: 'The Eye of Taurus',
+    guideAldebaranDesc: 'Aldebaran is an orange giant star representing the angry eye of Taurus the Bull. Its name is Arabic for "The Follower" (it follows the Pleiades).',
+    guideAldebaranFind: 'Follow the line of Orion\'s Belt up and to the right. The first bright orange star you hit is Aldebaran.',
+    guideAldebaranObserve: 'Distinctly orange. It sits in a V-shaped star cluster called the Hyades, though it is not actually part of the cluster.',
+    guideAldebaranFact: 'The Pioneer 10 spacecraft is heading towards Aldebaran and will arrive in about two million years.',
+
+    // Arcturus
+    guideArcturus: 'Arcturus',
+    guideArcturusSub: 'Guardian of the Bear',
+    guideArcturusDesc: 'Arcturus is the brightest star in the northern celestial hemisphere (4th brightest overall). It is an orange giant.',
+    guideArcturusFind: 'Follow the arc of the Big Dipper\'s handle away from the bowl. "Arc to Arcturus!"',
+    guideArcturusObserve: 'It twinkles with a golden-orange hue.',
+    guideArcturusFact: 'Arcturus is not a local; it came from a dwarf galaxy that colliding with the Milky Way. It is zooming through our galaxy disk.',
+
+    // Vega
+    guideVega: 'Vega',
+    guideVegaSub: 'Queen of Summer',
+    guideVegaDesc: 'Vega is the brightest star in the Summer Triangle. It glows blue-white and was once our North Star.',
+    guideVegaFind: 'Look for the brightest blue-white star near the zenith (overhead) in summer evenings.',
+    guideVegaObserve: 'Very bright and blue-white. Astronomers use it as the standard "Zero Magnitude" star.',
+    guideVegaFact: 'Due to Earth\'s wobble, Vega will become the North Star again around the year 14,000.',
+
+    // Altair
+    guideAltair: 'Altair',
+    guideAltairSub: 'The Cowherd Star',
+    guideAltairDesc: 'Altair is the head of Aquila the Eagle and one corner of the Summer Triangle. It spins incredibly fast!',
+    guideAltairFind: 'In the Summer Triangle, look for the bright star flanked by two fainter stars on either side.',
+    guideAltairObserve: 'A bright white star.',
+    guideAltairFact: 'It spins so fast at its equator (900,000 km/h) that the star is flattened into an oval shape instead of a sphere.',
+
+    // Antares
+    guideAntares: 'Antares',
+    guideAntaresSub: 'Rival of Mars',
+    guideAntaresDesc: 'Antares is a red supergiant star marking the heart of Scorpius. Its name means "Anti-Ares" (Rival of Mars) because they look so similar.',
+    guideAntaresFind: 'Look south in summer for a bright red star. If you see a fish-hook shape of stars, that\'s Scorpius.',
+    guideAntaresObserve: 'Distinctly red. Compare its color to Mars when they are close in the sky.',
+    guideAntaresFact: 'It is huge. If placed at the center of our solar system, its surface would swallow the orbit of Mars.',
+
+    // Andromeda Galaxy
+    guideAndromedaGalaxy: 'Andromeda Galaxy',
+    guideAndromedaGalaxySub: 'Our Neighbor',
+    guideAndromedaGalaxyDesc: 'The Andromeda Galaxy is the nearest major galaxy to the Milky Way. It is the most distant object visible to the naked eye (2.5 million light-years).',
+    guideAndromedaGalaxyFind: 'Find the constellation Andromeda. Look for a fuzzy patch above the star Mirach. Best seen in autumn.',
+    guideAndromedaGalaxyObserve: 'Looks like a faint, fuzzy cotton ball to the naked eye. Binoculars reveal an oval glow.',
+    guideAndromedaGalaxyFact: 'It is rushing towards us at 110 km/s! It will collide with the Milky Way in about 4.5 billion years.',
     
     // New Content
     blackHoleContext: 'A Black Hole has gravity so strong that nothing, not even light, can escape! It pulls everything in like a giant drain.',
@@ -388,7 +569,7 @@ export const translations = {
     saturn: 'Saturn',
     uranus: 'Uranus',
     neptune: 'Neptune',
-    planetFact: 'Fun Fact',
+    planetFactSolar: 'Fun Fact',
     sunFact: 'The Sun is actually a star! It is the boss of the Solar System.',
     mercuryFact: 'Mercury is the smallest and fastest planet. A year is only 88 days!',
     venusFact: 'Venus is the hottest planet, even hotter than Mercury, due to thick clouds.',
@@ -398,6 +579,74 @@ export const translations = {
     saturnFact: 'Saturn has the most beautiful rings, made of ice and rocks.',
     uranusFact: 'Uranus spins on its side! It is an "Ice Giant".',
     neptuneFact: 'Neptune is the farthest away. It has super strong winds!',
+    // Quiz
+    quizTitle: 'Space Cadet Training',
+    quizIntro: 'Ready to become a space explorer? Answer correctly to rank up!',
+    quizStart: 'Start Mission',
+    quizNext: 'Next Question',
+    quizRetry: 'Play Again',
+    quizScore: 'Score',
+    quizRank: 'Rank',
+    quizCorrect: 'Correct! Awesome! 🎉',
+    quizWrong: 'Oops! Try again! 💪',
+    quizComplete: 'Training Complete!',
+    
+    // Ranks
+    rank1: 'Space Rookie',
+    rank2: 'Star Explorer',
+    rank3: 'Rocket Captain',
+    rank4: 'Galactic Guardian',
+    rank5: 'Universe Master',
+
+    // Questions
+    q1: 'Which is the brightest star in the night sky?',
+    q1a: ['Sirius', 'Vega', 'Polaris'],
+    q2: 'Which planet is closest to the Sun?',
+    q2a: ['Venus', 'Mars', 'Mercury'],
+    q3: 'When the moon is round and bright, it is a...',
+    q3a: ['New Moon', 'Full Moon', 'Crescent Moon'],
+    q4: 'Which is the largest planet in our solar system?',
+    q4a: ['Earth', 'Jupiter', 'Saturn'],
+    q5: 'What is the name of our galaxy?',
+    q5a: ['Andromeda', 'Milky Way', 'Black Eye'],
+    q6: 'Which color star is the hottest?',
+    q6a: ['Red', 'Yellow', 'Blue'],
+    q7: 'How many moons does Earth have?',
+    q7a: ['One', 'Two', 'Zero'],
+    q8: 'Which planet is called the "Red Planet"?',
+    q8a: ['Mars', 'Venus', 'Jupiter'],
+    q9: 'What is the Sun mainly made of?',
+    q9a: ['Oxygen', 'Hydrogen & Helium', 'Carbon Dioxide'],
+    q10: 'Which planet has beautiful rings?',
+    q10a: ['Saturn', 'Mars', 'Mercury'],
+    q11: 'What is a shooting star (meteor) actually?',
+    q11a: ['A falling star', 'Burning space rock', 'Alien spaceship'],
+    q12: 'What has gravity so strong that not even light can escape?',
+    q12a: ['Sun', 'Black Hole', 'Moon'],
+    q13: 'When we look at stars, we are seeing them as they were...',
+    q13a: ['In the past', 'In the future', 'Right now'],
+    q14: 'Polaris (North Star) helps us find which direction?',
+    q14a: ['South', 'North', 'East'],
+    q15: 'In which year did humans first land on the Moon?',
+    q15a: ['1969', '2000', '1800'],
+
+    // Explanations
+    q1_explain: 'Correct! Sirius is the brightest star we can see (besides the Sun). It\'s actually a binary star system!',
+    q2_explain: 'That\'s right! Mercury is closest to the Sun. It gets super hot during the day but super cold at night because it has no atmosphere!',
+    q3_explain: 'Correct! When we see a full round moon, that\'s a Full Moon. The sun is lighting up the whole side we can see.',
+    q4_explain: 'Awesome! Jupiter is a giant! It\'s more than twice as massive as all the other planets combined.',
+    q5_explain: 'Correct! We live in the Milky Way galaxy. It looks like a milky band of light stretching across the sky.',
+    q6_explain: 'Right! Blue stars burn the hottest and fastest. Red stars are actually cooler than blue or yellow ones.',
+    q7_explain: 'Correct! Earth has only one natural satellite: The Moon.',
+    q8_explain: 'That\'s it! Mars is covered in iron oxide (rust/dust), which gives it that reddish-orange color.',
+    q9_explain: 'Correct! The Sun is a giant ball of gas, mostly Hydrogen and Helium, burning in a nuclear reaction.',
+    q10_explain: 'Right! Saturn\'s rings are famous and beautiful. They are made mostly of ice chunks and rock.',
+    q11_explain: 'Correct! A shooting star is actually a small space rock burning up as it hits Earth\'s atmosphere.',
+    q12_explain: 'Correct! Black holes have such strong gravity that nothing, not even light, can escape them!',
+    q13_explain: 'Right! Because stars are so far away, light takes time to reach us. We are looking back in time!',
+    q14_explain: 'Correct! Polaris sits almost directly above the North Pole, so it stays still while other stars circle it.',
+    q15_explain: 'Correct! In 1969, Neil Armstrong became the first human to walk on the Moon. "One small step!"',
+
     // Moon Phase
     moonPhaseTitle: 'Drag the slider to see moon phases!',
     moonDay: 'Day',
@@ -406,6 +655,7 @@ export const translations = {
     moonReasonFull: 'The Moon is opposite the Sun. Its face is fully lit!',
     moonReasonWan: 'The Moon is shrinking and going back to sleep.',
     // Star Color
+    starColorTitleWhy: 'Why do stars have different colors?',
     starColorTitle: 'Star Color & Temp',
     tempLow: 'Cool (3,000°C)',
     tempMid: 'Medium (6,000°C)',
