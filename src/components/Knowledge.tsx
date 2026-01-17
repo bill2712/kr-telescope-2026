@@ -7,11 +7,14 @@ import MoonPhaseLearn from './knowledge/MoonPhaseLearn';
 import StarColors from './knowledge/StarColors';
 import SimpleModule from './knowledge/SimpleModule';
 
+import ConstellationGame from './knowledge/ConstellationGame';
+import SpaceScale from './knowledge/SpaceScale';
+
 interface KnowledgeProps {
     lang: Language;
 }
 
-type ModuleType = 'solar' | 'moon' | 'star' | 'blackhole' | 'meteor' | 'comet' | 'galaxy' | 'nebula' | 'eclipse' | 'constellation' | null;
+type ModuleType = 'solar' | 'moon' | 'star' | 'blackhole' | 'meteor' | 'comet' | 'galaxy' | 'nebula' | 'eclipse' | 'constellation' | 'spacescale' | null;
 
 const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
     const t = translations[lang];
@@ -21,6 +24,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
         { id: 'solar', title: t.knowSolar, desc: t.solarDesc, icon: "fa-sun", color: "from-yellow-400 to-orange-500" },
         { id: 'moon', title: t.knowMoon, desc: t.moonDesc, icon: "fa-moon", color: "from-gray-300 to-gray-500" },
         { id: 'star', title: t.knowStar, desc: t.starDesc, icon: "fa-star", color: "from-blue-400 to-purple-500" }, 
+        { id: 'spacescale', title: t.scaleTitle || 'Space Scale', desc: t.scaleDesc || 'Gravity Checker', icon: "fa-weight-hanging", color: "from-pink-500 to-rose-500" },
         
         { id: 'blackhole', title: t.knowBlackHole, desc: t.blackHoleDesc, icon: "fa-circle", color: "from-gray-900 to-purple-900" },
         { id: 'meteor', title: t.knowMeteor, desc: t.meteorDesc, icon: "fa-meteor", color: "from-teal-400 to-blue-500" },
@@ -44,8 +48,10 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
                     {activeModule === 'solar' && <SolarSystem lang={lang} />}
                     {activeModule === 'moon' && <MoonPhaseLearn lang={lang} />}
                     {activeModule === 'star' && <StarColors lang={lang} />}
+                    {activeModule === 'constellation' && <ConstellationGame lang={lang} onBack={() => setActiveModule(null)} />}
+                    {activeModule === 'spacescale' && <SpaceScale lang={lang} onBack={() => setActiveModule(null)} />}
                     
-                    {(['blackhole', 'meteor', 'comet', 'galaxy', 'nebula', 'eclipse', 'constellation'] as const).includes(activeModule as any) && (
+                    {(['blackhole', 'meteor', 'comet', 'galaxy', 'nebula', 'eclipse'] as const).includes(activeModule as any) && (
                         <SimpleModule lang={lang} type={activeModule as any} />
                     )}
                 </div>

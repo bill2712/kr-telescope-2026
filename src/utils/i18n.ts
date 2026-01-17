@@ -22,14 +22,24 @@ export const translations = {
     chatTitle: '星空嚮導',
     chatSubtitle: '由 Gemini AI 驅動',
     tutorial: {
-      title: '如何使用星空圖？',
-      step1Title: '平移與縮放',
-      step1Desc: '在星圖上拖曳可移動視野。使用兩指開合(手機)或滾輪(電腦)可放大縮小。',
-      step2Title: '神奇功能',
-      step2Desc: '試試下方的「更新位置」、「開啟陀螺儀」和「顯示圖案」按鈕！',
-      step3Title: 'AI 嚮導',
-      step3Desc: '按右下角的機械人，可以問它任何天文問題喔！',
-      startBtn: '開始探索！'
+      welcomeTitle: '歡迎來到 Kidrise 星空探險號！',
+      welcomeDesc: '我是你的 AI 副機長。準備好一起探索宇宙了嗎？',
+      
+      step1Title: '到處看看 (Look Around)',
+      step1Desc: '用手指拖動來飛翔！雙指開合可以飛近或飛遠星星。★ 點擊任何一顆星星，就可以鎖定它並查看詳細資料喔！',
+      
+      step2Title: '任務控制台 (Mission Dock)',
+      step2Desc: '這是你的主要控制台。隨時切換「星圖」、「規劃」、「學習」或「測驗」模式。',
+      
+      step3Title: '超級工具 (Super Tools)',
+      step3Desc: '找不到星星？按下「指南針」圖案，將手機舉向天空，地圖就會自動跟隨你轉動，幫你定位真實的星星！',
+      
+      step4Title: '準備出發！',
+      step4Desc: '就是這麼簡單！現在，以此地為起點，飛向浩瀚無垠的宇宙吧！',
+
+      nextBtn: '下一步',
+      prevBtn: '上一步',
+      startBtn: '立刻出發！'
     },
     rendering: '渲染模式',
     askMe: '你好！我是你的 Kidrise 星空嚮導。你看到了甚麼星星？問問我吧！🌟',
@@ -107,6 +117,21 @@ export const translations = {
     nebulaDesc: '星星與寶寶誕生的地方。',
     eclipseDesc: '宇宙的皮影戲。',
     constellationDesc: '天上的連連看遊戲。',
+    
+    // Constellation Game
+    conGameLink: '將星星連起來！',
+    conGameComplete: '太棒了！',
+    conUrsaMajor: '大熊座 (北斗七星)',
+    conCassiopeia: '仙后座',
+    conOrion: '獵戶座',
+    nextLevel: '下一關',
+    restart: '再玩一次',
+
+    // Space Scale
+    scaleTitle: '宇宙體重機',
+    enterWeight: '輸入你的體重 (kg)',
+    scaleDesc: '看看你在別的星球會變多重！有些地方你會變超輕，有些地方這會把你壓扁喔！',
+    pluto: '冥王星',
 
     // Elaborations
     solarContext: '想像一個大家庭圍著營火跑。太陽就是那個營火，行星就是圍著它跑的小朋友！',
@@ -237,7 +262,7 @@ export const translations = {
     saturn: '土星',
     uranus: '天王星',
     neptune: '海王星',
-    planetFact: '有趣小知識',
+    planetFactSolar: '有趣小知識',
     sunFact: '太陽其實是一顆星星！它是我們太陽系的老大，佔了99.8%的質量喔。',
     mercuryFact: '水星是最小的行星，而且跑得最快，繞太陽一圈只要88天！',
     venusFact: '金星是最熱的行星，比水星還熱！因為它有厚厚的雲層蓋著。',
@@ -354,14 +379,24 @@ export const translations = {
     chatTitle: 'Star Guide',
     chatSubtitle: 'Powered by Gemini AI',
     tutorial: {
-      title: 'How to use the Star Map?',
-      step1Title: 'Pan & Zoom',
-      step1Desc: 'Drag to move the view. Pinch (mobile) or scroll (desktop) to zoom in/out.',
-      step2Title: 'Magic Features',
-      step2Desc: 'Try the "Update Location", "Gyroscope", and "Show Art" buttons below!',
-      step3Title: 'AI Guide',
-      step3Desc: 'Click the robot button to ask any questions about space!',
-      startBtn: 'Start Exploring!'
+      welcomeTitle: 'Welcome to Kidrise Explorer!',
+      welcomeDesc: 'I am your AI Co-pilot. Ready to explore the universe together?',
+      
+      step1Title: 'Look Around',
+      step1Desc: 'Drag to fly! Pinch to zoom. ★ Tap on any star to LOCK onto it and see its secrets!',
+      
+      step2Title: 'Mission Dock',
+      step2Desc: 'This is your main dashboard. Switch between Star Map, Planner, Learn, and Quiz modes.',
+      
+      step3Title: 'Super Tools',
+      step3Desc: 'Can\'t find a star? Tap the "Compass" button and point your phone at the sky. The map will move with you!',
+      
+      step4Title: 'Ready to Launch!',
+      step4Desc: 'That\'s it! Now, let\'s blast off into the infinity of space!',
+
+      nextBtn: 'Next',
+      prevBtn: 'Back',
+      startBtn: 'Let\'s Go!'
     },
     rendering: 'Rendering',
     askMe: "Hi! I'm your Kidrise Star Guide. Ask me anything about the stars you see! 🌟",
@@ -383,6 +418,33 @@ export const translations = {
     moon: 'Moon',
     // Menu
     menuMap: 'Star Map',
+    scalePlanet: '星球',
+    btnCamera: '太空明信片',
+
+    postcard: {
+       title: '太空明信片',
+       loading: '正在拍照...',
+       addSticker: '貼紙',
+       addText: '寫字',
+       save: '儲存',
+       close: '關閉',
+       placeholder: '你好，太空！',
+       saved: '已儲存！'
+    },
+
+    scavenger: {
+        mission: '任務',
+        find: '尋找',
+        foundIt: '發現目標！',
+        foundMsg: '你找到了',
+        nextTarget: '下一個目標',
+        complete: '任務完成！',
+        keepSteady: '保持穩定...',
+        lookAround: '拖動星圖或轉動手機來搜尋',
+        startTitle: '星際尋寶獵人',
+        startDesc: '準備好了嗎？讓我們來找出隱藏在星空中的寶藏！',
+        startBtn: '開始任務'
+    },
     menuPlanner: 'Planner',
     menuCompass: 'Compass',
     menuLearn: 'Learn',
@@ -439,6 +501,21 @@ export const translations = {
     nebulaDesc: 'Where stars are born.',
     eclipseDesc: 'Shadows in space.',
     constellationDesc: 'Connect the dots in the sky.',
+
+    // Constellation Game
+    conGameLink: 'Connect the stars!',
+    conGameComplete: 'Excellent!',
+    conUrsaMajor: 'Ursa Major (Big Dipper)',
+    conCassiopeia: 'Cassiopeia',
+    conOrion: 'Orion',
+    nextLevel: 'Next Level',
+    restart: 'Restart',
+
+    // Space Scale
+    scaleTitle: 'Space Scale',
+    enterWeight: 'Enter Your Weight (kg)',
+    scaleDesc: 'See how much you would weigh on other planets! Gravity changes everywhere!',
+    pluto: 'Pluto',
 
     // Elaborations
     solarContext: 'Imagine a giant family running around a bonfire. The Sun is the fire, and the planets are the kids running around it!',

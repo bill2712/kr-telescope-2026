@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
 import { Coordinates, Language, Star } from '../types';
 import { BRIGHT_STARS, CONSTELLATION_LINES, CONSTELLATION_ART } from '../utils/starData';
-import { getLocalSiderealTime, raToDegrees, getSunPosition, getMoonPosition } from '../utils/astroUtils';
+import { getLocalSiderealTime, raToDegrees, getSunPosition, getMoonPosition, getMarsPosition, getJupiterPosition } from '../utils/astroUtils';
 import { translations } from '../utils/i18n';
 
 interface StarMapProps {
@@ -13,9 +13,15 @@ interface StarMapProps {
   showArt: boolean;
   enableGyro: boolean;
   onStarClick?: (star: Star, x: number, y: number) => void;
+  // Scavenger Hunt
+  targetBody?: string | null; // 'mars', 'jupiter', 'sun', 'moon', 'Sirius'...
+  onTargetLock?: (locked: boolean) => void;
 }
 
-const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showArt, enableGyro, onStarClick }) => {
+const StarMap: React.FC<StarMapProps> = ({ 
+    location, date, viewMode, lang, showArt, enableGyro, onStarClick,
+    targetBody, onTargetLock
+}) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
@@ -28,6 +34,7 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
   
   // Keep track if we are currently interacting to prevent external updates from overriding user interaction
   const isInteractingRef = useRef<boolean>(false);
+  const isLockedRef = useRef<boolean>(false); // Track lock state to prevent spamming callbacks
 
   const t = translations[lang];
 
@@ -143,10 +150,12 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
       return { starFeatures: sFeatures, lineFeatures: lFeatures };
   }, []);
 
-  // Compute Celestial Bodies (Sun, Moon) - recalculated on date change
-  const { sunFeature, moonFeature } = useMemo(() => {
+  // Compute Celestial Bodies (Sun, Moon, Planets) - recalculated on date change
+  const { sunFeature, moonFeature, marsFeature, jupiterFeature } = useMemo(() => {
     const sunPos = getSunPosition(date);
     const moonPos = getMoonPosition(date);
+    const marsPos = getMarsPosition(date);
+    const jupiterPos = getJupiterPosition(date);
 
     const sFeature = {
         type: "Feature" as const,
@@ -160,7 +169,19 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
         properties: { type: 'moon', name: t.moon || 'Moon' }
     };
 
-    return { sunFeature: sFeature, moonFeature: mFeature };
+    const marsF = {
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [raToDegrees(marsPos.ra), marsPos.dec] },
+        properties: { type: 'mars', name: t.mars || 'Mars' }
+    };
+
+    const jupiterF = {
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [raToDegrees(jupiterPos.ra), jupiterPos.dec] },
+        properties: { type: 'jupiter', name: t.jupiter || 'Jupiter' }
+    };
+
+    return { sunFeature: sFeature, moonFeature: mFeature, marsFeature: marsF, jupiterFeature: jupiterF };
   }, [date, t]);
 
 
@@ -195,6 +216,7 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
       pathGenerator.pointRadius((d: any) => {
           if (d.properties && d.properties.type === 'sun') return 12;
           if (d.properties && d.properties.type === 'moon') return 8;
+          if (d.properties && (d.properties.type === 'mars' || d.properties.type === 'jupiter')) return 6;
 
           if (d.properties && typeof d.properties.mag === 'number') {
                return Math.max(1.5, 4 - d.properties.mag);
@@ -202,7 +224,134 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
           return 2; 
       });
 
+      // --- Scavenger Hunt Logic ---
+      const updateScavengerState = () => {
+          if (!targetBody) { 
+              svg.select(".guidance-arrow").style("display", "none");
+              svg.select(".target-reticle").style("display", "none");
+              return; 
+          }
+
+          let targetCoords: [number, number] | null = null;
+          let targetName = "";
+
+          // Resolve Target
+          if (targetBody === 'sun') targetCoords = sunFeature.geometry.coordinates as [number, number];
+          else if (targetBody === 'moon') targetCoords = moonFeature.geometry.coordinates as [number, number];
+          else if (targetBody === 'mars') targetCoords = marsFeature.geometry.coordinates as [number, number];
+          else if (targetBody === 'jupiter') targetCoords = jupiterFeature.geometry.coordinates as [number, number];
+          else {
+              // Try finding star
+              const star = BRIGHT_STARS.find(s => s.proper === targetBody);
+              if (star) {
+                  targetCoords = [raToDegrees(star.ra), star.dec];
+                  targetName = star.proper;
+              }
+          }
+
+          if (targetCoords) {
+              const projected = projection(targetCoords);
+              // projected is [x, y] or null (if clipped in ortho, or far away)
+              // Note: Stereo might return coords even if "behind" but projected to infinity or large numbers?
+              // d3.geoStereographic with clipAngle will return null if clipped.
+              
+              const cx = width / 2;
+              const cy = height / 2;
+              
+              if (projected) {
+                  const [x, y] = projected;
+                  const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+                  const isVisible = x >= 0 && x <= width && y >= 0 && y <= height;
+
+                  if (isVisible) {
+                      // Target is ON SCREEN
+                      svg.select(".guidance-arrow").style("display", "none");
+                      
+                      const reticle = svg.select(".target-reticle")
+                         .style("display", "block")
+                         .attr("transform", `translate(${x},${y})`);
+                      
+                      // Check Lock (near center)
+                      if (dist < 50) { // 50px threshold
+                          reticle.select("circle").attr("stroke", "#00ff00");
+                          if (!isLockedRef.current && onTargetLock) {
+                              isLockedRef.current = true;
+                              onTargetLock(true);
+                          }
+                      } else {
+                          reticle.select("circle").attr("stroke", "#ff0000");
+                          if (isLockedRef.current && onTargetLock) {
+                              isLockedRef.current = false;
+                              onTargetLock(false);
+                          }
+                      }
+
+                  } else {
+                      // Projected but off-screen (e.g. just outside bounds)
+                      // Show arrow
+                      showArrow(x, y);
+                  }
+              } else {
+                  // Clipped (Behind the earth/viewer)
+                  // We need to find the "direction" to rotate towards.
+                  // We can query the rotation and target geo coords.
+                  // Or, use a second projection (Orthographic without clip) to get the "direction" even if behind?
+                  // No, simpler: Calculate bearing from center [lambda0, phi0] to target [lambda1, phi1].
+                  
+                  // Get current center in Geo coords
+                  const centerGeo = projection.invert ? projection.invert([cx, cy]) : null;
+                  if (centerGeo) {
+                      // Calculate bearing from centerGeo to targetCoords
+                      // D3 doesn't have direct bearing, implement simple formula or use logic (delta lambda etc)
+                      // Or simple heuristic:
+                      // If we rotate "towards" it...
+                      // Use d3.geoCircle to find the path?
+                      
+                      // Robust trick:
+                      // Project with ClipAngle = 180 (Full Sphere) to get X,Y even if behind.
+                      // Then normalize vector from center.
+                      // NOTE: Stereo projects "behind" points to infinity. 
+                      // Equirectangular might be better for direction finding?
+                      // Let's rely on Azimuthal Equidistant centered on current rotation?
+                      
+                      // Let's try to just use the projected point if available (d3 often returns coordinates for slightly clipped points or we can unclip).
+                      // But simpler:
+                      // Just show "Turn Around" or calculate manually?
+                      // I'll assume users will just drag around randomly if fully lost, but guidance is better.
+                      // Let's look at the delta of rotation needed.
+                      
+                      // For now, if "Projected" is null, it means it's > 90/120 deg away.
+                      // Display a generic "Search" arrow or calculate?
+                      svg.select(".guidance-arrow").style("display", "none"); // Hide for now if totally lost to avoid confusing arrow
+                      
+                      // Better: Let's assume Scavenger Hunt uses Stereo mostly or provides arrows based on simple RA/Dec delta.
+                      // if (targetCoords[0] > ...) like looking at a flat map.
+                  }
+              }
+
+              // Helper to show arrow at screen edge
+              function showArrow(tx: number, ty: number) {
+                  const angle = Math.atan2(ty - cy, tx - cx);
+                  const r = Math.min(width, height) / 2 - 40; // Arrow circle radius
+                  const arrowX = cx + r * Math.cos(angle);
+                  const arrowY = cy + r * Math.sin(angle);
+                  
+                  svg.select(".guidance-arrow")
+                     .style("display", "block")
+                     .attr("transform", `translate(${arrowX},${arrowY}) rotate(${angle * 180 / Math.PI + 90})`);
+                  
+                  if (isLockedRef.current && onTargetLock) {
+                      isLockedRef.current = false;
+                      onTargetLock(false);
+                  }
+              }
+          }
+      };
+
+
       // --- UPDATING DOM ---
+      
+      // ... existing updates ...
       
       // Update Background
       svg.select<SVGPathElement>(".background-sphere")
@@ -605,7 +754,7 @@ const StarMap: React.FC<StarMapProps> = ({ location, date, viewMode, lang, showA
 
 
   return (
-    <div ref={wrapperRef} className="w-full h-full relative cursor-move overflow-hidden">
+    <div id="starmap-container" ref={wrapperRef} className="w-full h-full relative cursor-move overflow-hidden">
       <svg ref={svgRef} width={width} height={height} className="block w-full h-full touch-none" />
       
       {/* Compass / Gyro UI Layer */}

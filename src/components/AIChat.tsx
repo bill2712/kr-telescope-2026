@@ -70,7 +70,7 @@ const AIChat: React.FC<AIChatProps> = ({ lang }) => {
 
     } catch (error) {
       console.error(error);
-      setMessages(prev => [...prev, { role: 'assistant', content: t.aiError || "Sorry, I can't reach the stars right now!" }]);
+      setMessages(prev => [...prev, { role: 'model', text: t.chatError || "Sorry, I can't reach the stars right now!" }]);
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +88,10 @@ const AIChat: React.FC<AIChatProps> = ({ lang }) => {
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                     <i className="fas fa-robot text-white"></i>
                 </div>
-                <span className="font-bold">{t.aiChatTitle || "AI Astronomer"}</span>
+                <div>
+                    <div className="font-bold">{t.chatTitle || "AI Astronomer"}</div>
+                    <div className="text-[10px] opacity-80 uppercase tracking-widest">{t.chatSubtitle}</div>
+                </div>
             </div>
             <button onClick={toggleChat} className="text-white/80 hover:text-white">
                 <i className="fas fa-times"></i>
@@ -100,7 +103,7 @@ const AIChat: React.FC<AIChatProps> = ({ lang }) => {
             {messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-10 p-4">
                     <i className="fas fa-meteor text-4xl mb-4 opacity-50"></i>
-                    <p>{t.aiWelcome || "Hi! Ask me anything about the stars!"}</p>
+                    <p>{t.askMe || "Hi! Ask me anything about the stars!"}</p>
                 </div>
             )}
             {messages.map((msg, idx) => (
@@ -110,7 +113,7 @@ const AIChat: React.FC<AIChatProps> = ({ lang }) => {
                         ? 'bg-blue-600 text-white rounded-br-none' 
                         : 'bg-white/10 text-gray-100 rounded-bl-none border border-white/5'
                     }`}>
-                        {msg.content}
+                        {msg.text}
                     </div>
                 </div>
             ))}
@@ -134,7 +137,7 @@ const AIChat: React.FC<AIChatProps> = ({ lang }) => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder={t.aiPlaceholder || "Type a question..."}
+                    placeholder={t.chatPlaceholder || "Type a question..."}
                     className="flex-1 bg-black/20 text-white rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 border border-white/5 placeholder-gray-500"
                 />
                 <button 

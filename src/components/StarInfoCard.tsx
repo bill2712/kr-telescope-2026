@@ -35,13 +35,9 @@ const StarInfoCard: React.FC<StarInfoCardProps> = ({ star, onClose, lang }) => {
             </div>
 
             <div className="space-y-2 text-sm text-gray-300">
-                <div className="flex justify-between border-b border-white/10 pb-2">
-                    <span>Right Ascension (RA):</span>
-                    <span className="font-mono text-kidrise-orange">{star.ra.toFixed(2)}h</span>
-                </div>
-                <div className="flex justify-between border-b border-white/10 pb-2">
-                    <span>Declination (Dec):</span>
-                    <span className="font-mono text-kidrise-orange">{star.dec.toFixed(2)}°</span>
+                <div className="flex items-center gap-2 bg-white/5 p-2 rounded-lg">
+                    <i className="fas fa-eye text-kidrise-orange"></i>
+                    <span>Brightness: <span className="text-white font-bold">{star.mag}</span></span>
                 </div>
             </div>
 
