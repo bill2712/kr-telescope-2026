@@ -16,6 +16,12 @@ import SpacePostcard from './components/SpacePostcard';
 
 import ScavengerHuntMode from './components/ScavengerHuntMode';
 
+// Default to Hong Kong Coordinates
+const DEFAULT_LOCATION: Coordinates = {
+  latitude: 22.3193,
+  longitude: 114.1694
+};
+
 // Scavenger Hunt Levels
 const SCAVENGER_LEVELS = [
   { id: 'mars', target: 'mars', name: { 'zh-HK': '火星', 'en': 'Mars' } },

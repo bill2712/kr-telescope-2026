@@ -340,7 +340,7 @@ export const translations = {
     q14_explain: '沒錯！北極星幾乎就在地球北極的正上方，所以它能幫我們指引北方。',
     q15_explain: '太棒了！1969年，阿姆斯壯成為第一個踏上月球的人類。他說：「這是我的一小步，卻是人類的一大步。」',
 
-    // Old Moon content kept below
+    // Moon Phase
     moonPhaseTitle: '拖動滑桿看看月亮怎麼變！',
     moonDay: '農曆初',
     moonReasonNew: '月亮躲在地球和太陽中間，我們看不到它！',
@@ -357,6 +357,31 @@ export const translations = {
     starYellow: '像太陽一樣',
     starBlue: '藍巨星',
     starColorDesc: '你看！雖然紅色水龍頭代表熱水，但在宇宙中，紅色的星星其實是最冷的！藍色的星星才是最熱的喔！',
+    scalePlanet: '星球',
+    btnCamera: '太空明信片',
+    postcard: {
+       title: '太空明信片',
+       loading: '正在拍照...',
+       addSticker: '貼紙',
+       addText: '寫字',
+       save: '儲存',
+       close: '關閉',
+       placeholder: '你好，太空！',
+       saved: '已儲存！'
+    },
+    scavenger: {
+        mission: '任務',
+        find: '尋找',
+        foundIt: '發現目標！',
+        foundMsg: '你找到了',
+        nextTarget: '下一個目標',
+        complete: '任務完成！',
+        keepSteady: '保持穩定...',
+        lookAround: '拖動星圖或轉動手機來搜尋',
+        startTitle: '星際尋寶獵人',
+        startDesc: '準備好了嗎？讓我們來找出隱藏在星空中的寶藏！',
+        startBtn: '開始任務'
+    },
   },
   'en': {
     appTitle: 'Kidrise Sky Explorer',
@@ -418,32 +443,32 @@ export const translations = {
     moon: 'Moon',
     // Menu
     menuMap: 'Star Map',
-    scalePlanet: '星球',
-    btnCamera: '太空明信片',
+    scalePlanet: 'Planets',
+    btnCamera: 'Space Postcard',
 
     postcard: {
-       title: '太空明信片',
-       loading: '正在拍照...',
-       addSticker: '貼紙',
-       addText: '寫字',
-       save: '儲存',
-       close: '關閉',
-       placeholder: '你好，太空！',
-       saved: '已儲存！'
+       title: 'Space Postcard',
+       loading: 'Capturing...',
+       addSticker: 'Stickers',
+       addText: 'Text',
+       save: 'Save',
+       close: 'Close',
+       placeholder: 'Hello Space!',
+       saved: 'Saved!'
     },
 
     scavenger: {
-        mission: '任務',
-        find: '尋找',
-        foundIt: '發現目標！',
-        foundMsg: '你找到了',
-        nextTarget: '下一個目標',
-        complete: '任務完成！',
-        keepSteady: '保持穩定...',
-        lookAround: '拖動星圖或轉動手機來搜尋',
-        startTitle: '星際尋寶獵人',
-        startDesc: '準備好了嗎？讓我們來找出隱藏在星空中的寶藏！',
-        startBtn: '開始任務'
+        mission: 'Mission',
+        find: 'Find',
+        foundIt: 'Found it!',
+        foundMsg: 'You found',
+        nextTarget: 'Next Target',
+        complete: 'Mission Complete!',
+        keepSteady: 'Hold steady...',
+        lookAround: 'Drag map or rotate phone to search',
+        startTitle: 'Star Scavenger Hunt',
+        startDesc: 'Ready? Let\'s find hidden treasures in the sky!',
+        startBtn: 'Start Mission'
     },
     menuPlanner: 'Planner',
     menuCompass: 'Compass',
