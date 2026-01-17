@@ -14,20 +14,20 @@ const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPage, onNavigate, la
     const t = translations[lang];
     const [isExpanded, setIsExpanded] = React.useState(false);
 
-    const menuItems: { id: Page; label: string; icon: string }[] = [
-    { id: 'starmap', label: t.menuMap || 'Star Map', icon: 'fa-map' },
-    { id: 'planner', label: t.menuPlanner || 'Planner', icon: 'fa-calendar-alt' },
-    { id: 'compass', label: t.menuCompass || 'Compass', icon: 'fa-compass' },
-    { id: 'knowledge', label: t.menuLearn || 'Learn', icon: 'fa-book-open' },
-    { id: 'guide', label: t.menuGuide || 'Guide', icon: 'fa-binoculars' },
-    { id: 'quiz', label: t.menuQuiz || 'Quiz', icon: 'fa-puzzle-piece' },
+    const menuItems: { id: Page; label: string; icon: string; color: string }[] = [
+    { id: 'starmap', label: t.menuMap || 'Star Map', icon: 'fa-map', color: 'bg-blue-500' },
+    { id: 'planner', label: t.menuPlanner || 'Planner', icon: 'fa-calendar-alt', color: 'bg-green-500' },
+    { id: 'compass', label: t.menuCompass || 'Compass', icon: 'fa-compass', color: 'bg-red-500' },
+    { id: 'knowledge', label: t.menuLearn || 'Learn', icon: 'fa-book-open', color: 'bg-purple-500' },
+    { id: 'guide', label: t.menuGuide || 'Guide', icon: 'fa-binoculars', color: 'bg-yellow-500' },
+    { id: 'quiz', label: t.menuQuiz || 'Quiz', icon: 'fa-puzzle-piece', color: 'bg-orange-500' },
   ];
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end pointer-events-none">
       
       {/* Expanded Menu */}
-      <div className={`flex flex-col gap-3 mb-4 transition-all duration-300 origin-bottom-right ${isExpanded ? 'scale-100 opacity-100' : 'scale-0 opacity-0'} pointer-events-auto`}>
+      <div className={`flex flex-col gap-4 mb-4 transition-all duration-300 origin-bottom-right ${isExpanded ? 'scale-100 opacity-100' : 'scale-0 opacity-0'} pointer-events-auto`}>
          {menuItems.map((item) => (
           <button
             key={item.id}
@@ -35,14 +35,14 @@ const FloatingMenu: React.FC<FloatingMenuProps> = ({ currentPage, onNavigate, la
                 onNavigate(item.id);
                 setIsExpanded(false);
             }}
-            className={`flex items-center gap-3 px-4 py-3 rounded-full shadow-xl transition-all ${
+            className={`flex items-center gap-4 pl-6 pr-2 py-2 rounded-full shadow-xl transition-all transform hover:scale-105 ${
               currentPage === item.id
-                ? 'bg-kidrise-orange text-white'
-                : 'bg-[#161825]/90 backdrop-blur-md text-gray-200 hover:bg-white/10'
+                ? 'bg-white text-black'
+                : 'bg-[#1a1d2d]/95 backdrop-blur-md text-white border border-white/10'
             }`}
           >
-            <span className="text-sm font-bold">{item.label}</span>
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center ${currentPage === item.id ? 'bg-white/20' : 'bg-white/5'}`}>
+            <span className={`text-lg font-bold ${currentPage === item.id ? 'text-black' : 'text-gray-100'}`}>{item.label}</span>
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg text-white text-xl ${item.color}`}>
                  <i className={`fas ${item.icon}`}></i>
             </div>
           </button>

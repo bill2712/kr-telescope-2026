@@ -166,55 +166,44 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
       {/* 3. 9-Day Forecast (Professional Table Layout) */}
       <div className="w-full max-w-3xl mx-auto">
           <h3 className="text-sm font-bold uppercase tracking-widest text-kidrise-orange mb-4 px-2">{t.weather9Day}</h3>
-          <div className="bg-[#161825]/90 border border-white/10 rounded-3xl overflow-hidden shadow-xl">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-white/5 border-b border-white/10">
-                            <th className="p-4 text-xs font-bold uppercase text-gray-400 whitespace-nowrap">Date</th>
-                            <th className="p-4 text-xs font-bold uppercase text-gray-400 text-center">Weather</th>
-                            <th className="p-4 text-xs font-bold uppercase text-gray-400 text-center">Temp</th>
-                            <th className="p-4 text-xs font-bold uppercase text-gray-400">Probability</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {forecast?.weatherForecast.map((day, i) => (
-                            <tr key={i} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                <td className="p-4 whitespace-nowrap">
-                                    <div className="font-bold text-sm block">
-                                         {day.forecastDate.substring(4, 6)}/{day.forecastDate.substring(6, 8)}
-                                    </div>
-                                    <div className="text-xs text-gray-500">{day.week}</div>
-                                </td>
-                                <td className="p-4 text-center">
-                                    <img 
-                                        src={`https://www.hko.gov.hk/images/HKOWxIconOutline/pic${day.forecastIcon}.png`} 
-                                        alt="weather icon" 
-                                        className="w-10 h-10 mx-auto opacity-90 invert brightness-100" // Ensure visibility on dark bg
-                                    />
-                                </td>
-                                <td className="p-4 text-center">
-                                    <div className="text-sm font-bold whitespace-nowrap">
-                                        <span className="text-blue-300">{day.forecastMintemp.value}°</span> 
-                                        <span className="mx-1 opacity-50">-</span> 
-                                        <span className="text-red-300">{day.forecastMaxtemp.value}°</span>
-                                    </div>
-                                </td>
-                                <td className="p-4">
-                                     <div className="flex items-center gap-2">
-                                         <div className="h-1.5 w-16 bg-white/10 rounded-full overflow-hidden">
-                                             <div 
-                                                className={`h-full rounded-full ${['High', 'Medium High'].includes(day.psr) ? 'bg-red-500' : (['Medium', 'Medium Low'].includes(day.psr) ? 'bg-yellow-500' : 'bg-green-500')}`}
-                                                style={{ width: ['High', 'Medium High'].includes(day.psr) ? '80%' : (['Medium', 'Medium Low'].includes(day.psr) ? '50%' : '20%') }}
-                                             ></div>
-                                         </div>
-                                         <span className="text-xs opacity-70">{day.psr}</span>
-                                     </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+          <div className="bg-transparent overflow-x-auto scrollbar-hide pb-4">
+              <div className="flex gap-3 px-2">
+                 {forecast?.weatherForecast.map((day, i) => (
+                    <div key={i} className="flex-shrink-0 w-32 bg-[#161825]/90 border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-between gap-3 shadow-lg hover:bg-white/5 transition-colors">
+                        <div className="text-center">
+                            <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider">{day.week}</span>
+                             <span className="block text-lg font-bold text-white">
+                                {day.forecastDate.substring(4, 6)}/{day.forecastDate.substring(6, 8)}
+                             </span>
+                        </div>
+                        
+                        <img 
+                            src={`https://www.hko.gov.hk/images/HKOWxIconOutline/pic${day.forecastIcon}.png`} 
+                            alt="weather icon" 
+                            className="w-12 h-12 opacity-90 invert brightness-100"
+                        />
+                        
+                        <div className="flex items-center gap-1 font-bold">
+                            <span className="text-blue-300">{day.forecastMintemp.value}°</span>
+                            <span className="text-gray-500">-</span>
+                            <span className="text-red-300">{day.forecastMaxtemp.value}°</span>
+                        </div>
+                        
+                         <div className="w-full">
+                            <div className="flex justify-between items-center text-[9px] text-gray-400 mb-1 uppercase tracking-wider">
+                                <span>Rain</span>
+                                <span>{day.psr}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                                <div 
+                                className={`h-full rounded-full ${['High', 'Medium High'].includes(day.psr) ? 'bg-red-500' : (['Medium', 'Medium Low'].includes(day.psr) ? 'bg-yellow-500' : 'bg-green-500')}`}
+                                style={{ width: ['High', 'Medium High'].includes(day.psr) ? '80%' : (['Medium', 'Medium Low'].includes(day.psr) ? '50%' : '20%') }}
+                                ></div>
+                            </div>
+                        </div>
+
+                    </div>
+                 ))}
               </div>
           </div>
       </div>
