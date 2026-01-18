@@ -4,7 +4,7 @@ import { Language } from '../../types';
 
 // We define our pages in a separate type or reuse existing one, 
 // for now let's assume specific strings we will adapt App.tsx to.
-type Page = 'starmap' | 'planner' | 'learn' | 'quiz';
+type Page = 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide';
 
 interface BottomDockProps {
   lang: Language;
@@ -19,6 +19,7 @@ const BottomDock: React.FC<BottomDockProps> = ({ lang, activePage, onNavigate })
     { id: 'starmap', icon: 'fa-globe-asia', label: t.menuMap, color: 'text-blue-400' },
     { id: 'planner', icon: 'fa-calendar-alt', label: t.menuPlanner, color: 'text-green-400' },
     { id: 'learn', icon: 'fa-book-open', label: t.menuLearn, color: 'text-purple-400' },
+    { id: 'guide', icon: 'fa-scroll', label: t.menuGuide, color: 'text-cyan-400' },
     { id: 'quiz', icon: 'fa-rocket', label: t.menuQuiz, color: 'text-orange-400' }
   ];
 

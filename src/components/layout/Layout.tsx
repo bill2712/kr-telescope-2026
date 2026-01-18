@@ -6,8 +6,8 @@ import { Language } from '../../types';
 interface LayoutProps {
   children: ReactNode;
   lang: Language;
-  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz';
-  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz') => void;
+  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide';
+  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide') => void;
   // TopBar Props
   locationName?: string;
   currentDate: Date;

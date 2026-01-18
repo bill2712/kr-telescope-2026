@@ -65,6 +65,8 @@ export const translations = {
     menuCompass: '指南針',
     menuLearn: '學習',
     menuQuiz: '測驗',
+    menuGuide: '百科', // New Guide Tab
+    
     // Planner
     plannerTitle: '觀星規劃 (天文台實時數據)',
     weatherCurrent: '實時分區天氣',
@@ -140,7 +142,6 @@ export const translations = {
 
     // Star Guide
     // Guide
-    menuGuide: '觀星指南',
     btnBack: '返回',
     lblFind: '如何尋找',
     lblObserve: '觀測技巧',
@@ -382,6 +383,99 @@ export const translations = {
         startDesc: '準備好了嗎？讓我們來找出隱藏在星空中的寶藏！',
         startBtn: '開始任務'
     },
+    
+    // TELESCOPE MANUAL CONTENT (ZH)
+    manual: {
+      title: 'EYES TO NEW HORIZONS',
+      subtitle: '神奇望遠鏡：觀星手冊與使用指南',
+      intro: '探索夜空指南',
+      features: '特色功能',
+      featuresDesc: '探索宇宙的奧秘，學習如何尋找星星、星座、行星和月球特徵。',
+      specs: '60倍放大 | HD 鍍膜鏡片 | 簡易組裝',
+      kidrise: 'Kidrise',
+      
+      componentsTitle: '望遠鏡組件',
+      caution: '警告：切勿透過望遠鏡直接觀測太陽，以免對眼睛造成永久傷害。',
+      parts: {
+        eyepieceLock: '目鏡鎖',
+        objectiveLens: '物鏡',
+        lensHood: '遮光罩',
+        mainMirror: '主鏡筒',
+        rotaryLock: '旋轉鎖',
+        hoop: '鏡箍',
+        finder: '尋星鏡',
+        eyepiece: '目鏡',
+        zenithMirror: '天頂鏡',
+        focusAdjustor: '調焦輪',
+        tripod: '三腳架',
+        liftLock: '升降鎖',
+        footTubeLock: '腳管鎖扣',
+        plateBuckle: '托盤扣',
+        horseshoeFoot: '馬蹄腳'
+      },
+      
+      assemblyTitle: '望遠鏡組裝',
+      assemblySteps: {
+        1: '1. 底座旋轉鎖鈕',
+        2: '2. 目鏡安裝',
+        3: '3. 主鏡筒安裝',
+        4: '4. 鏡箍固定',
+        5: '5. 尋星鏡安裝'
+      },
+      
+      nightSkyTitle: '夜空',
+      nightSkyDesc: '在晴朗的夜晚，你可以看到成千上萬顆星星。但你所見的只是浩瀚宇宙的一小部分。除了星星，太空中還有行星、衛星、氣體雲和巨大的虛空。',
+      measuringSpaceTitle: '測量宇宙',
+      measuringSpaceDesc: '宇宙中的距離大得難以想像。科學家使用「光年」來測量。一光年約為 9.46 萬億公里，即光在一年內行進的距離。',
+      
+      brightStarsTitle: '明亮的星星',
+      brightStarsDesc: '星星看起來像夜空中的小亮點，其實它們是巨大的高溫氣體球。它們看起來很小是因為距離非常遙遠。太陽是離我們最近的恆星。',
+      pleiadesDesc: '這是一個被稱為「昴宿星團」(七姊妹星團) 的星群，包含約 500 顆星星。在晴朗的夜晚，肉眼可見其中最亮的七顆。',
+      
+      galaxiesTitle: '星系',
+      galaxiesDesc: '星星聚集在巨大的群體中，稱為「星系」，每個星系由數十億顆星星組成。用強力望遠鏡可以看到許多星系。',
+      
+      planetsMoonsTitle: '行星與衛星',
+      planetsMoonsDesc: '行星是繞恆星運行的大塊岩石或氣體球。地球是繞太陽運行的行星之一。衛星是繞行星運行的岩石或冰球。地球只有一顆衛星——月球。木星則至少有 61 顆衛星！',
+      
+      solarSystemTitle: '我們的太陽系',
+      solarSystemDesc: '太陽、行星及其衛星，以及所有繞太陽運行的物體統稱為「太陽系」。太陽的引力將所有物體保持在軌道上。',
+      
+      changingSkyTitle: '變幻的星空',
+      changingSkyDesc: '我們在天空中看到雖然看似不變，其實一直在變化。星星在夜晚的位置會改變，不同季節也會看到不同的星星。這都是因為地球的運動。',
+      spinningEarthTitle: '旋轉的地球',
+      spinningEarthDesc: '地球每 24 小時自轉一圈。這讓我們覺得太陽和星星在繞著我們轉，但其實是我們在轉動！',
+      
+      whereOnEarthTitle: '身在何處？',
+      whereOnEarthDesc: '你能看到的星星取決於你在地球上的位置（北半球或南半球）。例如，北斗七星在北半球可見，但在南半球不可見；南十字座則相反。',
+      
+      usingTelescopeTitle: '使用望遠鏡',
+      telescopeTypesDesc: '望遠鏡主要分為兩類：折射式 (Refractor) 和反射式 (Reflector)。本望遠鏡為折射式。',
+      refractorDesc: '折射式望遠鏡使用透鏡。光線從物鏡進入，透過目鏡放大。',
+      reflectorDesc: '反射式望遠鏡使用鏡子收集光線。',
+      
+      powerTitle: '倍率與目鏡',
+      powerDesc: '放大倍率 (Power) 取決於目鏡。例如 60X 代表放大 60 倍。焦距越短的目鏡，放大倍率越大。',
+      
+      observingTitle: '觀測指南',
+      observingSteps: {
+        1: '1. 先用低倍率目鏡，視野較廣，較容易找到目標。',
+        2: '2. 使用尋星鏡 (Finder) 將目標對準十字中心。',
+        3: '3. 從主目鏡觀看，並慢慢轉動調焦輪，直到影像清晰。'
+      },
+      
+      moonTitle: '月球觀測',
+      moonDesc: '月球是夜空中第二亮的天體。你可以看到撞擊坑 (Craters)、月海 (Maria) 和山脈 (Mountains)。',
+      moonPhases: '月相變化：新月、盈凸月、滿月、虧凸月、殘月等，是因為我們看到的受光面不同。',
+      
+      eclipseTitle: '日食與月食',
+      eclipseDesc: '當地球、月球和太陽連成一線時會發生食。日食是月球擋住太陽；月食是地球擋住射向月球的陽光。',
+      
+      careTitle: '保養與維護',
+      careDesc: '請將望遠鏡存放在無塵乾燥處。清潔鏡片時請使用專用拭鏡布，切勿使用粗糙布料。',
+      
+      footer: 'Kidrise STEM Educational Toys (HK) | www.stemtoy.com.hk'
+    }
   },
   'en': {
     appTitle: 'Kidrise Sky Explorer',
@@ -444,7 +538,7 @@ export const translations = {
     // Menu
     menuMap: 'Star Map',
     scalePlanet: 'Planets',
-    btnCamera: 'Space Postcard',
+    btnCamera: 'Postcard',
 
     postcard: {
        title: 'Space Postcard',
@@ -474,6 +568,8 @@ export const translations = {
     menuCompass: 'Compass',
     menuLearn: 'Learn',
     menuQuiz: 'Quiz',
+    menuGuide: 'Guide', // New Guide Tab
+
     // Planner
     plannerTitle: 'Stargazing Planner (HKO Live)',
     weatherCurrent: 'Real-time Regional Weather',
@@ -549,7 +645,6 @@ export const translations = {
 
     // Star Guide
     // Guide
-    menuGuide: 'Guide',
     btnBack: 'Back',
     lblFind: 'How to Find',
     lblObserve: 'How to Observe',
@@ -766,5 +861,98 @@ export const translations = {
     starYellow: 'Like Sun',
     starBlue: 'Blue Giant',
     starColorDesc: 'Look! Even though red usually means hot on a tap, in space, Red stars are the coolest! Blue stars are actually the hottest!',
+    
+    // TELESCOPE MANUAL CONTENT (EN)
+    manual: {
+      title: 'EYES TO NEW HORIZONS',
+      subtitle: 'AMAZING TELESCOPE: THE STARGAZER’S HANDBOOK',
+      intro: 'A PRELIMINARY GUIDE TO THE NIGHT SKY',
+      features: 'FEATURES',
+      featuresDesc: 'Discover some of the amazing things. Find practical advice about how to find stars and constellations, planets, features of the Moon and lots more.',
+      specs: '60X MAGNIFICATION | HD COATED LENS | EASY ASSEMBLY',
+      kidrise: 'Kidrise',
+      
+      componentsTitle: 'Components of the telescope',
+      caution: 'CAUTION: Do not observe the sun directly through the telescope.',
+      parts: {
+        eyepieceLock: 'Eyepiece Lock',
+        objectiveLens: 'Objective Lens',
+        lensHood: 'Lens Hood',
+        mainMirror: 'Main Mirror',
+        rotaryLock: 'Rotary Lock',
+        hoop: 'Hoop',
+        finder: 'Finder',
+        eyepiece: 'Eyepiece',
+        zenithMirror: 'Zenith Mirror',
+        focusAdjustor: 'Focus Adjustor',
+        tripod: 'Tripod',
+        liftLock: 'Lift Lock',
+        footTubeLock: 'Foot Tube Lock Button',
+        plateBuckle: 'Plate Buckle',
+        horseshoeFoot: 'Horseshoe Foot'
+      },
+      
+      assemblyTitle: 'Telescope Assembly',
+      assemblySteps: {
+        1: '1. Base Rotary Lock Knob',
+        2: '2. Eyepiece Installation',
+        3: '3. Main Mirror Installation',
+        4: '4. Hoop Installation',
+        5: '5. Finder Installation'
+      },
+      
+      nightSkyTitle: 'Night sky',
+      nightSkyDesc: 'On a clear night, you can see thousands of stars in the sky. But what you see is just a tiny part of what’s out in space. As well as stars, there are planets, moons, clouds of gas and huge stretches of empty space.',
+      measuringSpaceTitle: 'Measuring space',
+      measuringSpaceDesc: 'Distances between most things in space are so huge that it’s difficult to imagine them. Scientists measure space distances in light years. One light year is 9.46 million million km, which is the distance light travels in a year.',
+      
+      brightStarsTitle: 'Bright stars',
+      brightStarsDesc: 'Stars look like tiny bright lights in the night sky. They are huge balls of incredibly hot gas. But they look tiny because they are very, very far away. The Sun is our nearest star.',
+      pleiadesDesc: 'This is a group of stars known as the Pleiades. It contains about 500 stars. It’s also known as the Seven Sisters because, on a clear night, you can see the seven brightest stars in the group with the naked eye.',
+      
+      galaxiesTitle: 'Galaxies',
+      galaxiesDesc: 'Stars exist in enormous groups called galaxies, which are made up of billions of stars. You can see many galaxies with a powerful telescope, although some are too far away to see clearly.',
+      
+      planetsMoonsTitle: 'Planets and moons',
+      planetsMoonsDesc: 'Planets are balls of rock or gas that move around, or orbit, a star. Earth is one of nine planets that orbit the Sun. Moons are balls of rock or ice that orbit planets. Earth has just one moon.',
+      
+      solarSystemTitle: 'Our Solar System',
+      solarSystemDesc: 'The Sun, the planets and their moons, and everything else that orbits the Sun, are together known as the Solar System. The Sun keeps everything in orbit around it with a pulling force called gravity.',
+      
+      changingSkyTitle: 'Changing sky',
+      changingSkyDesc: 'What we can see in the sky is constantly changing. For example, the stars seem to change position during the course of a night. These changes are caused by the Earth’s movements.',
+      spinningEarthTitle: 'Spinning Earth',
+      spinningEarthDesc: 'The Earth spins around once every 24 hours. As it spins, it looks as if the stars, Sun and Moon are moving around it.',
+      
+      whereOnEarthTitle: 'Where on Earth?',
+      whereOnEarthDesc: 'It’s not just the Earth’s movement that affects which stars you can see, but also where you are on Earth. What you can see depends on which hemisphere you are in.',
+      
+      usingTelescopeTitle: 'Using telescopes',
+      telescopeTypesDesc: 'There are two main types of telescopes: refractor and reflector telescopes.',
+      refractorDesc: 'Refractor telescopes use lenses. Light enters the objective lens and is magnified by the eyepiece.',
+      reflectorDesc: 'Reflector telescopes use mirrors to collect light.',
+      
+      powerTitle: 'Different powers',
+      powerDesc: 'The larger a telescope’s objective lens or primary mirror is, the more powerful the telescope will be. Power is calculated by dividing focal length of objective by focal length of eyepiece.',
+      
+      observingTitle: 'Using your telescope',
+      observingSteps: {
+        1: '1. Begin with a low magnification eyepiece to see a wide section of sky.',
+        2: '2. Use the finder telescope to line up the object in the center.',
+        3: '3. Look through the main eyepiece and adjust the focus knob until clear.'
+      },
+      
+      moonTitle: 'The Moon',
+      moonDesc: 'The Moon is the second brightest object in the sky. It is covered with millions of hollows, or craters.',
+      moonPhases: 'As the Moon orbits the Earth, we see different amounts of its sunlit side (Phases: New Moon, Crescent, Quarter, Gibbous, Full Moon).',
+      
+      eclipseTitle: 'Eclipses',
+      eclipseDesc: 'Eclipses happen when Earth, Moon and Sun align. Solar eclipses: Moon blocks Sun. Lunar eclipses: Earth shadows Moon.',
+      
+      careTitle: 'TAKING CARE OF YOUR TELESCOPE',
+      careDesc: 'Keep away from dust and moisture. Clean lenses with soft, non-abrasive cloth. Store in box when not in use.',
+      
+      footer: 'Kidrise STEM Educational Toys (HK) | www.stemtoy.com.hk'
+    }
   }
 };

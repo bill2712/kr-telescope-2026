@@ -9,6 +9,7 @@ import StarGuide from './components/StarGuide';
 import Quiz from './components/Quiz';
 import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
+import TelescopeManual from './components/guide/TelescopeManual';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
 
@@ -46,7 +47,7 @@ function App() {
   const [scavengerLocked, setScavengerLocked] = useState(false);
 
   // Navigation State
-  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz'>('starmap');
+  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz' | 'guide'>('starmap');
 
   // New States
   const [showArt, setShowArt] = useState(false);
@@ -239,6 +240,7 @@ function App() {
       {currentPage === 'planner' && <Planner lang={lang} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
+      {currentPage === 'guide' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('starmap')} />}
 
     </Layout>
   );
