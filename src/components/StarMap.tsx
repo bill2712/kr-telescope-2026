@@ -62,7 +62,9 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     // - (2 + 6) * 15 = 120.
     // - So Offset = +6h.
     
-    const deg = (lstHours + 6) * 15;
+    // Calibrated Offset: -6h
+    // This value ensures that at Midnight, the Date mark on the disk aligns with the Midnight mark on the Jacket.
+    const deg = (lstHours - 6) * 15;
     setRotation(deg);
   }, [date, location]);
 
