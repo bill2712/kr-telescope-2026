@@ -75,7 +75,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     };
 
     return (
-        <div className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between pt-24 pb-32 px-4">
+        <div className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between pt-24 pb-32 px-4 md:justify-center md:items-end md:pr-6 md:pb-0 md:pt-0">
             {/* Top Controls (View Mode & Scavenger Hunt) */}
             {/* Positioned to sit below the fixed TopBar */}
             <div className="w-full flex justify-between items-start pointer-events-auto">
@@ -112,8 +112,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
             </div>
 
             {/* Bottom Controls Container */}
-            <div className="w-full pointer-events-auto">
-                <div className="max-w-4xl mx-auto bg-[#0F1420]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-4 text-white">
+            <div className="w-full pointer-events-auto md:w-80">
+                <div className="max-w-4xl mx-auto bg-[#0F1420]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-4 text-white md:bg-black/80 md:backdrop-blur-2xl">
                     
                     {/* Row 1: Time Travel (Big & Prominent) */}
                     <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
@@ -174,10 +174,10 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
 
 
                     {/* Row 2: Actions & Tools */}
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div className="flex flex-col md:flex-col justify-between items-center gap-4 md:items-stretch">
                         
                         {/* Left Side: Simulation Controls */}
-                        <div className="flex flex-wrap items-center gap-4 justify-center md:justify-start">
+                        <div className="flex flex-wrap items-center gap-4 justify-center md:justify-between">
                             {/* Rotate Controls */}
                             <div className="flex items-center gap-2">
                                 <span className="text-xs font-bold text-gray-500 uppercase tracking-widest hidden sm:block">

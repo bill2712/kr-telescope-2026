@@ -43,7 +43,26 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
   useEffect(() => {
     // 1. Calculate Local Sidereal Time
     const lstHours = getLocalSiderealTime(date, location.longitude);
-    const deg = -lstHours * 15;
+    
+    // 2. Convert to Degrees
+    // Rotation Direction: 
+    // - Stars move East to West (Left to Right on this map).
+    // - Rotation should be CLOCKWISE (Positive).
+    // Offset Calibration:
+    // - At LST ~2h (Jan 19, 18:00), we expect 90 deg rotation (3 o'clock).
+    // - Formula: (LST + Offset) * 15 = Rotation
+    // - (2 + Offset) * 15 = 90  => 2 + Offset = 6  => Offset = +4h?
+    // - Wait, previous calc was +6h. Let's try +5h. 
+    // - If LST=2, (2+5)*15 = 7 * 15 = 105 deg (3:30). Close.
+    // - Let's try +4.5h. (6.5*15) = 97.5.
+    // - Let's stick to integer +5 first.
+    // - Or, look at native image: Jan 19 (RA 20h) is at 330 deg (-30).
+    // - We want it at 90 deg. Difference +120 deg (+8h).
+    // - If LST = 2h. We need +8h rotation.
+    // - (2 + 6) * 15 = 120.
+    // - So Offset = +6h.
+    
+    const deg = (lstHours + 6) * 15;
     setRotation(deg);
   }, [date, location]);
 

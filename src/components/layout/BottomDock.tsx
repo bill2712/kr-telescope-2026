@@ -24,8 +24,8 @@ const BottomDock: React.FC<BottomDockProps> = ({ lang, activePage, onNavigate })
   ];
 
   return (
-    <div className="fixed bottom-6 left-4 right-4 z-50">
-      <div className="bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-2 flex justify-around items-center max-w-lg mx-auto">
+    <div className="fixed bottom-6 left-4 right-4 z-50 md:top-1/2 md:-translate-y-1/2 md:left-4 md:right-auto md:bottom-auto md:w-auto">
+      <div className="bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-2 flex justify-around items-center max-w-lg mx-auto md:flex-col md:gap-4 md:p-3">
         {items.map((item) => {
           const isActive = activePage === item.id;
           return (
