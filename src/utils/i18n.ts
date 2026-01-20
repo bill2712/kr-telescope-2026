@@ -59,6 +59,14 @@ export const translations = {
     locUpdated: '位置已更新！',
     sun: '太陽',
     moon: '月亮',
+    // Controls
+    btnZoomIn: '放大',
+    btnZoomOut: '縮小',
+    btnReset: '重置',
+    btnPlay: '播放',
+    btnPause: '暫停',
+    btnSpeed: '快進',
+    btnGo: '前往',
     // Menu
     menuMap: '星圖',
     menuPlanner: '規劃',

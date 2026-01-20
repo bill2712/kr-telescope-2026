@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import StarMap from './components/StarMap';
+import React, { useState, useEffect, useRef } from 'react';
+import StarMap, { StarMapHandle, MapStyle } from './components/StarMap';
 
 import Tutorial from './components/Tutorial';
 import StarInfoCard from './components/StarInfoCard';
@@ -9,6 +9,7 @@ import StarGuide from './components/StarGuide';
 import Quiz from './components/Quiz';
 import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
+import StarMapControls from './components/StarMapControls';
 import TelescopeManual from './components/guide/TelescopeManual';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
@@ -40,6 +41,12 @@ function App() {
   const [isLiveTime, setIsLiveTime] = useState(true);
   const [showTutorial, setShowTutorial] = useState(true);
   const [showPostcard, setShowPostcard] = useState(false);
+  const [mapStyle, setMapStyle] = useState<MapStyle>('western');
+  
+  // Animation State
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animationSpeed, setAnimationSpeed] = useState(1); // 1 = Normal Fast, 100 = Super Fast
+  const starMapRef = useRef<StarMapHandle>(null);
   
   // Scavenger Hunt State
   const [scavengerActive, setScavengerActive] = useState(false);
@@ -57,16 +64,44 @@ function App() {
 
   const t = translations[lang];
 
-  // Time ticker
+  // Time ticker (Live Time)
   useEffect(() => {
     let interval: number;
-    if (isLiveTime) {
+    if (isLiveTime && !isAnimating) {
       interval = window.setInterval(() => {
         setCurrentDate(new Date());
       }, 10000);
     }
     return () => clearInterval(interval);
-  }, [isLiveTime]);
+  }, [isLiveTime, isAnimating]);
+
+  // Animation Loop
+  useEffect(() => {
+      let animationFrame: number;
+      let lastTime = performance.now();
+
+      const animate = (time: number) => {
+          if (!isAnimating) return;
+          
+          const delta = time - lastTime;
+          if (delta > 30) { 
+              // Speed 1: 1 min/frame (~600x real time) 
+              // Speed 100: 10 min/frame (~6000x real time)
+              const minutesToAdd = (delta / 16) * (animationSpeed === 1 ? 1 : 10);
+              
+              setCurrentDate(prev => new Date(prev.getTime() + minutesToAdd * 60000));
+              lastTime = time;
+          }
+          animationFrame = requestAnimationFrame(animate);
+      };
+
+      if (isAnimating) {
+          setIsLiveTime(false);
+          animationFrame = requestAnimationFrame(animate);
+      }
+
+      return () => cancelAnimationFrame(animationFrame);
+  }, [isAnimating, animationSpeed]);
 
   // ... (handleGeolocation, toggleGyro, shiftTime) ...
   const handleGeolocation = () => {
@@ -165,6 +200,7 @@ function App() {
       onSetLiveTime={() => {
         setIsLiveTime(true);
         setCurrentDate(new Date());
+        setIsAnimating(false);
       }}
       onShiftTime={shiftTime}
       onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
@@ -189,43 +225,61 @@ function App() {
       
       <div className={`absolute inset-0 w-full h-full ${currentPage === 'starmap' ? 'visible' : 'invisible'}`}>
           <StarMap
+            ref={starMapRef}
             location={location}
             date={currentDate}
-            viewMode={viewMode}
+            // viewMode={viewMode}
             lang={lang}
-            showArt={showArt}
+            // showArt={showArt}
+            mapStyle={mapStyle}
             enableGyro={enableGyro}
-            onStarClick={(star) => setSelectedStar(star)}
-            targetBody={scavengerActive ? SCAVENGER_LEVELS[scavengerLevel - 1].target : null}
-            onTargetLock={setScavengerLocked}
+            // onStarClick={(star) => setSelectedStar(star)}
+            // targetBody={scavengerActive ? SCAVENGER_LEVELS[scavengerLevel - 1].target : null}
+            // onTargetLock={setScavengerLocked}
           />
 
           {/* Map Tools (Only on Starmap) */}
           {currentPage === 'starmap' && !scavengerActive && (
-            <div className="absolute top-24 left-4 z-40">
-                <button 
-                    onClick={startScavengerHunt}
-                    className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-2 px-4 rounded-full shadow-lg border-2 border-white/20 hover:scale-105 transition-transform animate-pulse"
-                >
-                    <i className="fas fa-gamepad mr-2"></i>
-                    {t.scavenger?.startBtn || 'Start Game'}
-                </button>
-            </div>
+            <>
+                <StarMapControls 
+                    lang={lang}
+                    currentDate={currentDate}
+                    onDateChange={(d) => {
+                        setCurrentDate(d);
+                        setIsLiveTime(false);
+                        setIsAnimating(false);
+                    }}
+                    isAnimating={isAnimating}
+                    onToggleAnimation={() => setIsAnimating(!isAnimating)}
+                    animationSpeed={animationSpeed}
+                    onSetSpeed={setAnimationSpeed}
+                    onZoomIn={() => starMapRef.current?.zoomIn()}
+                    onZoomOut={() => starMapRef.current?.zoomOut()}
+                    onResetZoom={() => starMapRef.current?.resetZoom()}
+                    onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
+                    locationName={locationName || (lang === 'zh-HK' ? '香港 (預設)' : 'Hong Kong (Def)')}
+                    
+                    mapStyle={mapStyle}
+                    onMapStyleChange={setMapStyle}
+
+                    // Unified Map Tools
+                    viewMode={viewMode}
+                    onSetViewMode={setViewMode}
+                    enableGyro={enableGyro}
+                    onToggleGyro={toggleGyro}
+                    showArt={showArt}
+                    onToggleArt={() => setShowArt(!showArt)}
+                    onCameraClick={() => setShowPostcard(true)}
+                    onLocationUpdate={handleGeolocation}
+                    // Scavenger Hunt Start
+                    onStartScavengerHunt={startScavengerHunt}
+                />
+            </>
           )}
 
-          {currentPage === 'starmap' && (
-            <MapTools 
-               viewMode={viewMode}
-               onSetViewMode={setViewMode}
-               enableGyro={enableGyro}
-               onToggleGyro={toggleGyro}
-               onLocationUpdate={handleGeolocation}
-               showArt={showArt}
-               onToggleArt={() => setShowArt(!showArt)}
-               onCameraClick={() => setShowPostcard(true)}
-               t={t}
-            />
-          )}
+          {/* MapTools Removed - all functionality moved to StarMapControls for new UI Layout */ }
+          {/* {currentPage === 'starmap' && ( <MapTools ... /> )} */}
+
 
            {/* Selected Star Info Popup */}
            {selectedStar && (
