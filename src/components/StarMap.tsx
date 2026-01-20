@@ -61,11 +61,11 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     let langKey = 'ENG';
     if (lang === 'zh-HK') langKey = 'CHN';
     
-    return `/planisphere/STARMAP_${styleKey}_${langKey}.svg`;
+    return `${import.meta.env.BASE_URL}planisphere/STARMAP_${styleKey}_${langKey}.svg`;
   };
 
   const diskUrl = getDiskImage();
-  const maskUrl = "/planisphere/STARMAP_jacket_front.svg";
+  const maskUrl = `${import.meta.env.BASE_URL}planisphere/STARMAP_jacket_front.svg`;
 
   // Gyro Rotation (Device Orientation)
   const [deviceHeading, setDeviceHeading] = useState(0);
