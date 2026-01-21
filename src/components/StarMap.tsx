@@ -39,62 +39,39 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
       resetZoom: () => setScale(1)
   }));
   
-  // Calculate Rotation based on Ho Koon Planisphere Rules
+  // Calculate Rotation based on User-Specified Planisphere Rules (Iteration 3)
   useEffect(() => {
-    // Rule: October 1st at 00:00 is the reference point (0 degrees).
-    // Rotation Rate: 15.04107 degrees per hour (Sidereal rate).
-    // Direction: Counter-Clockwise (Negative rotation in CSS).
-
     const calculateRotation = () => {
-       // Reference Date: October 1st of the *previous* year if current date is before Oct 1?
-       // Actually, simplified: Just find the offset from a fixed Oct 1 (e.g. 2023) and modulo 360.
-       // However, to be precise with the user's current year context:
-       
        const currentYear = date.getFullYear();
        
-       // Construct Reference Date: Oct 1 of Current Year at 00:00
-       let refDate = new Date(currentYear, 9, 1, 0, 0, 0); // Month is 0-indexed (9 = Oct)
-
-       // If current date is BEFORE Oct 1, we should probably compare to Oct 1 of PREVIOUS year
-       // so the continuity is smooth?
-       // Actually, let's keep it simple: Compare to the nearest Oct 1 in the past?
-       // Or just use any Oct 1 reference.
-       // Let's use the Oct 1 of the same year. If result is negative, it just rotates back.
-       // But wait, Planisphere cycles are annual.
+       // Reference: January 1st at 00:00
+       const jan1 = new Date(currentYear, 0, 1, 0, 0, 0);
        
-       // Let's use specific logic:
-       // The ring is fixed. Oct 1 on the ring aligns with 00:00 on the jacket.
-       // So we just need to measure how much time has passed since THAT alignment.
-       
-       const diffMs = date.getTime() - refDate.getTime();
+       // Calculate Total Hours since Jan 1 00:00
+       const diffMs = date.getTime() - jan1.getTime();
        const diffHours = diffMs / (1000 * 60 * 60);
-
-       // 15.04107 deg/hr = 360.9856 deg/day
-       const rate = 15.04107; 
        
-       // Calculate rotation.
-       // Positive diffHours means we are AFTER Oct 1. 
-       // Stars move West (CW? No, usually East to West).
-       // On planisphere:
-       // 2 hours later = Stars rotate 30 deg.
-       // If standard rotate is CW.
-       // Planisphere stars rotate Clockwise or Counter-Clockwise?
-       // Real sky: Stars rotate Counter-Clockwise around Polaris (North celestial pole).
-       // Planisphere disk: Usually rotates CLOCKWISE to simulate time passing (because sky moves CCW, or wait).
-       // Let's check the report: "Rotation (Counter-Clockwise)..." logic found in research.
-       // "6:00 AM = 90 deg (Left)". 
-       // If Oct 1 @ 00:00 is 0 deg.
-       // Oct 1 @ 06:00 (6 hours later).
-       // Disk should match 6am mark? No, the mask is fixed. The disk rotates.
-       // Using "Ho Koon Rule": Rotation is `(Hours * 15) + (Days * 0.9856)`.
-       // This value is POSITIVE.
-       // And they said "Rotation (Counter-Clockwise)".
-       // So we need `transform: rotate(-Xdeg)`.
+       // Rotation Rate derivation from User Rules:
+       // 1. Date Ring: Clockwise (Jan 1 -> Dec 31). Rate: ~0.9856 deg/day (CW).
+       // 2. Time Ring: Clockwise (6am-Left -> 12pm-Top -> 6pm-Right). Rate: 15 deg/hour (CW).
+       //    Note: Noon is Top (0 deg). Midnight is Bottom (180 deg).
+       // 3. Alignment Goal: Align Date Mark (CW) with Time Mark (CW).
+       //    Rot_CW = Angle_Time_CW - Angle_Date_CW
+       //    Rot_CW = (Time_Hours_from_Noon * 15) - (Days * 0.9856)
+       //    Time_Hours_from_Noon = (Time_Hours_from_Midnight - 12)
+       //    Rot_CW = ((H - 12) * 15) - (D * 0.9856)
+       //           = 15H - 180 - (H/24 * 0.9856)  [Since D = TotalHours/24]
+       //           = H * (15 - 0.9856/24) - 180
+       //           = H * (15 - 0.041066) - 180
+       //           = H * 14.958934 - 180
        
-       const totalRotation = diffHours * rate;
+       const rate = 14.958934;
+       const offset = -180;
        
-       // Invert for CSS (CCW)
-       setRotation(-totalRotation);
+       const totalRotation = (diffHours * rate) + offset;
+       
+       // Apply as Positive for Clockwise CSS rotation
+       setRotation(totalRotation);
     };
 
     calculateRotation();

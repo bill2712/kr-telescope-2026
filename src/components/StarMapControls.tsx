@@ -112,7 +112,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
             </div>
 
             {/* Bottom Controls Container */}
-            <div className="w-full pointer-events-auto md:w-80">
+            <div className="w-full pointer-events-auto md:w-96">
                 <div className="max-w-4xl mx-auto bg-[#0F1420]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-4 text-white md:bg-black/80 md:backdrop-blur-2xl">
                     
                     {/* Row 1: Time Travel (Big & Prominent) */}
@@ -126,7 +126,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                              </span>
                         </div>
                         
-                        <div className="flex items-center gap-2 flex-grow justify-end">
+                        <div className="flex flex-wrap items-center gap-2 flex-grow justify-end">
                             {/* Month */}
                             <div className="relative">
                                 <select 

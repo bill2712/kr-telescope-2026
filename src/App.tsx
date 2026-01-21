@@ -39,7 +39,7 @@ function App() {
   const [viewMode, setViewMode] = useState<'stereo' | 'ortho'>('stereo');
   const [usingLiveLocation, setUsingLiveLocation] = useState(false);
   const [isLiveTime, setIsLiveTime] = useState(true);
-  const [showTutorial, setShowTutorial] = useState(true);
+  const [showTutorial, setShowTutorial] = useState(false);
   const [showPostcard, setShowPostcard] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>('western');
   
