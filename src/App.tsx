@@ -16,7 +16,7 @@ import { translations } from './utils/i18n';
 
 import SpacePostcard from './components/SpacePostcard';
 
-import ScavengerHuntMode from './components/ScavengerHuntMode';
+
 
 // Default to Hong Kong Coordinates
 const DEFAULT_LOCATION: Coordinates = {
@@ -24,13 +24,7 @@ const DEFAULT_LOCATION: Coordinates = {
   longitude: 114.1694
 };
 
-// Scavenger Hunt Levels
-const SCAVENGER_LEVELS = [
-  { id: 'mars', target: 'mars', name: { 'zh-HK': '火星', 'en': 'Mars' } },
-  { id: 'jupiter', target: 'jupiter', name: { 'zh-HK': '木星', 'en': 'Jupiter' } },
-  { id: 'moon', target: 'moon', name: { 'zh-HK': '月亮', 'en': 'Moon' } },
-  // { id: 'sirius', target: 'Sirius', name: { 'zh-HK': '天狼星', 'en': 'Sirius' } },
-];
+
 
 function App() {
   const [lang, setLang] = useState<Language>('zh-HK');
@@ -48,10 +42,7 @@ function App() {
   const [animationSpeed, setAnimationSpeed] = useState(1); // 1 = Normal Fast, 100 = Super Fast
   const starMapRef = useRef<StarMapHandle>(null);
   
-  // Scavenger Hunt State
-  const [scavengerActive, setScavengerActive] = useState(false);
-  const [scavengerLevel, setScavengerLevel] = useState(0);
-  const [scavengerLocked, setScavengerLocked] = useState(false);
+
 
   // Navigation State
   const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz' | 'guide'>('starmap');
@@ -170,24 +161,7 @@ function App() {
     setCurrentDate(newDate);
   };
 
-  const startScavengerHunt = () => {
-      setScavengerActive(true);
-      setScavengerLevel(1);
-      setScavengerLocked(false);
-      setCurrentPage('starmap');
-      setShowTutorial(false);
-  };
 
-  const handleNextLevel = () => {
-      if (scavengerLevel < SCAVENGER_LEVELS.length) {
-          setScavengerLevel(prev => prev + 1);
-          setScavengerLocked(false);
-      } else {
-          // Completed all levels
-          setScavengerActive(false);
-          // Show victory modal? Or ScavengerHuntMode handles it
-      }
-  };
 
   return (
     <Layout
@@ -209,18 +183,7 @@ function App() {
       
       {showPostcard && <SpacePostcard lang={lang} onClose={() => setShowPostcard(false)} />}
 
-      {/* Scavenger Hunt HUD */}
-      {scavengerActive && scavengerLevel <= SCAVENGER_LEVELS.length && (
-          <ScavengerHuntMode 
-              lang={lang}
-              targetName={SCAVENGER_LEVELS[scavengerLevel - 1].name[lang]}
-              isLocked={scavengerLocked}
-              onClose={() => setScavengerActive(false)}
-              onNextLevel={handleNextLevel}
-              level={scavengerLevel}
-              totalLevels={SCAVENGER_LEVELS.length}
-          />
-      )}
+
 
       
       <div className={`absolute inset-0 w-full h-full ${currentPage === 'starmap' ? 'visible' : 'invisible'}`}>
@@ -239,7 +202,7 @@ function App() {
           />
 
           {/* Map Tools (Only on Starmap) */}
-          {currentPage === 'starmap' && !scavengerActive && (
+          {currentPage === 'starmap' && (
             <>
                 <StarMapControls 
                     lang={lang}
@@ -271,8 +234,6 @@ function App() {
                     onToggleArt={() => setShowArt(!showArt)}
                     onCameraClick={() => setShowPostcard(true)}
                     onLocationUpdate={handleGeolocation}
-                    // Scavenger Hunt Start
-                    onStartScavengerHunt={startScavengerHunt}
                 />
             </>
           )}

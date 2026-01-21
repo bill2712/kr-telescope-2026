@@ -80,16 +80,9 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
             {/* Positioned to sit below the fixed TopBar */}
             <div className="w-full flex justify-between items-start pointer-events-auto">
                 <div className="flex flex-col gap-2">
-                    {/* Scavenger Hunt Start Button */}
-                    {onStartScavengerHunt && (
-                        <button 
-                            onClick={onStartScavengerHunt}
-                            className="bg-gradient-to-r from-yellow-500 to-orange-600 text-white font-bold py-2 px-4 rounded-full shadow-lg border border-white/20 hover:scale-105 transition-transform animate-pulse text-sm w-fit flex items-center gap-2"
-                        >
-                            <i className="fas fa-gamepad"></i>
-                            {lang === 'zh-HK' ? '開始尋寶' : 'Start Hunt'}
-                        </button>
-                    )}
+                <div className="flex flex-col gap-2">
+                    {/* Scavenger Hunt Button Removed */}
+                </div>
                 </div>
                 
                 <div className="flex gap-2">
