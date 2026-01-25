@@ -12,6 +12,7 @@ import MapTools from './components/MapTools';
 import StarMapControls from './components/StarMapControls';
 import UsageGuide from './components/UsageGuide';
 import TelescopeManual from './components/guide/TelescopeManual';
+import Hero from './components/Hero';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
 
@@ -36,6 +37,7 @@ function App() {
   const [isLiveTime, setIsLiveTime] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showPostcard, setShowPostcard] = useState(false);
+  const [showHero, setShowHero] = useState(true); // Hero defaults to true
   const [mapStyle, setMapStyle] = useState<MapStyle>('western');
   const [showUsageGuide, setShowUsageGuide] = useState(false);
   
@@ -183,6 +185,16 @@ function App() {
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
       {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
+
+      {/* Hero Landing */}
+      {showHero && (
+        <div className="absolute inset-0 z-[110] bg-dark animate-fade-in">
+          <Hero 
+            lang={lang} 
+            onStart={() => setShowHero(false)} 
+          />
+        </div>
+      )}
 
       {showPostcard && <SpacePostcard lang={lang} onClose={() => setShowPostcard(false)} />}
 
