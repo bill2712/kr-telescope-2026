@@ -191,7 +191,11 @@ function App() {
             ref={starMapRef}
             location={location}
             date={currentDate}
-            // viewMode={viewMode}
+            onDateChange={(d) => {
+                setCurrentDate(d);
+                setIsLiveTime(false); // Stop live time when manually interacting
+                setIsAnimating(false);
+            }}
             lang={lang}
             // showArt={showArt}
             mapStyle={mapStyle}
