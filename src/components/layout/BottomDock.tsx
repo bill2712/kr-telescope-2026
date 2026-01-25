@@ -16,16 +16,16 @@ const BottomDock: React.FC<BottomDockProps> = ({ lang, activePage, onNavigate })
   const t = translations[lang];
 
   const items: { id: Page; icon: string; label: string; color: string }[] = [
-    { id: 'starmap', icon: 'fa-globe-asia', label: t.menuMap, color: 'text-blue-400' },
-    { id: 'planner', icon: 'fa-calendar-alt', label: t.menuPlanner, color: 'text-green-400' },
-    { id: 'learn', icon: 'fa-book-open', label: t.menuLearn, color: 'text-purple-400' },
-    { id: 'guide', icon: 'fa-scroll', label: t.menuGuide, color: 'text-cyan-400' },
-    { id: 'quiz', icon: 'fa-rocket', label: t.menuQuiz, color: 'text-orange-400' }
+    { id: 'starmap', icon: 'fa-globe-asia', label: t.menuMap, color: 'text-primary' },
+    { id: 'planner', icon: 'fa-calendar-alt', label: t.menuPlanner, color: 'text-secondary' },
+    { id: 'learn', icon: 'fa-book-open', label: t.menuLearn, color: 'text-indigo-400' },
+    { id: 'guide', icon: 'fa-scroll', label: t.menuGuide, color: 'text-cyan-300' },
+    { id: 'quiz', icon: 'fa-rocket', label: t.menuQuiz, color: 'text-accent' }
   ];
 
   return (
     <div className="fixed bottom-6 left-4 right-4 z-50 md:top-1/2 md:-translate-y-1/2 md:left-4 md:right-auto md:bottom-auto md:w-auto">
-      <div className="bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-2 flex justify-around items-center max-w-lg mx-auto md:flex-col md:gap-4 md:p-3">
+      <div className="glass-panel rounded-3xl shadow-2xl p-2 flex justify-around items-center max-w-lg mx-auto md:flex-col md:gap-4 md:p-3">
         {items.map((item) => {
           const isActive = activePage === item.id;
           return (

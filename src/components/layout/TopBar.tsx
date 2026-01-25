@@ -30,12 +30,12 @@ const TopBar: React.FC<TopBarProps> = ({
         {/* Left: Location Badge & Logo? */}
         <div className="flex gap-2 pointer-events-auto">
              {/* Logo / Brand - Mini */}
-             <div className="bg-[#161825]/90 backdrop-blur-md border border-white/10 rounded-2xl p-2 w-16 flex items-center justify-center shadow-lg">
-                <i className="fas fa-meteor text-kidrise-orange text-xl"></i>
+             <div className="glass-panel rounded-2xl p-2 w-16 flex items-center justify-center shadow-lg">
+                <i className="fas fa-meteor text-accent text-xl"></i>
              </div>
 
-            <div className="bg-[#161825]/80 backdrop-blur-md border border-white/10 rounded-2xl p-2 px-3 shadow-lg flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-blue-600/20 flex items-center justify-center text-blue-400">
+            <div className="glass-panel rounded-2xl p-2 px-3 shadow-lg flex items-center gap-3">
+                <div className="w-8 h-8 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
                     <i className="fas fa-map-marker-alt text-sm"></i>
                 </div>
                 <div className="flex flex-col">
@@ -50,7 +50,7 @@ const TopBar: React.FC<TopBarProps> = ({
         {/* Right: Time & Settings */}
         <div className="flex gap-2 pointer-events-auto">
              {/* Time Control */}
-            <div className="bg-[#161825]/80 backdrop-blur-md border border-white/10 rounded-2xl p-1.5 shadow-lg flex items-center gap-1">
+            <div className="glass-panel rounded-2xl p-1.5 shadow-lg flex items-center gap-1">
                 <button 
                     onClick={() => onShiftTime(-1)}
                     className="w-9 h-9 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-colors flex items-center justify-center"
@@ -62,8 +62,8 @@ const TopBar: React.FC<TopBarProps> = ({
                     onClick={onSetLiveTime}
                     className="flex flex-col items-center px-2 cursor-pointer min-w-[80px]"
                 >
-                    <div className={`flex items-center gap-1 text-[9px] uppercase font-bold tracking-widest ${isLiveTime ? 'text-green-400' : 'text-kidrise-orange'}`}>
-                    <div className={`w-1.5 h-1.5 rounded-full ${isLiveTime ? 'bg-green-500 animate-pulse' : 'bg-kidrise-orange'}`}></div>
+                    <div className={`flex items-center gap-1 text-[9px] uppercase font-bold tracking-widest ${isLiveTime ? 'text-secondary' : 'text-accent'}`}>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isLiveTime ? 'bg-secondary animate-pulse' : 'bg-accent'}`}></div>
                     {isLiveTime ? 'LIVE' : 'TRAVEL'}
                     </div>
                     <div className="text-sm font-mono font-bold text-white">
@@ -82,7 +82,8 @@ const TopBar: React.FC<TopBarProps> = ({
             {/* Lang Toggle */}
             <button
                 onClick={onToggleLang}
-                className="w-12 h-12 rounded-2xl bg-[#161825]/80 backdrop-blur-md border border-white/10 text-white font-bold text-xs shadow-lg hover:bg-white/10 transition-colors"
+                className="w-12 h-12 rounded-2xl glass-panel text-white font-bold text-xs shadow-lg hover:bg-white/10 transition-colors"
+                title={lang === 'en' ? '切換至中文' : 'Switch to English'}
             >
                 {lang === 'en' ? '中' : 'EN'}
             </button>

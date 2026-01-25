@@ -12,15 +12,15 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
     const g = t.howToUse;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
             <div 
-                className="bg-[#0F1420] border border-white/20 rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl relative"
+                className="bg-dark/95 border border-white/20 rounded-3xl w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-2xl relative"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="sticky top-0 bg-[#0F1420]/95 backdrop-blur-md p-6 border-b border-white/10 flex justify-between items-center z-10">
+                <div className="sticky top-0 bg-dark/95 backdrop-blur-md p-6 border-b border-white/10 flex justify-between items-center z-10">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                        <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                             <i className="fas fa-book-open"></i>
                         </div>
                         <h2 className="text-2xl font-bold text-white tracking-wide">

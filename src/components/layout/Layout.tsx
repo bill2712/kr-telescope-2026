@@ -30,23 +30,26 @@ const Layout: React.FC<LayoutProps> = ({
   onToggleLang
 }) => {
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col relative bg-[#0B0D17]">
-      {/* Background (Optional, if not handled by StarMap) */}
-      
+    <div className="h-screen w-screen overflow-hidden flex flex-col relative bg-dark text-white font-sans selection:bg-secondary/30 selection:text-secondary">
+      {/* Subtle grid background overlay */}
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay z-0"></div>
+
       {/* Top Status Bar */}
-      <TopBar 
-        lang={lang}
-        locationName={locationName}
-        currentDate={currentDate}
-        isLiveTime={isLiveTime}
-        onSetLiveTime={onSetLiveTime}
-        onShiftTime={onShiftTime}
-        onToggleLang={onToggleLang}
-      />
+      <div className="relative z-20">
+        <TopBar 
+          lang={lang}
+          locationName={locationName}
+          currentDate={currentDate}
+          isLiveTime={isLiveTime}
+          onSetLiveTime={onSetLiveTime}
+          onShiftTime={onShiftTime}
+          onToggleLang={onToggleLang}
+        />
+      </div>
 
       {/* Main Content Area */}
       {/* We add padding to top and bottom to account for the fixed bars */}
-      <main className="flex-1 relative w-full h-full"> 
+      <main className="flex-1 relative w-full h-full z-10"> 
         {children}
       </main>
 

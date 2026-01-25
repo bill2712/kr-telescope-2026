@@ -129,7 +129,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                 <div className="w-full flex justify-center pointer-events-auto">
                     <button 
                         onClick={() => setIsVisible(true)}
-                        className="bg-black/60 backdrop-blur-md text-white px-6 py-3 rounded-full font-bold shadow-2xl border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all flex items-center gap-2 group"
+                        className="glass-panel text-white px-6 py-3 rounded-full font-bold shadow-2xl hover:bg-white/10 transition-all flex items-center gap-2 group"
                     >
                         <i className="fas fa-sliders-h group-hover:scale-110 transition-transform"></i>
                         <span>{lang === 'zh-HK' ? '顯示設定' : 'Show Controls'}</span>
@@ -137,12 +137,12 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                 </div>
             ) : (
                 <div className="w-full pointer-events-auto flex justify-center">
-                    <div className="bg-[#0F1420]/95 backdrop-blur-xl border border-white/10 rounded-3xl p-3 shadow-2xl flex flex-col md:flex-row items-center gap-3 md:gap-4 text-white w-auto max-w-[95vw] relative overflow-visible">
+                    <div className="glass-panel rounded-3xl p-3 shadow-2xl flex flex-col md:flex-row items-center gap-3 md:gap-4 text-white w-auto max-w-[95vw] relative overflow-visible">
                         
                         {/* LEFT: Prominent Help Button */}
                         <button
                             onClick={onToggleGuide}
-                            className="flex-shrink-0 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-2.5 px-5 rounded-xl shadow-lg transform transition-all active:scale-95"
+                            className="flex-shrink-0 flex items-center gap-2 bg-gradient-to-r from-primary to-secondary hover:from-primary/80 hover:to-secondary/80 text-white font-bold py-2.5 px-5 rounded-xl shadow-lg transform transition-all active:scale-95"
                         >
                             <i className="fas fa-book-open text-lg"></i>
                             <span className="text-sm md:text-base whitespace-nowrap">
