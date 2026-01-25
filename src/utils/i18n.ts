@@ -483,6 +483,17 @@ export const translations = {
       careDesc: '請將望遠鏡存放在無塵乾燥處。清潔鏡片時請使用專用拭鏡布，切勿使用粗糙布料。',
       
       footer: 'Kidrise STEM Educational Toys (HK) | www.stemtoy.com.hk'
+    },
+    // How to Use Guide
+    howToUse: {
+        title: '使用方法',
+        step1Title: '1. 對齊時間',
+        step1Desc: '轉動底盤（黑色星空部分）使「觀測日期」和外盤的「觀察時間」對齊。',
+        step2Title: '2. 尋找方向',
+        step2Desc: '橢圓窗口內所示的便是香港此刻可以看到的星座。拿着旋轉星圖，按下述方式對照夜空：',
+        step3Title: '3. 觀測技巧',
+        step3Desc: '觀看西方夜空時，將盤上的「西」字向下；觀看北方時，將「北」字向下。',
+        note: '在 App 中，你可以直接拖動黑色星盤來改變時間，或將手機舉向天空使用指南針模式！'
     }
   },
   'en': {
@@ -802,6 +813,17 @@ export const translations = {
     rank3: 'Rocket Captain',
     rank4: 'Galactic Guardian',
     rank5: 'Universe Master',
+
+    howToUse: {
+        title: 'How to Use',
+        step1Title: '1. Align Time',
+        step1Desc: 'Turn the Star Dial (Dark Background) to align the observation date with the time on the Holder.',
+        step2Title: '2. Find Direction',
+        step2Desc: 'The constellations shown in the oval opening reflect those that can be observed in Hong Kong now. Hold the planisphere as described below.',
+        step3Title: '3. Observation',
+        step3Desc: 'The "W" should point downwards when viewing the western sky. The "N" should point downwards when viewing the northern sky.',
+        note: 'In this App, simply drag the Star Disk to change time, or enable Compass Mode and hold your phone to the sky!'
+    },
 
     // Questions
     q1: 'Which is the brightest star in the night sky?',

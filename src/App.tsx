@@ -10,6 +10,7 @@ import Quiz from './components/Quiz';
 import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
 import StarMapControls from './components/StarMapControls';
+import UsageGuide from './components/UsageGuide';
 import TelescopeManual from './components/guide/TelescopeManual';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
@@ -36,6 +37,7 @@ function App() {
   const [showTutorial, setShowTutorial] = useState(false);
   const [showPostcard, setShowPostcard] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>('western');
+  const [showUsageGuide, setShowUsageGuide] = useState(false);
   
   // Animation State
   const [isAnimating, setIsAnimating] = useState(false);
@@ -181,6 +183,8 @@ function App() {
     >
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
+      {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
+
       {showPostcard && <SpacePostcard lang={lang} onClose={() => setShowPostcard(false)} />}
 
 
@@ -238,6 +242,7 @@ function App() {
                     onToggleArt={() => setShowArt(!showArt)}
                     onCameraClick={() => setShowPostcard(true)}
                     onLocationUpdate={handleGeolocation}
+                    onToggleGuide={() => setShowUsageGuide(!showUsageGuide)}
                 />
             </>
           )}

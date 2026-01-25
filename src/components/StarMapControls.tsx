@@ -32,6 +32,8 @@ interface StarMapControlsProps {
     onLocationUpdate: () => void;
     // Scavenger Hunt
     onStartScavengerHunt?: () => void;
+    // Usage Guide
+    onToggleGuide: () => void;
 }
 
 const StarMapControls: React.FC<StarMapControlsProps> = ({
@@ -57,7 +59,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     onToggleArt,
     onCameraClick,
     onLocationUpdate,
-    onStartScavengerHunt
+    onStartScavengerHunt,
+    onToggleGuide
 }) => {
     const t = translations[lang];
     const [tempDate, setTempDate] = useState({
@@ -86,6 +89,15 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                 </div>
                 
                 <div className="flex gap-2">
+                     {/* Usage Guide Button */}
+                     <button
+                        onClick={onToggleGuide}
+                        className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all shadow-lg"
+                        title={lang === 'zh-HK' ? '使用說明' : 'Help'}
+                    >
+                        <i className="fas fa-question text-xs"></i>
+                    </button>
+
                      {/* View Mode Toggle */}
                     <div className="bg-black/40 backdrop-blur-md rounded-full p-1 border border-white/10 flex shadow-lg">
                         <button
