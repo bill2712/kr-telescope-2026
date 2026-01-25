@@ -104,7 +104,7 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
                     <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 p-4 rounded-xl border border-blue-500/30">
                         <div className="flex items-start gap-3">
                             <i className="fas fa-lightbulb text-yellow-400 mt-1"></i>
-                            <p className="text-sm text-blue-100">
+                            <p className="text-sm text-blue-100 whitespace-pre-wrap leading-relaxed">
                                 {g.note}
                             </p>
                         </div>

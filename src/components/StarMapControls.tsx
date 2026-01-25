@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../utils/i18n';
 import { MapStyle } from './StarMap';
+import CustomSelect from './ui/CustomSelect';
 
 interface StarMapControlsProps {
     lang: Language;
@@ -14,24 +15,12 @@ interface StarMapControlsProps {
     onZoomIn: () => void;
     onZoomOut: () => void;
     onResetZoom: () => void;
-    onToggleLang: () => void;
-    locationName: string;
+    onZoomToSky?: () => void; // Added new prop
     
-    // Map Style (New)
+    // Map Style
     mapStyle: MapStyle;
     onMapStyleChange: (style: MapStyle) => void;
 
-    // Map Tools Props
-    viewMode: 'stereo' | 'ortho';
-    onSetViewMode: (mode: 'stereo' | 'ortho') => void;
-    enableGyro: boolean;
-    onToggleGyro: () => void;
-    showArt: boolean;
-    onToggleArt: () => void;
-    onCameraClick: () => void;
-    onLocationUpdate: () => void;
-    // Scavenger Hunt
-    onStartScavengerHunt?: () => void;
     // Usage Guide
     onToggleGuide: () => void;
 }
@@ -47,19 +36,9 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     onZoomIn,
     onZoomOut,
     onResetZoom,
-    onToggleLang,
-    locationName,
+    onZoomToSky,
     mapStyle,
     onMapStyleChange,
-    viewMode,
-    onSetViewMode,
-    enableGyro,
-    onToggleGyro,
-    showArt,
-    onToggleArt,
-    onCameraClick,
-    onLocationUpdate,
-    onStartScavengerHunt,
     onToggleGuide
 }) => {
     const t = translations[lang];
@@ -68,6 +47,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
         day: currentDate.getDate(),
         time: currentDate.toTimeString().slice(0, 5) // HH:MM
     });
+    const [showStyleInfo, setShowStyleInfo] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
 
     const handleGo = () => {
         const now = new Date();
@@ -77,212 +58,329 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
         onDateChange(newDate);
     };
 
+    // --- TIME LOGIC (AM vs PM) ---
+    const currentHour = parseInt(tempDate.time.split(':')[0]);
+    // Determine current period based on time (0-6 is AM, others treated as PM range start)
+    const period = currentHour < 12 ? 'AM' : 'PM';
+
+    const handlePeriodChange = (newPeriod: string) => {
+        // Default times when switching periods
+        const defaultTime = newPeriod === 'AM' ? '00:00' : '18:00';
+        setTempDate({ ...tempDate, time: defaultTime });
+    };
+
+    const periodOptions = [
+        { value: 'AM', label: lang === 'zh-HK' ? '上午' : 'Morning (00-06)' },
+        { value: 'PM', label: lang === 'zh-HK' ? '下午' : 'Night (18-23)' }
+    ];
+
+    // Generate specific time options based on current Period
+    const timeOptions = [];
+    if (period === 'PM') {
+        // PM Slots: 18:00 to 23:45
+        for (let h = 18; h <= 23; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                const labelH = h > 12 ? h - 12 : h;
+                const label = `${labelH}:${m.toString().padStart(2, '0')} PM`;
+                timeOptions.push({ value: timeStr, label });
+            }
+        }
+    } else {
+        // AM Slots: 00:00 to 06:00
+        for (let h = 0; h <= 6; h++) {
+            for (let m = 0; m < 60; m += 15) {
+                if (h === 6 && m > 0) break;
+                const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+                const labelH = h === 0 ? 12 : h;
+                const label = `${labelH}:${m.toString().padStart(2, '0')} AM`;
+                timeOptions.push({ value: timeStr, label });
+            }
+        }
+    }
+
+    // Helper to generate Month Options
+    const monthOptions = Array.from({length: 12}, (_, i) => {
+        const m = i + 1;
+        const label = lang === 'zh-HK' ? `${m}月` : new Date(2000, i, 1).toLocaleString('en-US', { month: 'short' });
+        return { value: m, label };
+    });
+
+    // Helper to generate Day Options
+    const dayOptions = Array.from({length: 31}, (_, i) => {
+        const d = i + 1;
+        const label = lang === 'zh-HK' ? `${d}日` : `${d}`;
+        return { value: d, label };
+    });
+
+
+    // Cycle speeds
+    const handleSpeedClick = () => {
+        const speeds = [1, 5, 10, 100];
+        const currentIndex = speeds.indexOf(animationSpeed);
+        const nextIndex = (currentIndex + 1) % speeds.length;
+        onSetSpeed(speeds[nextIndex]);
+    };
+
     return (
-        <div className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-between pt-24 pb-32 px-4 md:justify-center md:items-end md:pr-6 md:pb-0 md:pt-0">
-            {/* Top Controls (View Mode & Scavenger Hunt) */}
-            {/* Positioned to sit below the fixed TopBar */}
-            <div className="w-full flex justify-between items-start pointer-events-auto">
-                <div className="flex flex-col gap-2">
-                <div className="flex flex-col gap-2">
-                    {/* Scavenger Hunt Button Removed */}
-                </div>
-                </div>
-                
-                <div className="flex gap-2">
-                     {/* Usage Guide Button */}
-                     <button
-                        onClick={onToggleGuide}
-                        className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-md border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all shadow-lg"
-                        title={lang === 'zh-HK' ? '使用說明' : 'Help'}
+        <div className="absolute inset-0 z-30 pointer-events-none flex flex-col justify-end items-center pb-32 px-4 md:pb-8 md:px-6">
+            
+            {!isVisible ? (
+                <div className="w-full flex justify-center pointer-events-auto">
+                    <button 
+                        onClick={() => setIsVisible(true)}
+                        className="bg-black/60 backdrop-blur-md text-white px-6 py-3 rounded-full font-bold shadow-2xl border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all flex items-center gap-2 group"
                     >
-                        <i className="fas fa-question text-xs"></i>
+                        <i className="fas fa-sliders-h group-hover:scale-110 transition-transform"></i>
+                        <span>{lang === 'zh-HK' ? '顯示設定' : 'Show Controls'}</span>
                     </button>
-
-                     {/* View Mode Toggle */}
-                    <div className="bg-black/40 backdrop-blur-md rounded-full p-1 border border-white/10 flex shadow-lg">
-                        <button
-                            onClick={() => onSetViewMode('stereo')}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${viewMode === 'stereo' ? 'bg-kidrise-orange text-white' : 'text-gray-400 hover:text-white'}`}
-                        >
-                            <i className="fas fa-map text-xs"></i>
-                        </button>
-                        <button
-                            onClick={() => onSetViewMode('ortho')}
-                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${viewMode === 'ortho' ? 'bg-kidrise-orange text-white' : 'text-gray-400 hover:text-white'}`}
-                        >
-                            <i className="fas fa-globe text-xs"></i>
-                        </button>
-                    </div>
                 </div>
-            </div>
-
-            {/* Bottom Controls Container */}
-            <div className="w-full pointer-events-auto md:w-96">
-                <div className="max-w-4xl mx-auto bg-[#0F1420]/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-4 text-white md:bg-black/80 md:backdrop-blur-2xl">
-                    
-                    {/* Row 1: Time Travel (Big & Prominent) */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
-                        <div className="flex items-center gap-2">
-                             <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400">
-                                <i className="fas fa-calendar-alt"></i>
-                             </div>
-                             <span className="text-sm font-bold tracking-wider text-gray-300">
-                                {lang === 'zh-HK' ? '前往時間' : 'TIME TRAVEL'}
-                             </span>
-                        </div>
+            ) : (
+                <div className="w-full pointer-events-auto flex justify-center">
+                    <div className="bg-[#0F1420]/95 backdrop-blur-xl border border-white/10 rounded-3xl p-3 shadow-2xl flex flex-col md:flex-row items-center gap-3 md:gap-4 text-white w-auto max-w-[95vw] relative overflow-visible">
                         
-                        <div className="flex flex-wrap items-center gap-2 flex-grow justify-end">
+                        {/* LEFT: Prominent Help Button */}
+                        <button
+                            onClick={onToggleGuide}
+                            className="flex-shrink-0 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 text-white font-bold py-2.5 px-5 rounded-xl shadow-lg transform transition-all active:scale-95"
+                        >
+                            <i className="fas fa-book-open text-lg"></i>
+                            <span className="text-sm md:text-base whitespace-nowrap">
+                                {lang === 'zh-HK' ? '使用說明' : 'How to Use'}
+                            </span>
+                        </button>
+
+                        <div className="hidden md:block w-px h-10 bg-white/10 mx-1"></div>
+
+                        {/* CENTER: Compact Time Travel */}
+                        <div className="flex items-center gap-2 flex-nowrap overflow-visible">
+                            {/* Period (AM/PM) */}
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '時段' : 'Period'}
+                                </span>
+                                <CustomSelect 
+                                    options={periodOptions}
+                                    value={period}
+                                    onChange={(val) => handlePeriodChange(String(val))}
+                                    width="w-20"
+                                    placeholder={lang === 'zh-HK' ? '選擇' : 'Select'}
+                                />
+                            </div>
+
                             {/* Month */}
-                            <div className="relative">
-                                <select 
-                                    className="appearance-none bg-black/40 border border-white/20 rounded-lg py-2 pl-3 pr-8 text-sm focus:border-blue-500 outline-none cursor-pointer"
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '月份' : 'Month'}
+                                </span>
+                                <CustomSelect 
+                                    options={monthOptions}
                                     value={tempDate.month}
-                                    onChange={(e) => setTempDate({...tempDate, month: parseInt(e.target.value)})}
-                                >
-                                    {Array.from({length: 12}, (_, i) => i + 1).map(m => (
-                                        <option key={m} value={m}>{m} {lang === 'zh-HK' ? '月' : 'Mon'}</option>
-                                    ))}
-                                </select>
-                                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">▼</div>
+                                    onChange={(val) => setTempDate({...tempDate, month: Number(val)})}
+                                    width="w-20"
+                                    placeholder={lang === 'zh-HK' ? '選擇' : 'Select'}
+                                />
                             </div>
                             
                             {/* Day */}
-                            <div className="relative">
-                                <select 
-                                    className="appearance-none bg-black/40 border border-white/20 rounded-lg py-2 pl-3 pr-8 text-sm focus:border-blue-500 outline-none cursor-pointer"
-                                    value={tempDate.day}
-                                    onChange={(e) => setTempDate({...tempDate, day: parseInt(e.target.value)})}
-                                >
-                                    {Array.from({length: 31}, (_, i) => i + 1).map(d => (
-                                        <option key={d} value={d}>{d} {lang === 'zh-HK' ? '日' : 'Day'}</option>
-                                    ))}
-                                </select>
-                                <div className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs">▼</div>
-                            </div>
-
-                             {/* Time */}
-                             <input 
-                                type="time"
-                                className="bg-black/40 border border-white/20 rounded-lg py-1.5 px-3 text-sm focus:border-blue-500 outline-none"
-                                value={tempDate.time}
-                                onChange={(e) => setTempDate({...tempDate, time: e.target.value})}
-                            />
-
-                            <button 
-                                onClick={handleGo}
-                                className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white text-sm font-bold px-5 py-2 rounded-lg shadow-lg active:scale-95 transition-transform"
-                            >
-                                GO
-                            </button>
-                        </div>
-                    </div>
-
-
-                    {/* Row 2: Actions & Tools */}
-                    <div className="flex flex-col md:flex-col justify-between items-center gap-4 md:items-stretch">
-                        
-                        {/* Left Side: Simulation Controls */}
-                        <div className="flex flex-wrap items-center gap-4 justify-center md:justify-between">
-                            {/* Rotate Controls */}
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest hidden sm:block">
-                                    {lang === 'zh-HK' ? '自動旋轉' : 'AUTO ROTATE'}
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '日期' : 'Day'}
                                 </span>
-                                <button
-                                    onClick={onToggleAnimation}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${
-                                        isAnimating 
-                                        ? 'bg-red-500/10 border-red-500/50 text-red-400' 
-                                        : 'bg-white/5 border-white/10 text-white hover:bg-white/10'
-                                    }`}
-                                >
-                                    <i className={`fas ${isAnimating ? 'fa-stop' : 'fa-play'}`}></i>
-                                </button>
-
-                                <button
-                                    onClick={() => onSetSpeed(animationSpeed === 1 ? 100 : 1)}
-                                    className={`w-8 h-8 rounded-lg flex items-center justify-center border transition-all ${
-                                        animationSpeed > 1
-                                        ? 'bg-yellow-500/20 border-yellow-500/50 text-yellow-400'
-                                        : 'bg-white/5 border-white/10 text-gray-400 hover:text-white'
-                                    }`}
-                                >
-                                    <i className="fas fa-forward text-xs"></i>
-                                </button>
+                                <CustomSelect 
+                                    options={dayOptions}
+                                    value={tempDate.day}
+                                    onChange={(val) => setTempDate({...tempDate, day: Number(val)})}
+                                    width="w-20"
+                                    placeholder={lang === 'zh-HK' ? '選擇' : 'Select'}
+                                />
                             </div>
 
-                             {/* Zoom Controls */}
-                            <div className="flex items-center gap-1 bg-black/20 p-1 rounded-lg border border-white/5">
-                                <button onClick={onZoomOut} className="w-8 h-8 rounded-md text-white hover:bg-white/10 flex items-center justify-center">
-                                    <i className="fas fa-minus text-xs"></i>
-                                </button>
-                                <button onClick={onResetZoom} className="px-2 text-xs font-bold text-gray-400 hover:text-white transition-colors">
-                                    {lang === 'zh-HK' ? '重置' : 'R'}
-                                </button>
-                                <button onClick={onZoomIn} className="w-8 h-8 rounded-md text-white hover:bg-white/10 flex items-center justify-center">
-                                    <i className="fas fa-plus text-xs"></i>
+                             {/* Time Select */}
+                             <div className="flex flex-col gap-1">
+                                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '時間' : 'Time'}
+                                </span>
+                                 <CustomSelect 
+                                    options={timeOptions}
+                                    value={tempDate.time}
+                                    onChange={(val) => setTempDate({...tempDate, time: String(val)})}
+                                    width="w-28"
+                                    placeholder={lang === 'zh-HK' ? '選擇' : 'Select'}
+                                />
+                             </div>
+
+                            <div className="flex flex-col justify-end h-full pt-6"> 
+                                <button 
+                                    onClick={handleGo}
+                                    className="bg-white/10 hover:bg-white/20 text-blue-300 hover:text-white font-bold px-4 rounded-lg border border-white/10 transition-all active:scale-95 h-9 flex items-center"
+                                >
+                                    {lang === 'zh-HK' ? '前往' : 'GO'}
                                 </button>
                             </div>
                         </div>
 
-                        {/* Middle: Map Style Selector (New) */}
-                        <div className="hidden md:flex bg-black/40 backdrop-blur-md rounded-lg p-1 gap-1 border border-white/10">
-                            {(['western', 'chinese', 'urban'] as MapStyle[]).map((style) => (
+                        <div className="h-0.5 w-full bg-white/10 md:w-0.5 md:h-12"></div>
+
+                        {/* Middle: Map Style Selector */}
+                        <div className="flex flex-col gap-1">
+                             <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                {lang === 'zh-HK' ? '風格' : 'Style'}
+                            </span>
+                            <div className="relative flex items-center gap-2 h-full">
+                                <div className="flex bg-black/40 backdrop-blur-md rounded-lg p-1 gap-1 border border-white/10">
+                                    {(['western', 'chinese', 'urban'] as MapStyle[]).map((style) => (
+                                        <button
+                                            key={style}
+                                            onClick={() => onMapStyleChange(style)}
+                                            className={`px-3 rounded-md text-xs font-bold transition-colors uppercase tracking-wider h-7 flex items-center justify-center ${
+                                                mapStyle === style 
+                                                ? 'bg-kidrise-orange text-white shadow-sm' 
+                                                : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                                            }`}
+                                        >
+                                            {style === 'western' ? (lang === 'zh-HK' ? '國際' : 'IAU') : 
+                                                style === 'chinese' ? (lang === 'zh-HK' ? '中國' : 'CHN') : 
+                                                (lang === 'zh-HK' ? '市區' : 'Urban')}
+                                        </button>
+                                    ))}
+                                </div>
+                                
+                                {/* Style Info Button */}
                                 <button
-                                    key={style}
-                                    onClick={() => onMapStyleChange(style)}
-                                    className={`px-3 py-1 rounded-md text-xs font-bold transition-colors uppercase tracking-wider ${
-                                        mapStyle === style 
-                                        ? 'bg-kidrise-orange text-white shadow-sm' 
-                                        : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                                    onClick={() => setShowStyleInfo(!showStyleInfo)}
+                                    className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border transition-all ${
+                                        showStyleInfo ? 'bg-white text-black border-white' : 'bg-white/10 text-gray-400 border-white/10 hover:text-white'
                                     }`}
                                 >
-                                    {style === 'western' ? (lang === 'zh-HK' ? '國際' : 'IAU') : 
-                                     style === 'chinese' ? (lang === 'zh-HK' ? '中國' : 'CHN') : 
-                                     (lang === 'zh-HK' ? '市區' : 'Urban')}
+                                    ?
                                 </button>
-                            ))}
+
+                                {/* Tooltip Popup */}
+                                {showStyleInfo && (
+                                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 bg-black/90 backdrop-blur-xl border border-white/20 rounded-xl p-4 shadow-2xl z-50 animate-fade-in text-left">
+                                        <div className="space-y-3">
+                                            <div>
+                                                <div className="text-kidrise-orange font-bold text-xs mb-1 border-b border-white/10 pb-1">
+                                                    {lang === 'zh-HK' ? '國際 (IAU)' : 'IAU (Western)'}
+                                                </div>
+                                                <p className="text-[10px] text-gray-300 leading-normal">
+                                                    {t.mapStyleInfo.western}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <div className="text-kidrise-orange font-bold text-xs mb-1 border-b border-white/10 pb-1">
+                                                    {lang === 'zh-HK' ? '中國星官' : 'Chinese Asterisms'}
+                                                </div>
+                                                <p className="text-[10px] text-gray-300 leading-normal">
+                                                    {t.mapStyleInfo.chinese}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <div className="text-kidrise-orange font-bold text-xs mb-1 border-b border-white/10 pb-1">
+                                                    {lang === 'zh-HK' ? '市區 (Urban)' : 'Urban View'}
+                                                </div>
+                                                <p className="text-[10px] text-gray-300 leading-normal">
+                                                    {t.mapStyleInfo.urban}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        {/* Arrow */}
+                                        <div className="absolute left-1/2 -translate-x-1/2 bottom-[-6px] w-3 h-3 bg-black/90 border-r border-b border-white/20 transform rotate-45"></div>
+                                        
+                                        {/* Close Overlay for Mobile */}
+                                        <div className="fixed inset-0 z-[-1]" onClick={() => setShowStyleInfo(false)}></div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* Right Side: Visual Tools (Art, Gyro, Camera) */}
+                        <div className="h-0.5 w-full bg-white/10 md:w-0.5 md:h-12"></div>
+
+                        {/* RIGHT: Tools Split */}
                         <div className="flex items-center gap-3">
-                             {/* Art Toggle */}
-                             <button
-                                onClick={onToggleArt}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all ${
-                                    showArt ? 'bg-purple-500/20 border-purple-500 text-purple-300' : 'bg-white/5 border-white/10 text-gray-400'
-                                }`}
-                                title="Toggle Constellation Art"
-                            >
-                                <i className="fas fa-star text-xs"></i>
-                                <span className="text-xs font-bold">{lang === 'zh-HK' ? '星座' : 'Art'}</span>
-                            </button>
+                            {/* Animation Group */}
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '轉動／速度' : 'Rotation / Speed'}
+                                </span>
+                                <div className="flex bg-black/20 rounded-lg p-1 border border-white/5 h-9 box-border items-center">
+                                    <button
+                                        onClick={onToggleAnimation}
+                                        className={`h-7 w-8 flex items-center justify-center rounded-md transition-all ${
+                                            isAnimating 
+                                            ? 'bg-red-500/20 text-red-400' 
+                                            : 'text-white hover:bg-white/10'
+                                        }`}
+                                        title={isAnimating ? "Stop" : "Play"}
+                                    >
+                                        <i className={`fas ${isAnimating ? 'fa-stop' : 'fa-play'} text-xs`}></i>
+                                    </button>
+                                    <button
+                                        onClick={handleSpeedClick}
+                                        className={`h-7 w-8 flex items-center justify-center rounded-md transition-all ${
+                                            animationSpeed > 1
+                                            ? 'text-yellow-400 font-bold'
+                                            : 'text-gray-400 hover:text-white'
+                                        }`}
+                                        title="Speed"
+                                    >
+                                        <span className="text-[10px]">{animationSpeed}x</span>
+                                    </button>
+                                </div>
+                            </div>
 
-                             {/* Gyro Toggle */}
-                             <button
-                                onClick={onToggleGyro}
-                                className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-all ${
-                                    enableGyro ? 'bg-green-500/20 border-green-500 text-green-400 animate-pulse' : 'bg-white/5 border-white/10 text-gray-400'
-                                }`}
-                                title="Gyroscope Mode"
+                            <div className="hidden md:block w-px h-10 bg-white/10 mx-1"></div>
+
+                            {/* Zoom Group */}
+                            <div className="flex flex-col gap-1">
+                                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider ml-1">
+                                    {lang === 'zh-HK' ? '放大' : 'Zoom'}
+                                </span>
+                                <div className="flex bg-black/20 rounded-lg p-1 border border-white/5 h-9 box-border items-center">
+                                    <button onClick={onZoomOut} className="h-7 w-8 flex items-center justify-center rounded-md text-white hover:bg-white/10 transition-all">
+                                        <i className="fas fa-minus text-xs"></i>
+                                    </button>
+                                    <button onClick={onResetZoom} className="h-7 px-2 flex items-center justify-center rounded-md text-gray-400 hover:text-white transition-all font-bold text-xs" title={lang === 'zh-HK' ? '重置' : 'Reset'}>
+                                        {lang === 'zh-HK' ? '重置' : 'R'}
+                                    </button>
+                                    <button onClick={onZoomIn} className="h-7 w-8 flex items-center justify-center rounded-md text-white hover:bg-white/10 transition-all">
+                                        <i className="fas fa-plus text-xs"></i>
+                                    </button>
+                                    
+                                    <div className="w-[1px] h-4 bg-white/10 mx-1 self-center"></div>
+
+                                    {/* Zoom to Sky Button */}
+                                    <button 
+                                        onClick={onZoomToSky}
+                                        className="h-7 w-8 flex items-center justify-center rounded-md text-white hover:bg-white/10 transition-all active:scale-95"
+                                        title={lang === 'zh-HK' ? '將天空置中' : 'Zoom to Sky'}
+                                    >
+                                         <svg viewBox="0 0 1182 1182" xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" className="w-[14px] h-[14px]">
+                                            <path d="M593.352,191.596C1037.26,200.331 1152.14,411.603 1131.2,572.477C1096.86,836.357 826.467,989.517 593.352,989.517C249.565,989.517 68.179,726.567 49.478,572.477C33.265,438.885 120.438,309.582 285.011,243.282C418.548,189.486 593.352,191.596 593.352,191.596ZM587.751,350.79L529.704,529.44L341.86,529.44L493.829,639.851L435.782,818.501L587.751,708.09L739.719,818.501L681.673,639.851L833.641,529.44L645.798,529.44L587.751,350.79Z" fill="currentColor"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* NEW: Hide Button integrated into the bar */}
+                        <div className="hidden md:block w-px h-10 bg-white/10 mx-1"></div>
+
+                         <div className="flex flex-col gap-1 h-full justify-end">
+                            <button
+                                onClick={() => setIsVisible(false)}
+                                className="flex items-center gap-2 px-3 h-9 rounded-lg bg-white/5 hover:bg-white/15 text-gray-300 hover:text-white transition-all font-bold text-xs border border-white/5 hover:border-white/20 whitespace-nowrap self-end"
+                                title={lang === 'zh-HK' ? '隱藏設定' : 'Hide Controls'}
                             >
-                                <i className="fas fa-mobile-alt"></i>
-                            </button>
-                            
-                             {/* Camera */}
-                             <button
-                                onClick={onCameraClick}
-                                className="w-9 h-9 rounded-lg flex items-center justify-center border border-white/10 bg-gradient-to-br from-pink-500/20 to-purple-500/20 text-pink-300 hover:text-white hover:border-pink-500/50 transition-all"
-                                title="Take Screenshot"
-                            >
-                                <i className="fas fa-camera"></i>
+                                <span>{lang === 'zh-HK' ? '隱藏' : 'Hide'}</span>
+                                <i className="fas fa-chevron-down text-xs"></i>
                             </button>
                         </div>
 
                     </div>
-
                 </div>
-            </div>
+            )}
         </div>
     );
 };

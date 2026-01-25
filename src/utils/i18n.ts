@@ -493,7 +493,12 @@ export const translations = {
         step2Desc: '橢圓窗口內所示的便是香港此刻可以看到的星座。拿着旋轉星圖，按下述方式對照夜空：',
         step3Title: '3. 觀測技巧',
         step3Desc: '觀看西方夜空時，將盤上的「西」字向下；觀看北方時，將「北」字向下。',
-        note: '在 App 中，你可以直接拖動黑色星盤來改變時間，或將手機舉向天空使用指南針模式！'
+        note: '在 App 中，你可以：\n1. 改變時間：拖動黑色星盤、日期環，或直接在背景黑色區域滑動。\n2. 移動星圖：按住最外層的外框拖動。\n3. 放大縮小：使用滑鼠滾輪 (桌面版) 或雙指開合 (手機版)。'
+    },
+    mapStyleInfo: {
+        western: '國際 (IAU)：顯示國際天文學聯合會定義的 88 個現代星座，包含 4 等以上的恆星。',
+        chinese: '中國：顯示中國古代星官系統 (三垣二十八宿)。',
+        urban: '市區：僅顯示在光害嚴重的城市夜空中較易看見的亮星與主要星座連線。'
     }
   },
   'en': {
@@ -822,7 +827,12 @@ export const translations = {
         step2Desc: 'The constellations shown in the oval opening reflect those that can be observed in Hong Kong now. Hold the planisphere as described below.',
         step3Title: '3. Observation',
         step3Desc: 'The "W" should point downwards when viewing the western sky. The "N" should point downwards when viewing the northern sky.',
-        note: 'In this App, simply drag the Star Disk to change time, or enable Compass Mode and hold your phone to the sky!'
+        note: 'Interactive Controls:\n1. Change Time: Drag the black Star Disk, Date Ring, or the background area.\n2. Move Map: Drag the outer frame.\n3. Zoom: Use mouse wheel (Desktop) or pinch gesture (Mobile).'
+    },
+    mapStyleInfo: {
+        western: 'IAU: Shows the 88 modern constellations defined by the IAU, with stars up to magnitude 4.',
+        chinese: 'Chinese: Shows the traditional Chinese star asterisms (Three Enclosures and Twenty-Eight Mansions).',
+        urban: 'Urban: Shows only the brighter stars and major constellations visible in light-polluted urban skies.'
     },
 
     // Questions

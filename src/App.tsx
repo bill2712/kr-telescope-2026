@@ -78,9 +78,8 @@ function App() {
           
           const delta = time - lastTime;
           if (delta > 30) { 
-              // Speed 1: 1 min/frame (~600x real time) 
-              // Speed 100: 10 min/frame (~6000x real time)
-              const minutesToAdd = (delta / 16) * (animationSpeed === 1 ? 1 : 10);
+              // Speed: Base is ~1 min/frame (at 60fps). animationSpeed is multiplier (1x, 5x, 10x, 100x)
+              const minutesToAdd = (delta / 16) * animationSpeed;
               
               setCurrentDate(prev => new Date(prev.getTime() + minutesToAdd * 60000));
               lastTime = time;
@@ -227,21 +226,11 @@ function App() {
                     onZoomIn={() => starMapRef.current?.zoomIn()}
                     onZoomOut={() => starMapRef.current?.zoomOut()}
                     onResetZoom={() => starMapRef.current?.resetZoom()}
-                    onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
-                    locationName={locationName || (lang === 'zh-HK' ? '香港 (預設)' : 'Hong Kong (Def)')}
+                    onZoomToSky={() => starMapRef.current?.zoomToSky()}
                     
                     mapStyle={mapStyle}
                     onMapStyleChange={setMapStyle}
 
-                    // Unified Map Tools
-                    viewMode={viewMode}
-                    onSetViewMode={setViewMode}
-                    enableGyro={enableGyro}
-                    onToggleGyro={toggleGyro}
-                    showArt={showArt}
-                    onToggleArt={() => setShowArt(!showArt)}
-                    onCameraClick={() => setShowPostcard(true)}
-                    onLocationUpdate={handleGeolocation}
                     onToggleGuide={() => setShowUsageGuide(!showUsageGuide)}
                 />
             </>

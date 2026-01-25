@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import * as d3 from 'd3';
 import { Coordinates, Language } from '../types';
+import { getLocalSiderealTime } from '../utils/astroUtils';
 
 export type MapStyle = 'western' | 'chinese' | 'urban';
 
@@ -8,12 +9,13 @@ export interface StarMapHandle {
     zoomIn: () => void;
     zoomOut: () => void;
     resetZoom: () => void;
+    zoomToSky: () => void;
 }
 
 interface StarMapProps {
   location: Coordinates;
   date: Date; // Drives rotation
-  onDateChange?: (newDate: Date) => void;
+  onDateChange: (newDate: Date) => void;
   lang: Language;
   mapStyle?: MapStyle;
   enableGyro?: boolean;
@@ -57,6 +59,28 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
           if (containerRef.current && zoomBehavior.current) {
               d3.select(containerRef.current).transition().call(zoomBehavior.current.transform, d3.zoomIdentity);
           }
+      },
+      zoomToSky: () => {
+          if (containerRef.current && zoomBehavior.current) {
+               const { width, height } = containerRef.current.getBoundingClientRect();
+               // Reduced scale to ensure visibility of the whole oval
+               const k = 1.6; 
+               
+               // The visual center of the black oval is lower than the container center.
+               // We need to target a point slightly below the center.
+               const verticalOffset = height * 0.18; // Shift target down by 18% of height to move map UP
+               
+               // Calculate translation to center the Target Point (W/2, H/2 + Offset)
+               // ScreenCenter = Target * k + Translate
+               // Translate = ScreenCenter - Target * k
+               const x = (width / 2) - (width / 2) * k;
+               const y = (height / 2) - ((height / 2) + verticalOffset) * k;
+               
+               const t = d3.zoomIdentity.translate(x, y).scale(k);
+
+               d3.select(containerRef.current).transition().duration(750)
+                   .call(zoomBehavior.current.transform, t);
+          }
       }
   }));
 
@@ -74,22 +98,50 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     fetchJacket();
   }, []);
   
-  // 1. Calculate Rotation based on Time (Your existing logic)
+
+  // 1. Calculate Rotation based on Legacy Logic (Reverse engineered from original app)
   useEffect(() => {
-    const calculateRotation = () => {
-       const currentYear = date.getFullYear();
-       const jan1 = new Date(currentYear, 0, 1, 0, 0, 0);
-       const diffMs = date.getTime() - jan1.getTime();
-       const diffHours = diffMs / (1000 * 60 * 60);
-       
-       // Derived Rate (Iteration 3)
-       const rate = 14.958934;
-       const offset = -180;
-       
-       const totalRotation = (diffHours * rate) + offset;
-       setRotation(totalRotation);
-    };
-    calculateRotation();
+    // Constants from original app
+    const monthOffsets = [0, 30.49, 58.11, 88.65, 118.33, 148.86, 178.52, 209.04, 239.64, 269.15, 299.78, 329.37];
+    // Rate appears to be ~14.9 deg/hour or ~0.98 deg/day
+    // Formula from snippet: i = -1 * e[Month] + -1 * (Day - 1) * .98 + r[Time]
+    
+    if (!date) return;
+    
+    const month = date.getMonth(); // 0-11
+    const day = date.getDate(); // 1-31
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    
+    // 1. Month Offset
+    const mOffset = monthOffsets[month];
+    
+    // 2. Day Offset
+    const dOffset = (day - 1) * 0.98;
+    
+    // 3. Time Offset
+    // Logic: 12:00 AM = 0. 1:00 AM = -14.9. 11:00 PM = +14.9.
+    // Map time to hours relative to midnight (0).
+    // range: -12 to +12 approx (centered at midnight).
+    let tHours = hours + minutes / 60;
+    
+    // Adjust to be relative to closest Midnight (0 or 24)
+    // If time is > 12 (e.g. 13:00 - 23:59), we treat it as approaching midnight from left (negative hours relative to 24).
+    // Actually, simply:
+    // If tHours > 12, subtract 24.
+    // 13:00 (1 PM) -> -11. (offset = -(-11)*14.9 = +163.9).
+    // Wait, 6 PM (18:00) -> -6. offset = +89.4. Correct.
+    if (tHours > 12) {
+        tHours -= 24;
+    }
+    
+    const tOffset = -1 * tHours * 14.9;
+    
+    // Total Rotation
+    const totalRotation = -1 * mOffset - dOffset + tOffset;
+    
+    setRotation(totalRotation);
+    
   }, [date]);
 
   // 2. Setup D3 Zoom & Drag on Container
@@ -100,18 +152,12 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     const selection = d3.select(containerRef.current);
 
     // --- ZOOM BEHAVIOR (Pan Map) ---
-    // Active if: 
-    // 1. Event is Wheel
-    // 2. OR Event targeted "jacket-path" (The Outer Ring)
     const zoom = d3.zoom<HTMLDivElement, unknown>()
         .scaleExtent([0.5, 5])
         .filter((event) => {
              // Always allow wheel
              if (event.type === 'wheel') return true;
              // Allow mousedown/touchstart ONLY if target is part of Jacket
-             // We'll class the SVG paths in the jacket as 'jacket-path' via parent
-             // But simplest check: Check if target is inside the .jacket-layer
-             // AND NOT transparent (Inline SVG clicks only fire on paths usually if pointer-events:auto)
              const target = event.target as Element;
              return target.closest('.jacket-layer') !== null;
         })
@@ -123,9 +169,8 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     selection.call(zoom);
 
     // --- DRAG BEHAVIOR (Rotate Disk) ---
-    // Active if:
-    // 1. Target is NOT .jacket-layer (i.e., it fell through to background or disk)
-    const rate = 14.958934;
+    // Sidereal Rate: ~15.041 degrees per hour
+    const rate = 15.04107;
     let startAngle = 0;
     let startDate = date;
 
@@ -133,23 +178,9 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
         .filter((event) => {
              // Allow ONLY if target is NOT the jacket
              const target = event.target as Element;
-             // If we clicked the text/stars (pointer-events-none on disk), it falls through to container?
-             // Actually, we want to catch clicks on the "Hole" or "Background".
-             // If we clicked Jacket, we return false (handled by zoom/pan).
              return target.closest('.jacket-layer') === null;
         })
         .on('start', (event) => {
-            // Calculate initial angle relative to Center of Map
-            // Note: We need center of the ROTATING DISK, which is center of the container roughly.
-            // We can use the container's center since we only pan the container's content, not the container itself?
-            // Actually, the transform moves the inner div. 
-            // We need the center of the visual disk on screen.
-            
-            // To get accurate center, we can query the ring's bounding box ??
-            // OR just use the container center if the map is centered.
-            // But the map might be panned.
-            
-            // Ref to the disk Wrapper
             if (!diskRef.current) return;
             const rect = diskRef.current.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
@@ -166,18 +197,17 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
            
            const currentAngle = Math.atan2(event.sourceEvent.clientY - cy, event.sourceEvent.clientX - cx) * (180 / Math.PI);
            
-           let deltaRaw = currentAngle - startAngle;
+           const deltaRaw = currentAngle - startAngle;
+           // If we rotate visually by deltaRaw degrees...
+           // One hour = 15.041 degrees.
+           // hoursDelta = delta / rate
            const hoursDelta = deltaRaw / rate;
-           const newTime = startDate.getTime() + (hoursDelta * 60 * 60 * 1000);
+           
+           // Drag interaction: Invert logic to match direct manipulation
+           const newTime = startDate.getTime() - (hoursDelta * 60 * 60 * 1000);
            onDateChange(new Date(newTime));
         });
 
-    // Apply drag to the same container logic, BUT D3 Zoom consumes events.
-    // To make them coexist, typically Zoom is on Parent, Drag on Child.
-    // OR we register both on Parent but use strict filters (which we did).
-    // HOWEVER, D3 Zoom usually `preventDefaults` everything.
-    // We might need to manually call the drag handler if the zoom filter rejects it?
-    // No, if Zoom filter returns false, it ignores the event, allowing it to bubble or be handled by other listeners.
     selection.call(drag);
 
     return () => {
@@ -252,13 +282,7 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
                 <div 
                     className="absolute inset-0 z-10 jacket-layer cursor-move pointer-events-none [&_svg]:pointer-events-none [&_path]:pointer-events-auto [&_rect]:pointer-events-auto [&_circle]:pointer-events-auto"
                     dangerouslySetInnerHTML={{ __html: jacketSvg }}
-                    /* The SVG itself should be sized 100% 100% via CSS inside or here if needed. 
-                       Usually SVGs respond well, but we ensure it fits. 
-                       We also pointer-events-auto on the PATHS (default) but checking transparency. */
-                    style={{
-                         // Ensure internal SVG scales correctly
-                         // width: '100%', height: '100%' 
-                    }}
+                    style={{}}
                 >
                 </div>
             </div>
