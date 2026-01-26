@@ -3,6 +3,7 @@ import { Language } from '../types';
 import { translations } from '../utils/i18n';
 import { MapStyle } from './StarMap';
 import CustomSelect from './ui/CustomSelect';
+import Compass from './Compass';
 
 interface StarMapControlsProps {
     lang: Language;
@@ -48,6 +49,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
         time: currentDate.toTimeString().slice(0, 5) // HH:MM
     });
     const [activePanel, setActivePanel] = useState<'none' | 'time' | 'style'>('none');
+    const [showCompass, setShowCompass] = useState(false);
 
     // --- TIME LOGIC ---
     const handleGo = () => {
@@ -115,10 +117,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     return (
         <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-end gap-3 pointer-events-none">
             
-            {/* Status Overlay (Top Left of this sidebar? No, keep it separate or attached. 
-                Let's put it floating near the top of the sidebar for context, or just rely on the map text) 
-                Actually, user asked for layout change, let's keep the sidebar clean.
-            */}
+            {showCompass && <Compass lang={lang} onClose={() => setShowCompass(false)} />}
 
             {/* MAIN SIDEBAR */}
             <div className="pointer-events-auto flex flex-col gap-3">
@@ -273,13 +272,26 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                     </button>
                 </div>
 
-                {/* 4. Guide Button */}
-                <button
-                    onClick={onToggleGuide}
-                    className="glass-panel w-14 h-14 rounded-2xl flex items-center justify-center text-secondary hover:text-white hover:bg-secondary transition-all shadow-xl group"
-                >
-                    <i className="fas fa-question text-xl group-hover:scale-110 transition-transform"></i>
-                </button>
+                {/* 4. Tools Group */}
+                <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
+                    {/* Guide Button */}
+                    <button
+                        onClick={onToggleGuide}
+                        className="w-10 h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '教學' : 'Guide'}
+                    >
+                        <i className="fas fa-question text-lg"></i>
+                    </button>
+                    
+                    {/* Compass Button */}
+                    <button
+                        onClick={() => setShowCompass(true)}
+                        className="w-10 h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors animate-pulse-slow"
+                        title={lang === 'zh-HK' ? '指南針' : 'Compass'}
+                    >
+                        <i className="fas fa-compass text-lg"></i>
+                    </button>
+                </div>
 
             </div>
         </div>

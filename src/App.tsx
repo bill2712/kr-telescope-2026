@@ -37,7 +37,6 @@ function App() {
   const [isLiveTime, setIsLiveTime] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showPostcard, setShowPostcard] = useState(false);
-  const [showHero, setShowHero] = useState(true); // Hero defaults to true
   const [mapStyle, setMapStyle] = useState<MapStyle>('western');
   const [showUsageGuide, setShowUsageGuide] = useState(false);
   
@@ -47,9 +46,8 @@ function App() {
   const starMapRef = useRef<StarMapHandle>(null);
   
 
-
-  // Navigation State
-  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'>('starmap');
+  // Navigation State - Default to 'hero'
+  const [currentPage, setCurrentPage] = useState<'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'>('hero');
 
   // New States
   const [showArt, setShowArt] = useState(false);
@@ -172,7 +170,6 @@ function App() {
       currentPage={currentPage}
       onNavigate={(page) => {
         setCurrentPage(page);
-        setShowHero(false); // Dismiss hero on any navigation
       }}
       locationName={locationName}
       currentDate={currentDate}
@@ -189,12 +186,12 @@ function App() {
       
       {showUsageGuide && <UsageGuideWizard lang={lang} onClose={() => setShowUsageGuide(false)} />}
 
-      {/* Hero Landing */}
-      {showHero && (
+      {/* Hero Landing Page */}
+      {currentPage === 'hero' && (
         <div className="absolute inset-0 z-[110] bg-dark animate-fade-in">
           <Hero 
             lang={lang} 
-            onStart={() => setShowHero(false)} 
+            onStart={() => setCurrentPage('starmap')} 
           />
         </div>
       )}
@@ -246,7 +243,7 @@ function App() {
                     mapStyle={mapStyle}
                     onMapStyleChange={setMapStyle}
 
-                    onToggleGuide={() => setShowUsageGuide(!showUsageGuide)}
+                    onToggleGuide={() => setShowUsageGuide(true)}
                 />
             </>
           )}
@@ -268,8 +265,8 @@ function App() {
       {currentPage === 'planner' && <Planner lang={lang} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
-      {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => setCurrentPage('starmap')} />}
-      {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('starmap')} />}
+      {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => setCurrentPage('hero')} />}
+      {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('hero')} />}
 
     </Layout>
   );

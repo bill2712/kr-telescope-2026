@@ -4,12 +4,13 @@ import { Language } from '../../types';
 import { translations } from '../../utils/i18n';
 import { translations as t } from '../../utils/i18n'; // Double import compat
 
+// Update Page type to include hero
 interface HeaderProps {
   lang: Language;
   onToggleLang: () => void;
   // Navigation
-  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
+  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
+  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate }) => {
@@ -38,7 +39,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
         {/* Logo */}
         <div 
           className="flex items-center gap-2 cursor-pointer group z-50 relative" 
-          onClick={() => handleNavigate('starmap')}
+          onClick={() => handleNavigate('hero')}
         >
           <img src={`${import.meta.env.BASE_URL}images/kidrise-logo_new.png`} alt="Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:rotate-12 transition-transform" />
           <span className="font-bold text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-colors">

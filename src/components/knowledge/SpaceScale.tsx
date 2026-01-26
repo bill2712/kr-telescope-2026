@@ -38,12 +38,8 @@ const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack, expl }) => {
   return (
     <div className="flex flex-col h-full bg-[#0B0D17] text-white">
       {/* Header */}
-      <div className="flex justify-between items-center p-4">
-         <button onClick={onBack} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
-            <i className="fas fa-arrow-left"></i>
-         </button>
+      <div className="flex justify-center items-center p-4">
          <h2 className="text-xl font-bold">{t.scaleTitle}</h2>
-         <div className="w-10"></div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-6">

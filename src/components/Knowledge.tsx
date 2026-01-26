@@ -44,18 +44,23 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
     if (activeModule) {
         return (
             <div className="min-h-full pt-20 px-4 pb-24 flex flex-col">
-                <button 
-                  onClick={() => setActiveModule(null)}
-                  className="self-start mb-4 px-4 py-2 bg-white/10 rounded-full text-sm font-bold hover:bg-white/20 transition-colors flex items-center gap-2 backdrop-blur-md border border-white/10"
-                >
-                    <i className="fas fa-arrow-left"></i> {t.btnBack || 'Back'}
-                </button>
                 <div className="flex-1 w-full max-w-5xl mx-auto bg-[#1a1d2d]/80 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative">
                      {/* Dynamic Background based on type */}
                      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-gradient-to-br from-indigo-900 to-black"></div>
 
+                     {/* Back Button (Moved Inside) */}
+                     <div className="absolute top-6 left-6 z-50">
+                        <button 
+                            onClick={() => setActiveModule(null)}
+                            className="px-4 py-2 bg-black/40 hover:bg-black/60 rounded-xl text-sm font-bold text-white transition-all flex items-center gap-2 backdrop-blur-md border border-white/10 shadow-lg group"
+                        >
+                            <i className="fas fa-chevron-left group-hover:-translate-x-1 transition-transform"></i>
+                            {t.btnBack || 'Back'}
+                        </button>
+                     </div>
+
                     {/* Content Container */}
-                     <div className="relative z-10 w-full h-full p-4 md:p-8 flex flex-col">
+                     <div className="relative z-10 w-full h-full p-4 md:p-8 flex flex-col pt-20 md:pt-8">
                         {activeModule === 'solar' && <SolarSystem lang={lang} expl={t.expl?.solar} />}
                         {activeModule === 'moon' && <MoonPhaseLearn lang={lang} expl={t.expl?.moonPhase} />}
                         {activeModule === 'star' && <StarColors lang={lang} expl={t.expl?.starColor} />}

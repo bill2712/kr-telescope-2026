@@ -6,8 +6,8 @@ import { Language } from '../../types';
 interface LayoutProps {
   children: ReactNode;
   lang: Language;
-  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
+  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
+  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
   // TopBar Props - Deprecated for Header but passed for logic if needed (Time/Location moved to overlay)
   locationName?: string;
   currentDate: Date;

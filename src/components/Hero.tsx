@@ -58,7 +58,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
           </p>
         </div>
 
-        <div className="pt-2">
+        <div className="pt-8 pb-16">
           <button 
             onClick={onStart} 
             className="mx-auto group shadow-xl shadow-secondary/20 hover:shadow-secondary/40 w-full xs:w-auto px-8 py-4 text-xl rounded-2xl border border-secondary/50 bg-secondary/20 backdrop-blur-md text-white font-bold transition-all hover:bg-secondary/40 flex items-center justify-center gap-2"
