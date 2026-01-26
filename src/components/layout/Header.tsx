@@ -8,8 +8,8 @@ interface HeaderProps {
   lang: Language;
   onToggleLang: () => void;
   // Navigation
-  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide';
-  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide') => void;
+  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
+  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate }) => {
@@ -17,14 +17,14 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
   const text = translations[lang];
 
   // Map to Microscope icons where possible, or use FontAwesome as before
-  const navItems: { id: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide'; label: string }[] = [
+  const navItems: { id: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'; label: string }[] = [
     { id: 'starmap', label: text.menuMap },
     { id: 'planner', label: text.menuPlanner },
     { id: 'learn', label: text.menuLearn },
-    { id: 'gallery', label: text.menuGallery || "Gallery" }, // Gallery not in Telescope? Using existing items
     { id: 'quiz', label: text.menuQuiz },
     { id: 'guide', label: text.menuGuide },
-  ].filter(item => item.id !== 'gallery'); // Remove gallery if not present in Telescope types
+    { id: 'encyclopedia', label: text.menuEncyclopedia },
+  ];
 
   const handleNavigate = (id: any) => {
     onNavigate(id);

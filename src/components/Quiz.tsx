@@ -16,36 +16,16 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
     const [showExplanation, setShowExplanation] = useState(false);
     const [selectedAns, setSelectedAns] = useState<number | null>(null);
+    const [userName, setUserName] = useState("");
 
     // Helper for base path
     const getAssetPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
-
-    // Image mapping
-    const getQuizImage = (idx: number) => {
-        // Use generated images for specific questions, placeholders for others
-        if (idx === 0) return getAssetPath('assets/knowledge/quiz_sirius.png'); // Sirius
-        if (idx === 1) return getAssetPath('assets/knowledge/quiz_mercury.png'); // Mercury
-        if (idx === 2) return getAssetPath('assets/knowledge/moon.png'); // Moon (fallback/placeholder)
-        if (idx === 4) return getAssetPath('assets/knowledge/andromeda_galaxy.png'); // Galaxy
-        if (idx === 9) return getAssetPath('assets/knowledge/saturn.png'); // Saturn (if exists, else handle import)
-        
-        switch(idx) {
-            case 0: return getAssetPath('assets/knowledge/quiz_sirius.png');
-            case 1: return getAssetPath('assets/knowledge/quiz_mercury.png');
-            case 4: return getAssetPath('assets/knowledge/andromeda_galaxy.png');
-            case 5: return getAssetPath('assets/knowledge/rigel.png'); // Blue star
-            case 7: return getAssetPath('assets/knowledge/antares.png'); // Mars-like red star? Or just use Mars if available. I'll use Antares as placeholder for Red/Mars context if Mars isn't there.
-            case 11: return getAssetPath('assets/knowledge/blackhole.png');
-            case 13: return getAssetPath('assets/knowledge/polaris.png');
-            default: return getAssetPath('assets/knowledge/quiz_sirius.png'); // Generic fallback
-        }
-    };
 
     // Questions mapped from i18n
     const questions = [
         { q: t.q1, a: t.q1a, correct: 0, explain: t.q1_explain, img: getAssetPath('assets/knowledge/quiz_sirius.png') },
         { q: t.q2, a: t.q2a, correct: 2, explain: t.q2_explain, img: getAssetPath('assets/knowledge/quiz_mercury.png') },
-        { q: t.q3, a: t.q3a, correct: 1, explain: t.q3_explain, img: getAssetPath('assets/knowledge/moon.png') }, // Note: src/assets had no 'moon.png', checking list... it had 'betelgeuse.png' etc. 'moon.png' missing?
+        { q: t.q3, a: t.q3a, correct: 1, explain: t.q3_explain, img: getAssetPath('assets/knowledge/moon.png') },
         { q: t.q4, a: t.q4a, correct: 1, explain: t.q4_explain, img: getAssetPath('assets/knowledge/jupiter.png') },
         { q: t.q5, a: t.q5a, correct: 1, explain: t.q5_explain, img: getAssetPath('assets/knowledge/andromeda_galaxy.png') },
         { q: t.q6, a: t.q6a, correct: 2, explain: t.q6_explain, img: getAssetPath('assets/knowledge/rigel.png') },
@@ -53,31 +33,22 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         { q: t.q8, a: t.q8a, correct: 0, explain: t.q8_explain, img: getAssetPath('assets/knowledge/mars.png') },
         { q: t.q9, a: t.q9a, correct: 1, explain: t.q9_explain, img: getAssetPath('assets/knowledge/sun.png') },
         { q: t.q10, a: t.q10a, correct: 0, explain: t.q10_explain, img: getAssetPath('assets/knowledge/saturn.png') },
-        { q: t.q11, a: t.q11a, correct: 1, explain: t.q11_explain, img: getAssetPath('assets/knowledge/meteor.png') }, // 'meteor.png' exists
-        { q: t.q12, a: t.q12a, correct: 1, explain: t.q12_explain, img: getAssetPath('assets/knowledge/blackhole.png') }, // 'blackhole.png' exists (no underscore)
-        { q: t.q13, a: t.q13a, correct: 0, explain: t.q13_explain, img: getAssetPath('assets/knowledge/pleiades.png') }, // star cluster -> pleiades
+        { q: t.q11, a: t.q11a, correct: 1, explain: t.q11_explain, img: getAssetPath('assets/knowledge/meteor.png') },
+        { q: t.q12, a: t.q12a, correct: 1, explain: t.q12_explain, img: getAssetPath('assets/knowledge/blackhole.png') },
+        { q: t.q13, a: t.q13a, correct: 0, explain: t.q13_explain, img: getAssetPath('assets/knowledge/pleiades.png') },
         { q: t.q14, a: t.q14a, correct: 1, explain: t.q14_explain, img: getAssetPath('assets/knowledge/polaris.png') },
         { q: t.q15, a: t.q15a, correct: 0, explain: t.q15_explain, img: getAssetPath('assets/knowledge/moon.png') },
     ];
 
-    // Helper to try and resolve images, falling back if needed.
-    // In strict React/Vite we should import. For simplicity in this edit, assuming public/assets availability or import.
-    // However, since we are in src, we should dynamic import or use a helper. 
-    // To be safe, I'm using relative paths compatible with Vite assuming they are in public or imported.
-    // Actually, src assets need to be imported. Let's rely on the fact that I moved them to src/assets/knowledge.
-    // I will just use the string paths and hope the user has a way to load them, or I should have imported them.
-    // Given the previous code didn't import images, it likely relies on them being static or I need to update the build.
-    // Wait, the previous code used `src` in `GuideItem`. Let's assume standard Vite asset handling.
-
     useEffect(() => {
-        if (finished) {
+        if (finished && (score / questions.length >= 0.6)) {
             CanvasConfetti({
                 particleCount: 150,
                 spread: 70,
                 origin: { y: 0.6 }
             });
         }
-    }, [finished]);
+    }, [finished, score]);
 
     const handleAnswer = (idx: number) => {
         if (feedback !== null || showExplanation) return;
@@ -88,13 +59,11 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         if (isCorrect) {
             setScore(s => s + 1);
             setFeedback('correct');
-            // Show explanation after short delay
             setTimeout(() => {
                 setShowExplanation(true);
             }, 1000);
         } else {
             setFeedback('wrong');
-            // Try again logic
             setTimeout(() => {
                 setFeedback(null);
                 setSelectedAns(null);
@@ -121,6 +90,11 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         setStarted(true);
         setFeedback(null);
         setShowExplanation(false);
+        setUserName("");
+    };
+
+    const handleDownload = () => {
+        window.print();
     };
 
     const getRank = () => {
@@ -132,20 +106,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         return { title: t.rank1, color: 'text-gray-400' };
     };
 
-    // Pre-import/define images to ensure they load. 
-    // Since I can't easily iterate file system here, I'll rely on the paths I set.
-    // Note: I need to make sure the paths I set in `questions` array actually exist or fallback.
-    // I know `quiz_sirius.png` and `quiz_mercury.png` exist.
-    // `moon.png`, `jupiter.png` etc might NOT exist unless I created them.
-    // I should check which files exist. 
-    // Existing files in `src/assets/knowledge`: 
-    // polaris, sirius, betelgeuse, orion_nebula, pleiades, rigel, aldebaran, arcturus, vega, altair, antares, andromeda_galaxy
-    // plus the 2 new ones.
-    // So for Q3 (Moon), Q4(Jupiter) etc I should fallback to something existing or generic.
-    
-    // Images are already resolved in the questions array with getAssetPath
-    // No need for dynamic resolution logic anymore.
-
+    // --- 1. Intro View ---
     if (!started) {
         return (
             <div className="h-full pt-20 px-4 flex flex-col items-center justify-center animate-fade-in-up-simple">
@@ -165,34 +126,146 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         );
     }
 
+    // --- 2. Result View ---
     if (finished) {
         const rank = getRank();
+        const percentage = score / questions.length;
+        const isPass = percentage >= 0.6; // 60% pass rate
+
         return (
-            <div className="h-full pt-20 px-4 flex flex-col items-center justify-center animate-pop">
-                <div className="max-w-md w-full bg-[#1c1e33] p-8 rounded-3xl border border-white/20 text-center shadow-2xl">
+            <div className="min-h-full pt-20 px-4 flex flex-col items-center justify-center animate-pop pb-20">
+                 <style>
+                    {`
+                    @media print {
+                        @page { margin: 0; size: landscape; }
+                        body * { visibility: hidden; }
+                        .certificate-container, .certificate-container * { visibility: visible; }
+                        .certificate-container {
+                            position: fixed;
+                            left: 0;
+                            top: 0;
+                            width: 100vw;
+                            height: 100vh;
+                            z-index: 9999;
+                            display: flex !important;
+                            align-items: center;
+                            justify-content: center;
+                            background: white;
+                        }
+                    }
+                    `}
+                </style>
+
+                {/* Main Result Card */}
+                <div className="print:hidden max-w-lg w-full bg-[#1c1e33] p-8 rounded-3xl border border-white/20 text-center shadow-2xl mb-20 scrollbar-hide">
                     <h2 className="text-3xl font-bold mb-2 text-white">{t.quizComplete}</h2>
                     <div className="text-8xl my-6 animate-bounce">🏆</div>
                     <p className="text-gray-400 mb-2">{t.quizScore}</p>
-                    <p className="text-5xl font-black text-white mb-6">{score} / {questions.length}</p>
+                    <p className="text-5xl font-black text-white mb-4">{score} / {questions.length}</p>
                     
+                    <p className="text-lg text-slate-300 mb-6">
+                        {score === questions.length ? t.perfect : (isPass ? t.good : t.tryAgain)}
+                    </p>
+
                     <div className="bg-white/5 p-6 rounded-2xl mb-8 border border-white/5">
                         <p className="text-sm text-gray-400 mb-2 uppercase tracking-wide">{t.quizRank}</p>
                         <p className={`text-2xl font-bold ${rank.color}`}>{rank.title}</p>
                     </div>
 
+                    {isPass && (
+                        <div className="space-y-4 pt-4 border-t border-white/10 mb-8">
+                            <label className="block text-sm font-bold text-slate-400 uppercase tracking-wider">{t.enterName}</label>
+                            <input 
+                                type="text" 
+                                value={userName}
+                                onChange={(e) => setUserName(e.target.value)}
+                                placeholder="Your Name..."
+                                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl text-white focus:outline-none focus:border-blue-500 transition-colors"
+                            />
+                            <button 
+                                onClick={handleDownload} 
+                                disabled={!userName.trim()} 
+                                className={`w-full py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all ${!userName.trim() ? 'bg-white/5 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-r from-yellow-500 to-amber-600 text-white hover:scale-105 shadow-lg'}`}
+                            >
+                                <i className="fas fa-file-download"></i> {t.download}
+                            </button>
+                        </div>
+                    )}
+
                     <button 
                         onClick={restart}
-                        className="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-bold text-xl text-white shadow-lg hover:shadow-green-500/50 hover:scale-105 transition-all active:scale-95"
+                        className="w-full py-4 bg-white/10 text-white rounded-xl font-bold text-xl hover:bg-white/20 transition-all"
                     >
                         {t.quizRetry}
                     </button>
                 </div>
+
+                {/* --- Hidden Certificate (Only visible in Print) --- */}
+                <div className="certificate-container hidden print:flex fixed inset-0 z-[9999] bg-white text-black flex-col items-center justify-center w-[297mm] h-[210mm] overflow-hidden">
+                     {/* Certificate Border */}
+                     <div className="w-[280mm] h-[190mm] border-[8px] border-double border-slate-800 relative p-12 flex flex-col items-center bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
+                         
+                         {/* Corner Ornaments */}
+                         <div className="absolute top-4 left-4 w-16 h-16 border-t-4 border-l-4 border-amber-600"></div>
+                         <div className="absolute top-4 right-4 w-16 h-16 border-t-4 border-r-4 border-amber-600"></div>
+                         <div className="absolute bottom-4 left-4 w-16 h-16 border-b-4 border-l-4 border-amber-600"></div>
+                         <div className="absolute bottom-4 right-4 w-16 h-16 border-b-4 border-r-4 border-amber-600"></div>
+
+                         <div className="text-center space-y-6 z-10 w-full max-w-4xl mt-8">
+                             <div className="flex items-center justify-center gap-4 mb-4 opacity-80">
+                                 <div className="text-3xl text-amber-500">★</div>
+                                 <span className="text-xl tracking-[0.3em] font-serif font-bold text-slate-600 uppercase">Certificate of Achievement</span>
+                                 <div className="text-3xl text-amber-500">★</div>
+                             </div>
+                             
+                             <h1 className="text-6xl font-serif font-bold text-slate-900 mb-2 tracking-wide">{t.certificate}</h1>
+                             
+                             <p className="text-xl text-slate-600 italic mt-8">This certifies that</p>
+                             
+                             <div className="text-6xl font-script text-amber-700 border-b-2 border-slate-300 pb-2 px-12 min-w-[400px] inline-block font-bold">
+                                 {userName || "Future Astronomer"}
+                             </div>
+                             
+                             <p className="text-2xl text-slate-600 mt-8 max-w-3xl mx-auto leading-relaxed">
+                                 has successfully completed the <strong>Star Cadet Training</strong> with a score of <strong>{Math.round((score/questions.length)*100)}%</strong>, demonstrating excellent knowledge of the Telescope and Universe.
+                             </p>
+                         </div>
+
+                         <div className="absolute bottom-24 w-full flex justify-between px-32 items-end">
+                             <div className="text-center">
+                                 <div className="w-64 border-b border-slate-400 mb-2"></div>
+                                 <p className="text-sm font-bold uppercase text-slate-500 tracking-wider">{t.date}</p>
+                                 <p className="font-mono text-lg">{new Date().toLocaleDateString()}</p>
+                             </div>
+                             
+                             <div className="flex flex-col items-center">
+                                  {/* Seal */}
+                                  <div className="relative w-40 h-40 rotate-12 drop-shadow-xl text-amber-700">
+                                      <svg viewBox="0 0 200 200" className="w-full h-full fill-current">
+                                          <path d="M100 0 L108 8 L120 2 L125 12 L138 10 L140 22 L152 24 L150 36 L162 42 L158 52 L168 60 L160 70 L170 80 L160 90 L168 100 L160 110 L170 120 L160 130 L168 140 L158 148 L162 158 L150 164 L152 176 L140 178 L138 190 L125 188 L120 198 L108 192 L100 200 L92 192 L80 198 L75 188 L62 190 L60 178 L48 176 L50 164 L38 158 L42 148 L32 140 L40 130 L30 120 L40 110 L32 100 L40 90 L30 80 L40 70 L32 60 L42 52 L38 42 L50 36 L48 24 L60 22 L62 10 L75 12 L80 2 L92 8 Z" fill="#b45309" stroke="#78350f" strokeWidth="2" />
+                                          <circle cx="100" cy="100" r="75" fill="#d97706" stroke="#92400e" strokeWidth="2" />
+                                          <text x="100" y="105" fontSize="24" fontFamily="serif" fontWeight="bold" fill="#fff" textAnchor="middle">KIDRISE</text>
+                                          <text x="100" y="130" fontSize="16" fontFamily="serif" fill="#fff" textAnchor="middle">OFFICIAL</text>
+                                      </svg>
+                                  </div>
+                             </div>
+
+                             <div className="text-center">
+                                 <div className="w-64 border-b border-slate-400 mb-2 text-2xl font-serif text-slate-800 italic">
+                                      Kidrise Team
+                                 </div>
+                                 <p className="text-sm font-bold uppercase text-slate-500 tracking-wider">{t.certifiedBy}</p>
+                             </div>
+                         </div>
+                     </div>
+                </div>
+
             </div>
         );
     }
 
     return (
-        <div className="h-full pt-24 px-4 flex flex-col items-center max-w-lg mx-auto">
+        <div className="min-h-full pt-28 px-4 flex flex-col items-center max-w-lg mx-auto pb-20">
             {/* Progress Bar */}
             <div className="w-full mb-8 relative pt-6">
                  <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">

@@ -10,7 +10,7 @@ import Quiz from './components/Quiz';
 import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
 import StarMapControls from './components/StarMapControls';
-import UsageGuide from './components/UsageGuide';
+import UsageGuideWizard from './components/UsageGuideWizard';
 import TelescopeManual from './components/guide/TelescopeManual';
 import Hero from './components/Hero';
 import { Coordinates, Language, Star } from './types';
@@ -49,7 +49,7 @@ function App() {
 
 
   // Navigation State
-  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz' | 'guide'>('starmap');
+  const [currentPage, setCurrentPage] = useState<'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'>('starmap');
 
   // New States
   const [showArt, setShowArt] = useState(false);
@@ -170,7 +170,10 @@ function App() {
     <Layout
       lang={lang}
       currentPage={currentPage}
-      onNavigate={setCurrentPage}
+      onNavigate={(page) => {
+        setCurrentPage(page);
+        setShowHero(false); // Dismiss hero on any navigation
+      }}
       locationName={locationName}
       currentDate={currentDate}
       isLiveTime={isLiveTime}
@@ -184,7 +187,7 @@ function App() {
     >
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
-      {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
+      {showUsageGuide && <UsageGuideWizard lang={lang} onClose={() => setShowUsageGuide(false)} />}
 
       {/* Hero Landing */}
       {showHero && (
@@ -265,7 +268,8 @@ function App() {
       {currentPage === 'planner' && <Planner lang={lang} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
-      {currentPage === 'guide' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('starmap')} />}
+      {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => setCurrentPage('starmap')} />}
+      {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('starmap')} />}
 
     </Layout>
   );

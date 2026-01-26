@@ -6,11 +6,16 @@ import {
     fetchCurrentWeather, 
     fetchForecast, 
     deriveStargazingStatus, 
-    getDistrictList,
     RHRReadData,
     FNDData,
     StargazingStatus
 } from '../utils/hkoApi';
+
+// Import Icons
+import iconSunny from '../assets/weather/weather_sunny.png';
+import iconCloudy from '../assets/weather/weather_cloudy.png';
+import iconPartlyCloudy from '../assets/weather/weather_partly_cloudy.png';
+import iconRain from '../assets/weather/weather_rain.png';
 
 interface PlannerProps {
     lang: Language;
@@ -26,6 +31,36 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
   // Dynamic District List
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string>("Hong Kong Observatory"); // Default fallback
+  const [stargazingScore, setStargazingScore] = useState(0);
+
+  // Helper to get Custom Icon
+  const getWeatherIcon = (psr: string) => {
+      // PSR values: High, Medium High, Medium, Medium Low, Low
+      if (psr === 'High' || psr === 'Medium High') return iconRain;
+      if (psr === 'Medium') return iconCloudy;
+      if (psr === 'Medium Low') return iconPartlyCloudy;
+      return iconSunny;
+  };
+
+  const calculateScore = (s: StargazingStatus | null) => {
+      if (!s) return 0;
+      let score = 50; // Base
+      
+      // Cloud factor
+      if (s.factors.cloud.label === 'Clear') score += 40;
+      else if (s.factors.cloud.label === 'Partly Cloudy') score += 20;
+      else if (s.factors.cloud.label === 'Cloudy') score -= 20;
+      
+      // Moon factor
+      if (s.factors.moon.phase.includes('New')) score += 10;
+      else if (s.factors.moon.phase.includes('Full')) score -= 10;
+
+      // Status override
+      if (s.status === 'Good') score = Math.max(score, 80);
+      if (s.status === 'Poor') score = Math.min(score, 40);
+
+      return Math.min(100, Math.max(0, score));
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -37,7 +72,10 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
         
         setCurrent(curr);
         setForecast(fnd);
-        setStatus(deriveStargazingStatus(curr, fnd, lang));
+        
+        const derived = deriveStargazingStatus(curr, fnd, lang);
+        setStatus(derived);
+        setStargazingScore(calculateScore(derived));
         
         // Extract Districts
         if (curr && curr.temperature && curr.temperature.data.length > 0) {
@@ -57,7 +95,7 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
   if (loading) {
       return (
           <div className="flex h-full items-center justify-center text-white">
-              <i className="fas fa-spinner fa-spin text-4xl text-kidrise-orange"></i>
+              <i className="fas fa-spinner fa-spin text-4xl text-secondary"></i>
           </div>
       );
   }
@@ -67,8 +105,6 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
       if(!current) return { temp: '--', humid: '--' };
       const temp = current.temperature.data.find(d => d.place === district)?.value;
       
-      // Humidity usually has fewer stations. Fallback to closest logic or just general HK
-      // Try exact match first
       let humid = current.humidity.data.find(d => d.place === district)?.value;
       if (!humid && current.humidity.data.length > 0) {
           humid = current.humidity.data[0].value; // General fallback
@@ -77,135 +113,135 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
   };
 
   const localWeather = getDistrictData(selectedDistrict);
+  const scoreColor = stargazingScore >= 80 ? 'text-green-400' : stargazingScore >= 50 ? 'text-yellow-400' : 'text-red-400';
+  const scoreBg = stargazingScore >= 80 ? 'from-green-500/20 to-green-900/10' : stargazingScore >= 50 ? 'from-yellow-500/20 to-yellow-900/10' : 'from-red-500/20 to-red-900/10';
 
   return (
-    <div className="flex flex-col h-full bg-space-black text-white pt-20 px-4 pb-32 overflow-y-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">{t.plannerTitle}</h2>
-
-      {/* 1. Stargazing Index Cards */}
-      <div className="w-full max-w-lg mx-auto mb-8">
-          <div className={`rounded-3xl p-6 border border-white/10 shadow-lg relative overflow-hidden transition-all duration-500
-                ${status?.status === 'Good' ? 'bg-gradient-to-br from-green-900/80 to-green-600/40' : 
-                  status?.status === 'Poor' ? 'bg-gradient-to-br from-red-900/80 to-red-600/40' : 
-                  'bg-gradient-to-br from-yellow-900/80 to-yellow-600/40'}`}>
-                
-                {/* Main Status */}
-                <div className="flex justify-between items-start z-10 relative mb-6">
-                    <div>
-                        <span className="text-xs font-bold uppercase tracking-widest opacity-80 mb-2 block border-l-2 border-white/50 pl-2">{t.stargazingIndex}</span>
-                        <h3 className="text-4xl font-extrabold mb-2 tracking-tight">
-                             {status?.status === 'Good' ? t.conditionGood : 
-                              status?.status === 'Poor' ? t.conditionPoor : 
-                              t.conditionFair}
-                        </h3>
-                        <p className="text-sm font-medium opacity-90">{status?.reason}</p>
-                    </div>
-                    <div className="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center text-4xl shadow-[0_0_20px_rgba(255,255,255,0.1)] border border-white/5">
-                        {status?.status === 'Good' ? '🌟' : status?.status === 'Poor' ? '🌧️' : '☁️'}
-                    </div>
-                </div>
-
-                {/* Factors Grid */}
-                {status?.factors && (
-                    <div className="grid grid-cols-3 gap-2 bg-black/20 rounded-2xl p-3 backdrop-blur-sm z-10 relative border border-white/5">
-                        <div className="flex flex-col items-center">
-                            <span className="text-[10px] uppercase opacity-60 mb-1">{t.cloud}</span>
-                            <i className="fas fa-cloud text-lg mb-1 opacity-80"></i>
-                            <span className="text-xs font-bold">{status.factors.cloud.label}</span>
-                        </div>
-                         <div className="flex flex-col items-center border-l border-white/10">
-                            <span className="text-[10px] uppercase opacity-60 mb-1">{t.moon}</span>
-                            <i className="fas fa-moon text-lg mb-1 opacity-80"></i>
-                            <span className="text-xs font-bold">{status.factors.moon.phase}</span>
-                        </div>
-                         <div className="flex flex-col items-center border-l border-white/10">
-                            <span className="text-[10px] uppercase opacity-60 mb-1">Weather</span>
-                            <i className="fas fa-temperature-high text-lg mb-1 opacity-80"></i>
-                            <span className="text-xs font-bold">{status.factors.weather.label}</span>
-                        </div>
-                    </div>
-                )}
-                
-                {/* Background Decor */}
-                <div className="absolute -bottom-10 -right-10 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
+    <div className="flex flex-col w-full bg-space-black text-white pt-28 px-4 pb-12 max-w-5xl mx-auto">
+      {/* 1. Stargazing Index Dashboard */}
+      <div className={`w-full bg-gradient-to-br ${scoreBg} backdrop-blur-md rounded-[3rem] p-8 border border-white/10 shadow-2xl relative overflow-hidden mb-8`}>
+          <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
+                <i className="fas fa-star text-9xl"></i>
           </div>
-      </div>
-
-      {/* 2. Real-time Weather Selection */}
-      <div className="w-full max-w-lg mx-auto mb-8 bg-[#161825]/80 border border-white/10 rounded-3xl p-6 backdrop-blur shadow-xl">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-kidrise-orange mb-4 flex items-center gap-2">
-              <i className="fas fa-map-marker-alt"></i> {t.weatherCurrent}
-          </h3>
           
-          <select 
-            value={selectedDistrict} 
-            onChange={(e) => setSelectedDistrict(e.target.value)}
-            className="w-full bg-black/40 border border-white/10 hover:border-white/30 rounded-xl px-4 py-3 text-sm mb-6 focus:outline-none focus:border-kidrise-orange transition-colors"
-          >
-              {availableDistricts.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
-
-          <div className="grid grid-cols-3 gap-4">
-              <div className="col-span-1 bg-gradient-to-br from-blue-500/10 to-transparent rounded-2xl p-3 border border-blue-500/20 flex flex-col items-center justify-center">
-                  <div className="text-3xl font-bold text-white mb-1">{localWeather.temp}°</div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wider">{t.temp}</div>
-              </div>
-              <div className="col-span-1 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-2xl p-3 border border-cyan-500/20 flex flex-col items-center justify-center">
-                  <div className="text-3xl font-bold text-cyan-300 mb-1">{localWeather.humid}%</div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wider">{t.humidity}</div>
-              </div>
-               <div className="col-span-1 bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl p-3 border border-purple-500/20 flex flex-col items-center justify-center">
-                  <div className="text-3xl font-bold text-purple-300 mb-1">
-                      {current?.rainfall.data[0]?.max || 0}<span className="text-[10px] ml-1">mm</span>
+          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="text-center md:text-left">
+                  <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-white/60 mb-2">{t.stargazingIndex}</h2>
+                  <div className="flex items-baseline justify-center md:justify-start gap-2">
+                       <span className={`text-8xl font-black ${scoreColor} drop-shadow-lg`}>{stargazingScore}</span>
+                       <span className="text-2xl font-bold text-white/40">/100</span>
                   </div>
-                  <div className="text-[10px] text-gray-400 uppercase tracking-wider">{t.rain}</div>
+                  <h3 className="text-3xl font-bold text-white mt-2">
+                      {status?.status === 'Good' ? t.conditionGood : 
+                       status?.status === 'Poor' ? t.conditionPoor : 
+                       t.conditionFair}
+                  </h3>
+                  <p className="text-lg text-blue-200 mt-2 max-w-md">{status?.reason}</p>
+              </div>
+
+              {/* Factors Cards */}
+              <div className="grid grid-cols-2 gap-3 w-full md:w-auto">
+                    <div className="bg-black/30 p-4 rounded-2xl border border-white/5 flex flex-col items-center min-w-[100px]">
+                        <i className="fas fa-cloud text-2xl text-cyan-300 mb-2"></i>
+                        <span className="text-xs text-white/60 uppercase">{t.cloud}</span>
+                        <span className="font-bold text-lg">{status?.factors.cloud.label}</span>
+                    </div>
+                    <div className="bg-black/30 p-4 rounded-2xl border border-white/5 flex flex-col items-center min-w-[100px]">
+                        <i className="fas fa-moon text-2xl text-yellow-300 mb-2"></i>
+                        <span className="text-xs text-white/60 uppercase">{t.moon}</span>
+                        <span className="font-bold text-lg leading-tight text-center">{status?.factors.moon.phase}</span>
+                    </div>
               </div>
           </div>
       </div>
 
-      {/* 3. 9-Day Forecast (Professional Table Layout) */}
-      <div className="w-full max-w-3xl mx-auto">
-          <h3 className="text-sm font-bold uppercase tracking-widest text-kidrise-orange mb-4 px-2">{t.weather9Day}</h3>
-          <div className="bg-transparent overflow-x-auto scrollbar-hide pb-4">
-              <div className="flex gap-3 px-2">
-                 {forecast?.weatherForecast.map((day, i) => (
-                    <div key={i} className="flex-shrink-0 w-32 bg-[#161825]/90 border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-between gap-3 shadow-lg hover:bg-white/5 transition-colors">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* 2. Real-time Weather Panel */}
+          <div className="col-span-1 lg:col-span-1 bg-[#161825]/60 backdrop-blur rounded-3xl p-6 border border-white/10 shadow-xl h-full">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-secondary mb-6 flex items-center gap-2">
+                  <i className="fas fa-location-arrow"></i> {t.weatherCurrent}
+              </h3>
+              
+              <div className="relative mb-6">
+                <select 
+                    value={selectedDistrict} 
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
+                    className="w-full appearance-none bg-white/5 border border-white/10 hover:border-white/30 rounded-2xl px-5 py-4 text-lg font-bold text-white focus:outline-none focus:ring-2 focus:ring-secondary transition-all cursor-pointer"
+                >
+                    {availableDistricts.map(d => <option key={d} value={d} className="bg-[#1c1e33]">{d}</option>)}
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-white/50">
+                    <i className="fas fa-chevron-down"></i>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-3xl p-6 mb-4 border border-white/5">
+                  <div>
+                      <div className="text-5xl font-black text-white tracking-tighter">{localWeather.temp}°</div>
+                      <div className="text-sm font-bold text-blue-300 mt-1">{t.temp}</div>
+                  </div>
+                  <div className="h-12 w-[1px] bg-white/10"></div>
+                  <div className="text-right">
+                      <div className="text-3xl font-bold text-cyan-300">{localWeather.humid}%</div>
+                      <div className="text-sm font-bold text-cyan-500/70">{t.humidity}</div>
+                  </div>
+              </div>
+          </div>
+
+          {/* 3. 9-Day Forecast */}
+          <div className="col-span-1 lg:col-span-2 bg-[#161825]/60 backdrop-blur rounded-3xl p-6 border border-white/10 shadow-xl">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-secondary mb-6 px-2">{t.weather9Day}</h3>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                 {forecast?.weatherForecast.slice(0, 5).map((day, i) => (
+                    <div key={i} className="bg-white/5 border border-white/5 rounded-2xl p-4 flex flex-col items-center justify-between gap-3 hover:bg-white/10 transition-transform hover:scale-105 group min-h-[160px]">
                         <div className="text-center">
-                            <span className="block text-xs font-bold text-gray-400 uppercase tracking-wider">{day.week}</span>
-                             <span className="block text-lg font-bold text-white">
+                            <span className="block text-[10px] font-bold text-white/40 uppercase tracking-wider mb-1">{day.week}</span>
+                             <span className="block text-sm font-bold text-white bg-white/10 px-2 py-0.5 rounded-md">
                                 {day.forecastDate.substring(4, 6)}/{day.forecastDate.substring(6, 8)}
                              </span>
                         </div>
                         
                         <img 
-                            src={`https://www.hko.gov.hk/images/HKOWxIconOutline/pic${day.forecastIcon}.png`} 
-                            alt="weather icon" 
-                            className="w-12 h-12 opacity-90 invert brightness-100"
+                            src={getWeatherIcon(day.psr)}
+                            alt="weather" 
+                            className="w-14 h-14 object-contain drop-shadow-lg group-hover:scale-110 transition-transform mix-blend-screen"
                         />
                         
-                        <div className="flex items-center gap-1 font-bold">
+                        <div className="flex items-center gap-1 font-bold text-sm">
                             <span className="text-blue-300">{day.forecastMintemp.value}°</span>
-                            <span className="text-gray-500">-</span>
-                            <span className="text-red-300">{day.forecastMaxtemp.value}°</span>
+                            <span className="text-white/20">/</span>
+                            <span className="text-white">{day.forecastMaxtemp.value}°</span>
                         </div>
                         
-                         <div className="w-full">
-                            <div className="flex justify-between items-center text-[9px] text-gray-400 mb-1 uppercase tracking-wider">
-                                <span>Rain</span>
-                                <span>{day.psr}</span>
-                            </div>
-                            <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                                <div 
-                                className={`h-full rounded-full ${['High', 'Medium High'].includes(day.psr) ? 'bg-red-500' : (['Medium', 'Medium Low'].includes(day.psr) ? 'bg-yellow-500' : 'bg-green-500')}`}
-                                style={{ width: ['High', 'Medium High'].includes(day.psr) ? '80%' : (['Medium', 'Medium Low'].includes(day.psr) ? '50%' : '20%') }}
-                                ></div>
-                            </div>
+                        {/* Custom Stargazing Indicator based on Rain prob */}
+                         <div className="w-full flex justify-center">
+                            <i className={`fas fa-star text-[10px] ${['Low', 'Medium Low'].includes(day.psr) ? 'text-yellow-400' : 'text-slate-600'}`}></i>
+                            <i className={`fas fa-star text-[10px] ${['Low'].includes(day.psr) ? 'text-yellow-400' : 'text-slate-600'}`}></i>
+                            <i className={`fas fa-star text-[10px] ${['Low'].includes(day.psr) ? 'text-yellow-400' : 'text-slate-600'}`}></i>
                         </div>
 
                     </div>
                  ))}
+                 
+                 {/* Show remaining as simpler list on mobile or smaller view if needed, but grid usually fits 5 well. */}
               </div>
+               
+               {/* Tip Section */}
+               <div className="mt-6 bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 flex items-start gap-4">
+                   <div className="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shrink-0 font-bold">i</div>
+                   <div>
+                       <h4 className="font-bold text-blue-300 text-sm mb-1">{t.astroTip || 'ASTRO TIP'}</h4>
+                       <p className="text-sm text-blue-100/80 leading-relaxed">
+                           {stargazingScore > 70 
+                            ? (t.tipGood || "Conditions are great!")
+                            : (t.tipBad || "Visibility might be low.")}
+                       </p>
+                   </div>
+               </div>
           </div>
+
       </div>
 
     </div>

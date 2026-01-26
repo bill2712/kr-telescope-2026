@@ -6,8 +6,8 @@ import { Language } from '../../types';
 interface LayoutProps {
   children: ReactNode;
   lang: Language;
-  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide';
-  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide') => void;
+  currentPage: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
+  onNavigate: (page: 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
   // TopBar Props - Deprecated for Header but passed for logic if needed (Time/Location moved to overlay)
   locationName?: string;
   currentDate: Date;
@@ -44,16 +44,17 @@ const Layout: React.FC<LayoutProps> = ({
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 relative w-full h-full z-10 overflow-hidden"> 
-        {children}
+      {/* If Starmap, we use full screen hidden overflow. Else we use scrollable main. */}
+      <main className={`flex-1 relative w-full h-full z-10 ${currentPage === 'starmap' ? 'overflow-hidden' : 'overflow-y-auto scrollbar-hide'}`}> 
+        <div className="min-h-full flex flex-col">
+            <div className="flex-1">
+                {children}
+            </div>
+            
+            {/* Footer - Only show if not on Starmap */}
+            {currentPage !== 'starmap' && <Footer lang={lang} />}
+        </div>
       </main>
-
-      {/* Footer - Only show if current page allows scrolling or is not full-screen interactive */}
-      {/* For Telescope, StarMap is full screen. We might want Footer only on other pages, 
-          OR overlay footer at bottom. 
-          Microscope has sticky footer? No, it's at bottom of content.
-          Let's render it but it might be hidden behind StarMap if absolute positioning is used there. */}
-      {currentPage !== 'starmap' && <Footer lang={lang} />}
     </div>
   );
 };

@@ -68,12 +68,14 @@ export const translations = {
     btnSpeed: '快進',
     btnGo: '前往',
     // Menu
-    menuMap: '星圖',
-    menuPlanner: '規劃',
+    menuMap: '實時星圖',
+    menuPlanner: '觀星預報',
     menuCompass: '指南針',
-    menuLearn: '學習',
-    menuQuiz: '測驗',
-    menuGuide: '百科', // New Guide Tab
+    menuLearn: '天文知識',
+    menuQuiz: '太空挑戰',
+    menuGuide: '使用教學',
+    menuEncyclopedia: '望遠鏡小百科',
+
     
     // Planner
     plannerTitle: '觀星規劃 (天文台實時數據)',
@@ -105,6 +107,10 @@ export const translations = {
     moonWanGib: '虧凸月',
     moonLastQ: '下弦月',
     moonWanCres: '殘月',
+    // Astro Tips
+    astroTip: '天文小貼士',
+    tipGood: '觀星條件極佳！這是觀測星雲和星系的好時機。別忘了帶紅光手電筒！',
+    tipBad: '能見度可能較低。建議觀測月亮或行星等明亮天體，或者學習辨認星座！',
     // Knowledge
     knowSolar: '太陽系大冒險',
     knowMoon: '月亮變變變',
@@ -283,7 +289,7 @@ export const translations = {
     neptuneFact: '海王星離太陽最遠，那裡的風超級大，是音速的5倍！',
     // Quiz
     quizTitle: '太空學員訓練',
-    quizIntro: '準備好成為一位太空探險家了嗎？回答問題來升級！',
+    quizIntro: '準備好成為一位太空探險家了嗎？完成測驗並答對60%以上，即可獲得太空人證書！',
     quizStart: '開始任務',
     quizNext: '下一題',
     quizRetry: '再玩一次',
@@ -292,6 +298,17 @@ export const translations = {
     quizCorrect: '答對了！太棒了！🎉',
     quizWrong: '哎呀！再接再厲！💪',
     quizComplete: '訓練完成！',
+    
+    // Certificate
+    resultTitle: '測驗結果',
+    enterName: '輸入你的名字領取證書',
+    download: '下載證書',
+    certificate: '及格證書',
+    certifiedBy: 'Kidrise 科學團隊',
+    date: '日期',
+    good: '做得好！你對宇宙非常了解！',
+    perfect: '完美！你是真正的天文大師！',
+    tryAgain: '別灰心，再試一次吧！',
     
     // Ranks
     rank1: '太空菜鳥 (Space Rookie)',
@@ -391,9 +408,56 @@ export const translations = {
         startDesc: '準備好了嗎？讓我們來找出隱藏在星空中的寶藏！',
         startBtn: '開始任務'
     },
+
+    // WIZARD GUIDE (Expanded to 8 steps)
+    wizard: {
+        steps: [
+            {
+                title: '1. 開箱檢查 (Unboxing)',
+                desc: '打開盒子，確認所有零件都在：主鏡筒、三腳架、尋星鏡、兩個目鏡 (H20mm, H6mm)、天頂鏡和濾鏡。請小心輕放，不要觸摸任何玻璃鏡片喔！',
+                note: '將所有零件平放在桌面上，清點好再開始！'
+            },
+            {
+                title: '2. 架設三腳架 (Tripod)',
+                desc: '將三腳架的三條腿完全拉開，並鎖緊固定旋鈕。確保它在地面上站得穩穩的，不會搖晃。如果地面不平，可以調整腳管長度。',
+                note: '穩固的地基是觀測成功的關鍵！'
+            },
+            {
+                title: '3. 安裝主鏡筒 (Mounting)',
+                desc: '將白色的主鏡筒放在三腳架的雲台上。對準螺絲孔，旋緊底部的鎖定旋鈕。手要扶著鏡筒直到確認鎖緊為止，以免滑落。',
+                note: '不要鎖得太死，以免損壞螺絲，只要穩固即可。'
+            },
+            {
+                title: '4. 安裝尋星鏡 (Finder)',
+                desc: '找到鏡筒上方的小支架，將尋星鏡（小望遠鏡）插入並鎖緊螺絲。尋星鏡是你的「瞄準器」，非常重要！',
+                note: '注意尋星鏡的方向，應該是大鏡頭朝前（指向目標）。'
+            },
+            {
+                title: '5. 安裝天頂鏡與目鏡',
+                desc: '將「天頂鏡」（呈90度的黑色彎頭）插入主鏡筒後端，鎖緊。然後放入倍率最低的目鏡標示「H20」），也鎖緊。',
+                note: '永遠從低倍率 (H20) 開始尋找目標，找到後再換高倍率 (H6)！'
+            },
+            {
+                title: '6. 白天校準 (Alignment)',
+                desc: '這步最重要！在白天，將望遠鏡對準遠處的一個目標（如避雷針尖端）。先看主鏡筒確認目標在視野中，然後調整「尋星鏡」上的小螺絲，讓尋星鏡的十字中心也對準同一個點。',
+                note: '千萬不要對著太陽看！校準好後，晚上找星星就容易多了。'
+            },
+            {
+                title: '7. 開始觀測 (First Light)',
+                desc: '晚上將望遠鏡搬到戶外。先用「尋星鏡」找到月亮，將它放在十字中心。然後看主目鏡，你應該就能看到月亮了！',
+                note: '慢慢轉動調焦輪，直到月球坑洞變得清晰銳利。'
+            },
+            {
+                title: '8. 疑難排解 (Tips)',
+                desc: '影像上下顛倒？這是正常的，因為光學鏡片會讓影像翻轉。如果不清楚，試著重新對焦。如果全黑，請確認「鏡頭蓋」已經拿下來了！',
+                note: '耐心是天文學家最重要的美德。'
+            }
+        ]
+    },
+
     
-    // TELESCOPE MANUAL CONTENT (ZH)
-    manual: {
+    // TELESCOPE ENCYCLOPEDIA (Renamed from manual)
+    encyclopedia: {
       title: 'EYES TO NEW HORIZONS',
       subtitle: '神奇望遠鏡：觀星手冊與使用指南',
       intro: '探索夜空指南',
@@ -404,6 +468,30 @@ export const translations = {
       
       componentsTitle: '望遠鏡組件',
       caution: '警告：切勿透過望遠鏡直接觀測太陽，以免對眼睛造成永久傷害。',
+      partsList: [
+        { name: 'H20 目鏡', qty: '1 件', icon: 'fa-eye' },
+        { name: 'H6 觀月鏡', qty: '1 件', icon: 'fa-moon' },
+        { name: '天頂鏡', qty: '1 件', icon: 'fa-share' }, // zenith mirror
+        { name: '尋星鏡連支架', qty: '1 組', icon: 'fa-crosshairs' },
+        { name: '掌上指南針', qty: '1 件', icon: 'fa-compass' },
+        { name: '360° 旋轉折疊支架 (39.5cm)', qty: '1 組', icon: 'fa-tripod' }
+      ],
+      
+      focusTitle: '調焦教學與注意事項',
+      focusSteps: [
+          { title: '尋找目標', desc: '將鏡筒對準觀測目標，建議先從遠處建築物開始練習。' },
+          { title: '進行調焦', desc: '在目鏡處觀測，緩慢調節調焦手輪，直至影像清晰。' }
+      ],
+      focusNote: '💡 重要提示： 天文望遠鏡設有「最近成像距離」。此型號的最近成像距離約為 20 米。若觀測目標距離少於 20 米，將無法成功對焦成像。此外，由於光學原理，望遠鏡看到的影像通常是顛倒的，這是正常現象，如需正像則需加裝正像稜鏡。',
+
+      proTitle: '🔭 專業級光學配置',
+      proFeatures: [
+          { title: '天地兩用', desc: '配備可更換目鏡，無論是觀測遠處建築、山脈，還是夜空中的星體，都能輕鬆應對。' },
+          { title: '50mm 大口徑光學玻璃', desc: '採用多層鍍膜鏡片，大幅提升聚光能力與分辨率，確保視野明亮清晰。' },
+          { title: '多重護眼鍍膜', desc: '包含加硬保護膜、抗油污防霧層、防藍光膜層及防宇宙射線膜層，全方位呵護孩子發育中的視網膜。' },
+          { title: '5x24 尋星鏡', desc: '幫助孩子快速定位目標天體，減少尋找星體時的挫敗感。' }
+      ],
+      
       parts: {
         eyepieceLock: '目鏡鎖',
         objectiveLens: '物鏡',
@@ -561,8 +649,12 @@ export const translations = {
     moon: 'Moon',
     // Menu
     menuMap: 'Star Map',
-    scalePlanet: 'Planets',
-    btnCamera: 'Postcard',
+    menuPlanner: 'Planner',
+    menuCompass: 'Compass',
+    menuLearn: 'Knowledge',
+    menuQuiz: 'Space Quiz',
+    menuGuide: 'Usage Guide',
+    menuEncyclopedia: 'Telescope Encyclopedia',
 
     postcard: {
        title: 'Space Postcard',
@@ -588,11 +680,7 @@ export const translations = {
         startDesc: 'Ready? Let\'s find hidden treasures in the sky!',
         startBtn: 'Start Mission'
     },
-    menuPlanner: 'Planner',
-    menuCompass: 'Compass',
-    menuLearn: 'Learn',
-    menuQuiz: 'Quiz',
-    menuGuide: 'Guide', // New Guide Tab
+    // Duplicates removed
 
     // Planner
     plannerTitle: 'Stargazing Planner (HKO Live)',
@@ -624,6 +712,10 @@ export const translations = {
     moonWanGib: 'Waning Gibbous',
     moonLastQ: 'Last Quarter',
     moonWanCres: 'Waning Crescent',
+    // Astro Tips
+    astroTip: 'ASTRO TIP',
+    tipGood: "Conditions are great! Perfect time to observe nebulae and galaxies. Don't forget your red flashlight!",
+    tipBad: "Visibility might be low. Focus on bright objects like the Moon or Planets, or use this time to study the Star Map!",
     // Knowledge
     knowSolar: 'Solar System Adventure',
     knowMoon: 'Moon Magic',
@@ -802,15 +894,26 @@ export const translations = {
     neptuneFact: 'Neptune is the farthest away. It has super strong winds!',
     // Quiz
     quizTitle: 'Space Cadet Training',
-    quizIntro: 'Ready to become a space explorer? Answer correctly to rank up!',
+    quizIntro: 'Ready to become a Space Explorer? Pass with 60% or more to earn your certificate!',
     quizStart: 'Start Mission',
-    quizNext: 'Next Question',
+    quizNext: 'Next',
     quizRetry: 'Play Again',
     quizScore: 'Score',
     quizRank: 'Rank',
     quizCorrect: 'Correct! Awesome! 🎉',
     quizWrong: 'Oops! Try again! 💪',
-    quizComplete: 'Training Complete!',
+    quizComplete: 'Mission Complete!',
+    
+    // Certificate
+    resultTitle: 'Quiz Results',
+    enterName: 'Enter Name for Certificate',
+    download: 'Download Certificate',
+    certificate: 'Certificate of Achievement',
+    certifiedBy: 'Kidrise Science Team',
+    date: 'Date',
+    good: 'Great job! You know your space stuff!',
+    perfect: 'Perfect! You are a master of the universe!',
+    tryAgain: 'Don\'t give up! Try again!',
     
     // Ranks
     rank1: 'Space Rookie',
@@ -901,9 +1004,54 @@ export const translations = {
     starYellow: 'Like Sun',
     starBlue: 'Blue Giant',
     starColorDesc: 'Look! Even though red usually means hot on a tap, in space, Red stars are the coolest! Blue stars are actually the hottest!',
-    
-    // TELESCOPE MANUAL CONTENT (EN)
-    manual: {
+    // WIZARD GUIDE (Expanded to 8 steps)
+    wizard: {
+        steps: [
+            {
+                title: '1. Unboxing',
+                desc: 'Open the box and check all parts: Main Tube, Tripod, Finder Scope, Eyepieces (H20, H6), Zenith Mirror, and Filters. Handle the glass lenses with care!',
+                note: 'Lay everything out on a table before you start.'
+            },
+            {
+                title: '2. Tripod Setup',
+                desc: 'Spread the tripod legs fully and tighten the locking knobs. Ensure it is stable on the ground. If the ground is uneven, adjust the leg lengths.',
+                note: 'A stable base is key to successful observation!'
+            },
+            {
+                title: '3. Mounting the Tube',
+                desc: 'Place the white optical tube onto the tripod mount. Align the screw hole and tighten the bottom knob. Hold the tube until it is secure so it doesn\'t slip.',
+                note: 'Tighten firmly, but don\'t over-tighten.'
+            },
+            {
+                title: '4. Finder Scope',
+                desc: 'Locate the small bracket on top of the tube. Insert the Finder Scope (mini telescope) and tighten the screws. This is your "gun sight"!',
+                note: 'Make sure the large lens of the finder is pointing forward.'
+            },
+            {
+                title: '5. Eyepieces',
+                desc: 'Insert the "Zenith Mirror" (90-degree elbow) into the back of the telescope. Then insert the lowest power eyepiece (marked "H20"). Tighten all screws.',
+                note: 'Always start with the H20 eyepiece. Only switch to H6 after you find your target!'
+            },
+            {
+                title: '6. Alignment (Daytime)',
+                desc: 'Most Important Step! During the day, point the telescope at a distant object (like a tower tip). Center it in the main eyepiece. Then, adjust the FINDER SCOPE screws so the crosshairs are ALSO on the exact same point.',
+                note: 'NEVER look at the Sun! Once aligned, finding stars at night is easy.'
+            },
+            {
+                title: '7. First Light',
+                desc: 'Take the telescope outside at night. Use the Finder Scope to aim at the Moon. Center it in the crosshairs. Look through the main eyepiece - the Moon should be there!',
+                note: 'Turn the focus wheel slowly until craters look sharp.'
+            },
+            {
+                title: '8. Troubleshooting',
+                desc: 'Image upside down? That is normal for astronomical telescopes. If the image is blurry, try re-focusing. If it\'s pitch black, check if you removed the LENS CAP!',
+                note: 'Patience is an astronomer\'s best virtue.'
+            }
+        ]
+    },
+
+    // TELESCOPE ENCYCLOPEDIA (Renamed from manual)
+    encyclopedia: {
       title: 'EYES TO NEW HORIZONS',
       subtitle: 'AMAZING TELESCOPE: THE STARGAZER’S HANDBOOK',
       intro: 'A PRELIMINARY GUIDE TO THE NIGHT SKY',
@@ -914,6 +1062,14 @@ export const translations = {
       
       componentsTitle: 'Components of the telescope',
       caution: 'CAUTION: Do not observe the sun directly through the telescope.',
+      partsList: [
+        { name: 'H20 Eyepiece', qty: '1 pc', icon: 'fa-eye' },
+        { name: 'H6 Moon Filter', qty: '1 pc', icon: 'fa-moon' },
+        { name: 'Zenith Mirror', qty: '1 pc', icon: 'fa-share' },
+        { name: 'Finder Scope', qty: '1 set', icon: 'fa-crosshairs' },
+        { name: 'Compass', qty: '1 pc', icon: 'fa-compass' },
+        { name: 'Tripod (39.5cm)', qty: '1 set', icon: 'fa-tripod' }
+      ],
       parts: {
         eyepieceLock: 'Eyepiece Lock',
         objectiveLens: 'Objective Lens',
@@ -931,6 +1087,22 @@ export const translations = {
         plateBuckle: 'Plate Buckle',
         horseshoeFoot: 'Horseshoe Foot'
       },
+
+      focusTitle: 'Focusing Guide',
+      focusSteps: [
+          { title: 'Find Target', desc: 'Point the tube at a target. Start with distant buildings to practice.' },
+          { title: 'Adjust Focus', desc: 'Look through the eyepiece and slowly turn the focus wheel until the image is clear.' }
+      ],
+      focusNote: '💡 IMPORTANT: The telescope has a "Minimum Focus Distance" of about 20m. Objects closer than 20m cannot be focused. Also, images appearing upside down is normal for optical telescopes.',
+
+      proTitle: '🔭 Professional Optics',
+      proFeatures: [
+          { title: 'Terrestrial & Celestial', desc: 'Suitable for viewing both land objects and night sky wonders.' },
+          { title: '50mm Aperture', desc: 'Large aperture gathers more light for brighter, clearer images.' },
+          { title: 'Multi-coated Lens', desc: 'Protects young eyes and improves light transmission.' },
+          { title: '5x24 Finder Scope', desc: 'Helps locate objects quickly before viewing through the main tube.' }
+      ],
+
       
       assemblyTitle: 'Telescope Assembly',
       assemblySteps: {
