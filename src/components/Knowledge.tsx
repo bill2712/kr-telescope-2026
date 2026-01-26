@@ -60,35 +60,35 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
                         {activeModule === 'star' && <StarColors lang={lang} />}
                         {activeModule === 'spacescale' && <SpaceScale lang={lang} onBack={() => setActiveModule(null)} />}
                         
-                        {/* Interactive Modules */}
+                       {/* Interactive Modules */}
                         {activeModule === 'blackhole' && (
                             <InteractiveWrapper title={t.knowBlackHole} desc={t.blackHoleDesc}>
-                                <BlackHoleSim />
+                                <BlackHoleSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                         {activeModule === 'meteor' && (
                             <InteractiveWrapper title={t.knowMeteor} desc={t.meteorDesc}>
-                                <MeteorSim />
+                                <MeteorSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'comet' && (
                             <InteractiveWrapper title={t.knowComet} desc={t.cometDesc}>
-                                <CometSim />
+                                <CometSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'galaxy' && (
                             <InteractiveWrapper title={t.knowGalaxy} desc={t.galaxyDesc}>
-                                <GalaxySim />
+                                <GalaxySim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'nebula' && (
                             <InteractiveWrapper title={t.knowNebula} desc={t.nebulaDesc}>
-                                <NebulaSim />
+                                <NebulaSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                         {activeModule === 'eclipse' && (
                             <InteractiveWrapper title={t.knowEclipse} desc={t.eclipseDesc}>
-                                <EclipseSim />
+                                <EclipseSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                      </div>
@@ -101,7 +101,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
     <div className="pt-24 px-4 pb-32 max-w-6xl mx-auto">
        <div className="text-center mb-10">
             <h2 className="text-4xl font-black mb-2 text-white tracking-tight drop-shadow-lg">{t.menuLearn}</h2>
-            <p className="text-blue-200">Tap a card to start your space adventure!</p>
+            <p className="text-blue-200">{t.interactive?.tapCard || 'Tap a card to start your space adventure!'}</p>
        </div>
 
        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 auto-rows-[180px]">

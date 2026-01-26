@@ -14,9 +14,9 @@ const StarColors: React.FC<Props> = ({ lang }) => {
   // Determine Color and Info based on Temp
   const getColor = (k: number) => {
       if (k < 3500) return { r: 255, g: 100, b: 100, label: t.starRed, desc: t.tempLow, glow: '#ff0000' };
-      if (k < 5000) return { r: 255, g: 200, b: 100, label: 'Orange', desc: t.tempMid, glow: '#ffaa00' };
+      if (k < 5000) return { r: 255, g: 200, b: 100, label: t.starOrange, desc: t.tempMid, glow: '#ffaa00' };
       if (k < 7500) return { r: 255, g: 255, b: 200, label: t.starYellow, desc: t.tempMid, glow: '#ffff00' };
-      if (k < 10000) return { r: 240, g: 240, b: 255, label: 'White', desc: t.tempHigh, glow: '#ffffff' };
+      if (k < 10000) return { r: 240, g: 240, b: 255, label: t.starWhite, desc: t.tempHigh, glow: '#ffffff' };
       return { r: 150, g: 200, b: 255, label: t.starBlue, desc: t.tempHigh, glow: '#0088ff' };
   };
 
@@ -64,8 +64,8 @@ const StarColors: React.FC<Props> = ({ lang }) => {
             {/* Controls */}
             <div className="w-full max-w-xs px-4">
                  <div className="flex justify-between text-xs font-bold text-gray-500 mb-2">
-                     <span className="text-red-400">Cold</span>
-                     <span className="text-blue-400">Hot!</span>
+                     <span className="text-red-400">{t.tempCold}</span>
+                     <span className="text-blue-400">{t.tempHot}</span>
                  </div>
                  <input 
                   type="range" 

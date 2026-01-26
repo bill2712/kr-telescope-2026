@@ -1,7 +1,9 @@
-
 import React, { useRef, useEffect, useState } from 'react';
+import { translations } from '../../../utils/i18n';
+import { Language } from '../../../types';
 
-const BlackHoleSim: React.FC = () => {
+const BlackHoleSim: React.FC<{lang: Language}> = ({lang}) => {
+  const t = translations[lang];
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [mass, setMass] = useState(50);
   
@@ -104,7 +106,7 @@ const BlackHoleSim: React.FC = () => {
     <div className="relative w-full h-full min-h-[400px] flex flex-col items-center justify-center bg-black rounded-3xl overflow-hidden border border-white/20">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full cursor-crosshair" />
       <div className="absolute bottom-6 z-10 w-64 bg-black/50 p-4 rounded-xl backdrop-blur border border-white/10">
-          <label className="text-white text-xs font-bold uppercase mb-2 block">Event Horizon Size</label>
+          <label className="text-white text-xs font-bold uppercase mb-2 block">{t.interactive.eventHorizon}</label>
           <input 
             type="range" 
             min="20" 
@@ -113,7 +115,7 @@ const BlackHoleSim: React.FC = () => {
             onChange={(e) => setMass(Number(e.target.value))}
             className="w-full accent-purple-500"
           />
-          <p className="text-[10px] text-gray-400 mt-2 text-center">Drag slider to change gravity!</p>
+          <p className="text-[10px] text-gray-400 mt-2 text-center">{t.interactive.gravitySlider}</p>
       </div>
     </div>
   );

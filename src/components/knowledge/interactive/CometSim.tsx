@@ -1,7 +1,9 @@
-
 import React, { useState } from 'react';
+import { translations } from '../../../utils/i18n';
+import { Language } from '../../../types';
 
-const CometSim: React.FC = () => {
+const CometSim: React.FC<{lang: Language}> = ({lang}) => {
+  const t = translations[lang];
   const [orbitPos, setOrbitPos] = useState(0); // 0 to 100
 
   // Calculate position on ellipse
@@ -75,7 +77,7 @@ const CometSim: React.FC = () => {
 
       <div className="mt-8 w-64 bg-white/10 p-4 rounded-xl backdrop-blur">
           <label className="text-white text-xs font-bold uppercase mb-2 block flex justify-between">
-              <span>Orbit Position</span>
+              <span>{t.interactive.orbitPos}</span>
               <span>{Math.round(dist)}m km</span>
           </label>
           <input 
@@ -87,7 +89,7 @@ const CometSim: React.FC = () => {
             className="w-full accent-cyan-400"
           />
           <p className="text-[10px] text-gray-400 mt-2 text-center leading-tight">
-              Notice how the tail gets longer and brighter as it nears the Sun, and always points away!
+              {t.interactive.cometTip}
           </p>
       </div>
     </div>

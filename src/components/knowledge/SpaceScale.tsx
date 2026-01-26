@@ -41,7 +41,7 @@ const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack }) => {
          <button onClick={onBack} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
             <i className="fas fa-arrow-left"></i>
          </button>
-         <h2 className="text-xl font-bold">{t.scaleTitle || 'Space Scale'}</h2>
+         <h2 className="text-xl font-bold">{t.scaleTitle}</h2>
          <div className="w-10"></div>
       </div>
 
@@ -49,7 +49,7 @@ const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack }) => {
           
           {/* Input Section */}
           <div className="bg-[#1c1e33] border border-kidrise-orange rounded-3xl p-6 text-center shadow-[0_0_30px_rgba(255,140,0,0.1)]">
-              <label className="block text-gray-400 text-sm mb-2 uppercase tracking-wider">{t.enterWeight || 'Enter Your Weight (kg)'}</label>
+              <label className="block text-gray-400 text-sm mb-2 uppercase tracking-wider">{t.enterWeight}</label>
               <div className="flex items-center justify-center gap-4">
                   <input 
                       type="number" 
@@ -63,7 +63,7 @@ const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack }) => {
 
           {/* Intro Text */}
           <div className="text-center text-gray-300 text-sm px-4">
-              <p>{t.scaleDesc || 'See how much you would weigh on other planets! Gravity changes everywhere!'}</p>
+              <p>{t.scaleDesc}</p>
           </div>
 
           {/* Planet Grid */}

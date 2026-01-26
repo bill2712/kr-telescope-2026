@@ -1,7 +1,9 @@
-
 import React, { useState } from 'react';
+import { translations } from '../../../utils/i18n';
+import { Language } from '../../../types';
 
-const EclipseSim: React.FC = () => {
+const EclipseSim: React.FC<{lang: Language}> = ({lang}) => {
+  const t = translations[lang];
   const [position, setPosition] = useState(0); // -100 to 100
 
   // Calculation
@@ -42,7 +44,7 @@ const EclipseSim: React.FC = () => {
 
       {/* Info Overlay */}
       <div className="absolute top-10 text-white font-bold text-2xl drop-shadow-md transition-opacity duration-300 pointer-events-none">
-          {isTotality ? "TOTALITY! 🌑" : (Math.abs(position) < 60 ? "Partial Eclipse 🌗" : "Daytime ☀️")}
+          {isTotality ? t.interactive.totality : (Math.abs(position) < 60 ? t.interactive.partial : t.interactive.daytime)}
       </div>
 
       <div className="absolute bottom-6 w-64 bg-white/20 p-4 rounded-xl backdrop-blur border border-white/10 z-10">
@@ -54,7 +56,7 @@ const EclipseSim: React.FC = () => {
             onChange={(e) => setPosition(Number(e.target.value))}
             className="w-full accent-yellow-400"
           />
-          <p className="text-[10px] text-white mt-2 text-center">Slide the Moon to cover the Sun!</p>
+          <p className="text-[10px] text-white mt-2 text-center">{t.interactive.eclipseSlider}</p>
       </div>
 
     </div>

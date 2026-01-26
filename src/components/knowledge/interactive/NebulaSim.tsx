@@ -1,7 +1,9 @@
-
 import React, { useRef, useEffect } from 'react';
+import { translations } from '../../../utils/i18n';
+import { Language } from '../../../types';
 
-const NebulaSim: React.FC = () => {
+const NebulaSim: React.FC<{lang: Language}> = ({lang}) => {
+    const t = translations[lang];
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -71,7 +73,7 @@ const NebulaSim: React.FC = () => {
     <div className="relative w-full h-full min-h-[400px] flex flex-col items-center justify-center bg-[#140a1e] rounded-3xl overflow-hidden border border-white/20">
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
       <div className="absolute bottom-6 z-10 bg-white/10 px-6 py-2 rounded-full backdrop-blur pointer-events-none">
-          <p className="text-white text-sm font-bold">Stellar Nursery Simulation</p>
+          <p className="text-white text-sm font-bold">{t.interactive.nursery}</p>
       </div>
     </div>
   );

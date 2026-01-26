@@ -1,7 +1,9 @@
-
 import React, { useRef, useEffect } from 'react';
+import { translations } from '../../../utils/i18n';
+import { Language } from '../../../types';
 
-const MeteorSim: React.FC = () => {
+const MeteorSim: React.FC<{lang: Language}> = ({lang}) => {
+  const t = translations[lang];
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -114,7 +116,7 @@ const MeteorSim: React.FC = () => {
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full cursor-pointer" />
       <div className="absolute bottom-6 z-10 bg-white/10 px-6 py-2 rounded-full backdrop-blur pointer-events-none">
           <p className="text-white text-sm font-bold flex items-center gap-2">
-              <span className="animate-pulse">👆</span> Tap sky to make a wish!
+              <span className="animate-pulse">👆</span> {t.interactive.tapSky}
           </p>
       </div>
     </div>

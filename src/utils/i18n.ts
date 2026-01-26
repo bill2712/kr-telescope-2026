@@ -143,11 +143,7 @@ export const translations = {
     nextLevel: '下一關',
     restart: '再玩一次',
 
-    // Space Scale
-    scaleTitle: '宇宙體重機',
-    enterWeight: '輸入你的體重 (kg)',
-    scaleDesc: '看看你在別的星球會變多重！有些地方你會變超輕，有些地方這會把你壓扁喔！',
-    pluto: '冥王星',
+
 
     // Elaborations
     solarContext: '想像一個大家庭圍著營火跑。太陽就是那個營火，行星就是圍著它跑的小朋友！',
@@ -455,6 +451,42 @@ export const translations = {
         ]
     },
 
+    // Space Scale
+    scaleTitle: '太空體重計',
+    scaleDesc: '看看你在其他星球上有幾公斤！',
+    enterWeight: '輸入體重 (kg)',
+    pluto: '冥王星',
+
+    // Star Colors
+    starOrange: '橘色',
+    starWhite: '白色',
+    tempCold: '冷',
+    tempHot: '熱！',
+
+    // Interactive Modules
+    interactive: {
+        tapCard: '點擊卡片開始你的太空冒險！',
+        btnBack: '返回',
+        // Black Hole
+        eventHorizon: '事件視界大小',
+        gravitySlider: '拖動滑桿改變重力！',
+        // Meteor
+        tapSky: '點擊天空許願！',
+        // Comet
+        orbitPos: '軌道位置',
+        cometTip: '注意看！彗星越靠近太陽，尾巴就越長越亮，而且永遠背對太陽！',
+        // Galaxy
+        tilt: '傾斜角度',
+        rotation: '旋轉速度',
+        // Nebula
+        nursery: '恆星托兒所模擬',
+        // Eclipse
+        totality: '全食！🌑',
+        partial: '偏食 🌗',
+        daytime: '白天 ☀️',
+        eclipseSlider: '拖動月亮來遮住太陽！'
+    },
+
     
     // TELESCOPE ENCYCLOPEDIA (Renamed from manual)
     encyclopedia: {
@@ -748,11 +780,7 @@ export const translations = {
     nextLevel: 'Next Level',
     restart: 'Restart',
 
-    // Space Scale
-    scaleTitle: 'Space Scale',
-    enterWeight: 'Enter Your Weight (kg)',
-    scaleDesc: 'See how much you would weigh on other planets! Gravity changes everywhere!',
-    pluto: 'Pluto',
+
 
     // Elaborations
     solarContext: 'Imagine a giant family running around a bonfire. The Sun is the fire, and the planets are the kids running around it!',
@@ -1104,6 +1132,41 @@ export const translations = {
       ],
 
       
+    // Space Scale
+    scaleTitle: 'Space Scale',
+    scaleDesc: 'See how much you would weigh on other planets!',
+    enterWeight: 'Enter Your Weight (kg)',
+    pluto: 'Pluto',
+
+    // Star Colors
+    starOrange: 'Orange',
+    starWhite: 'White',
+    tempCold: 'Cold',
+    tempHot: 'Hot!',
+
+    // Interactive Modules
+    interactive: {
+        tapCard: 'Tap a card to start your space adventure!',
+        btnBack: 'Back',
+        // Black Hole
+        eventHorizon: 'Event Horizon Size',
+        gravitySlider: 'Drag slider to change gravity!',
+        // Meteor
+        tapSky: 'Tap sky to make a wish!',
+        // Comet
+        orbitPos: 'Orbit Position',
+        cometTip: 'Notice how the tail gets longer and brighter as it nears the Sun, and always points away!',
+        // Galaxy
+        tilt: 'Tilt Angle',
+        rotation: 'Rotation Speed',
+        // Nebula
+        nursery: 'Stellar Nursery Simulation',
+        // Eclipse
+        totality: 'TOTALITY! 🌑',
+        partial: 'Partial Eclipse 🌗',
+        daytime: 'Daytime ☀️',
+        eclipseSlider: 'Slide the Moon to cover the Sun!'
+    },
       assemblyTitle: 'Telescope Assembly',
       assemblySteps: {
         1: '1. Base Rotary Lock Knob',
