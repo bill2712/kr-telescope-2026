@@ -17,10 +17,10 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
   const activeSection = data.find(s => s.id === activeTabId) || data[0];
 
   return (
-    <div className="absolute inset-0 z-40 bg-[#0B0D17] text-white flex flex-col pt-16 pb-20 overflow-hidden">
+    <div className="w-full text-white flex flex-col pt-24 pb-20 max-w-7xl mx-auto px-4 lg:px-8">
       
       {/* Header Bar */}
-      <div className="px-6 md:px-12 py-4 flex justify-between items-center bg-white/5 border-b border-white/10 backdrop-blur-md z-50">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-[#161825]/80 border border-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 uppercase tracking-wider">
             {t.menuEncyclopedia}
@@ -31,25 +31,23 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
         </div>
         <button 
           onClick={onClose}
-          className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all active:scale-95"
+          className="mt-4 md:mt-0 px-6 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all text-sm font-bold flex items-center gap-2"
         >
-          <i className="fas fa-times text-xl"></i>
+          <i className="fas fa-arrow-left"></i> {t.btnBack}
         </button>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-8 relative">
           
-          {/* Sidebar (Desktop) / Topbar (Mobile) */}
-          <div className="w-full md:w-64 lg:w-72 bg-[#050608]/80 backdrop-blur-xl border-r border-white/10 flex flex-col overflow-y-auto no-scrollbar md:flex-shrink-0">
-             
-             {/* Mobile: Horizontal Scroll. Desktop: Vertical List */}
-             <div className="flex md:flex-col p-2 md:p-4 gap-2 overflow-x-auto md:overflow-x-visible">
+          {/* Sidebar (Desktop Sticky / Mobile Scroll) */}
+          <div className="w-full lg:w-72 flex-shrink-0">
+             <div className="lg:sticky lg:top-32 bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible shadow-lg">
                  {data.map((section) => (
                      <button
                         key={section.id}
                         onClick={() => setActiveTabId(section.id)}
                         className={`
-                            flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-left shrink-0 md:shrink
+                            flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-left shrink-0
                             ${activeTabId === section.id 
                                 ? 'bg-gradient-to-r from-cyan-900/60 to-blue-900/60 border border-cyan-500/50 text-white shadow-lg shadow-cyan-900/20' 
                                 : 'hover:bg-white/5 text-gray-400 hover:text-white border border-transparent'
@@ -59,22 +57,22 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${activeTabId === section.id ? 'bg-cyan-500 text-black' : 'bg-white/10 text-gray-400'}`}>
                              <i className={`fas ${section.icon}`}></i>
                          </div>
-                         <span className={`font-bold text-sm ${activeTabId === section.id ? 'text-cyan-100' : ''}`}>{section.title}</span>
+                         <span className={`font-bold text-sm whitespace-nowrap ${activeTabId === section.id ? 'text-cyan-100' : ''}`}>{section.title}</span>
                      </button>
                  ))}
              </div>
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth relative">
+          <div className="flex-1 min-w-0">
               
               {/* Background Glow */}
-              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen"></div>
+              <div className="fixed top-1/2 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></div>
 
-              <div key={activeTabId} className="max-w-4xl mx-auto space-y-8 animate-fadeIn">
+              <div key={activeTabId} className="space-y-8 animate-fadeIn relative z-10">
                   
                   {/* Title Header */}
-                  <div className="border-l-4 border-cyan-500 pl-6 py-2 mb-8">
+                  <div className="border-l-4 border-cyan-500 pl-6 py-2 mb-8 bg-gradient-to-r from-white/5 to-transparent rounded-r-xl">
                       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">{activeSection.title}</h2>
                       <div className="h-1 w-20 bg-gradient-to-r from-cyan-500 to-transparent rounded-full"></div>
                   </div>
@@ -84,7 +82,7 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
                       {activeSection.content.map((block, idx) => (
                           <div 
                             key={idx} 
-                            className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.07] transition-colors group"
+                            className="bg-[#161825]/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.07] transition-colors group shadow-lg"
                           >
                               {block.subtitle && (
                                   <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-2">
@@ -98,9 +96,11 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
                               </p>
 
                               {block.tips && (
-                                  <div className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
-                                      <i className="fas fa-lightbulb text-yellow-400 mt-1"></i>
-                                      <p className="text-yellow-100/80 text-sm font-medium">{block.tips}</p>
+                                  <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
+                                      <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0">
+                                        <i className="fas fa-lightbulb text-yellow-400 text-sm"></i>
+                                      </div>
+                                      <p className="text-yellow-100/80 text-sm font-medium pt-1">{block.tips}</p>
                                   </div>
                               )}
                           </div>

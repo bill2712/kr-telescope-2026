@@ -2,6 +2,7 @@ import React from 'react';
 import { Language } from '../types';
 import { translations } from '../utils/i18n';
 import telescopeImg from '../assets/knowledge/amazing-telescope-transparent.png';
+import { Footer } from './layout/Footer';
 
 interface HeroProps {
   lang: Language;
@@ -12,7 +13,9 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
   const t = translations[lang];
 
   return (
-    <div className="relative min-h-[85vh] flex flex-col items-center justify-center text-center px-4 py-8 md:p-4 overflow-hidden">
+    <div className="relative w-full h-full overflow-y-auto custom-scrollbar flex flex-col text-center bg-dark">
+      <div className="min-h-full flex flex-col items-center justify-between w-full relative">
+       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-8 md:p-4 pb-32 z-10">
       {/* Background Decorative Elements */}
       <div className="absolute top-10 left-10 w-24 h-24 bg-primary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '0s' }} />
       <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -65,6 +68,11 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
           </button>
         </div>
       </div>
+      </div>
+      <div className="mt-auto w-full z-10 relative">
+         <Footer lang={lang} />
+      </div>
+     </div>
     </div>
   );
 };

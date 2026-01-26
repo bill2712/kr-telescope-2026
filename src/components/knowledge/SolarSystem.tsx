@@ -3,11 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Language } from '../../types';
 import { translations } from '../../utils/i18n';
 
+import ExplanationCard from '../ui/ExplanationCard';
+
 interface Props {
   lang: Language;
+  expl?: { what: string; why: string; anim: string };
 }
 
-const SolarSystem: React.FC<Props> = ({ lang }) => {
+const SolarSystem: React.FC<Props> = ({ lang, expl }) => {
   const t = translations[lang];
   const [activePlanet, setActivePlanet] = useState<string | null>(null);
 
@@ -24,9 +27,19 @@ const SolarSystem: React.FC<Props> = ({ lang }) => {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-black/60 rounded-3xl p-4 overflow-hidden relative">
+    <div className="flex flex-col h-full bg-black/60 rounded-3xl p-4 overflow-hidden relative overflow-y-auto custom-scrollbar">
        <h3 className="text-xl font-bold text-center mb-4 text-white z-10">{t.knowSolar}</h3>
        <p className="text-xs text-gray-300 text-center mb-4 z-10">{t.solarDesc}</p>
+
+       {expl && (
+         <div className="mb-4 z-20 relative">
+            <ExplanationCard 
+                what={expl.what} 
+                why={expl.why} 
+                anim={expl.anim} 
+            />
+         </div>
+       )}
 
        {/* Solar System Visual */}
        <div className="flex-1 relative flex items-center justify-center min-h-[300px] overflow-hidden">

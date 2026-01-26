@@ -3,11 +3,14 @@ import React, { useState } from 'react';
 import { Language } from '../../types';
 import { translations } from '../../utils/i18n';
 
+import ExplanationCard from '../ui/ExplanationCard';
+
 interface Props {
   lang: Language;
+  expl?: { what: string; why: string; anim: string };
 }
 
-const MoonPhaseLearn: React.FC<Props> = ({ lang }) => {
+const MoonPhaseLearn: React.FC<Props> = ({ lang, expl }) => {
   const t = translations[lang];
   const [day, setDay] = useState(1); 
 
@@ -76,8 +79,18 @@ const MoonPhaseLearn: React.FC<Props> = ({ lang }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-black/60 rounded-3xl p-4 relative">
+    <div className="flex flex-col h-full bg-black/60 rounded-3xl p-4 relative overflow-y-auto custom-scrollbar">
        <h3 className="text-xl font-bold text-center mb-2 text-white">{t.knowMoon}</h3>
+       
+       {expl && (
+         <div className="mb-4">
+            <ExplanationCard 
+                what={expl.what} 
+                why={expl.why} 
+                anim={expl.anim} 
+            />
+         </div>
+       )}
        
        <div className="flex-1 flex flex-col items-center justify-center">
             

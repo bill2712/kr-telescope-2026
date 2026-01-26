@@ -58,7 +58,7 @@ const GalaxySim: React.FC<{lang: Language}> = ({lang}) => {
               <input 
                 type="range" 
                 min="1" 
-                max="60" 
+                max="58" 
                 value={60 - spinSpeed} 
                 onChange={(e) => setSpinSpeed(60 - Number(e.target.value))}
                 className="w-full accent-purple-500"

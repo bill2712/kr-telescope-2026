@@ -14,6 +14,7 @@ import CometSim from './knowledge/interactive/CometSim';
 import GalaxySim from './knowledge/interactive/GalaxySim';
 import NebulaSim from './knowledge/interactive/NebulaSim';
 import EclipseSim from './knowledge/interactive/EclipseSim';
+import ExplanationCard from './ui/ExplanationCard';
 
 interface KnowledgeProps {
     lang: Language;
@@ -55,39 +56,39 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
 
                     {/* Content Container */}
                      <div className="relative z-10 w-full h-full p-4 md:p-8 flex flex-col">
-                        {activeModule === 'solar' && <SolarSystem lang={lang} />}
-                        {activeModule === 'moon' && <MoonPhaseLearn lang={lang} />}
-                        {activeModule === 'star' && <StarColors lang={lang} />}
-                        {activeModule === 'spacescale' && <SpaceScale lang={lang} onBack={() => setActiveModule(null)} />}
+                        {activeModule === 'solar' && <SolarSystem lang={lang} expl={t.expl?.solar} />}
+                        {activeModule === 'moon' && <MoonPhaseLearn lang={lang} expl={t.expl?.moonPhase} />}
+                        {activeModule === 'star' && <StarColors lang={lang} expl={t.expl?.starColor} />}
+                        {activeModule === 'spacescale' && <SpaceScale lang={lang} expl={t.expl?.spaceScale} onBack={() => setActiveModule(null)} />}
                         
                        {/* Interactive Modules */}
                         {activeModule === 'blackhole' && (
-                            <InteractiveWrapper title={t.knowBlackHole} desc={t.blackHoleDesc}>
+                            <InteractiveWrapper title={t.knowBlackHole} desc={t.blackHoleDesc} explanation={t.expl?.blackHole}>
                                 <BlackHoleSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                         {activeModule === 'meteor' && (
-                            <InteractiveWrapper title={t.knowMeteor} desc={t.meteorDesc}>
+                            <InteractiveWrapper title={t.knowMeteor} desc={t.meteorDesc} explanation={t.expl?.meteor}>
                                 <MeteorSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'comet' && (
-                            <InteractiveWrapper title={t.knowComet} desc={t.cometDesc}>
+                            <InteractiveWrapper title={t.knowComet} desc={t.cometDesc} explanation={t.expl?.comet}>
                                 <CometSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'galaxy' && (
-                            <InteractiveWrapper title={t.knowGalaxy} desc={t.galaxyDesc}>
+                            <InteractiveWrapper title={t.knowGalaxy} desc={t.galaxyDesc} explanation={t.expl?.galaxy}>
                                 <GalaxySim lang={lang} />
                             </InteractiveWrapper>
                         )}
                          {activeModule === 'nebula' && (
-                            <InteractiveWrapper title={t.knowNebula} desc={t.nebulaDesc}>
+                            <InteractiveWrapper title={t.knowNebula} desc={t.nebulaDesc} explanation={t.expl?.nebula}>
                                 <NebulaSim lang={lang} />
                             </InteractiveWrapper>
                         )}
                         {activeModule === 'eclipse' && (
-                            <InteractiveWrapper title={t.knowEclipse} desc={t.eclipseDesc}>
+                            <InteractiveWrapper title={t.knowEclipse} desc={t.eclipseDesc} explanation={t.expl?.eclipse}>
                                 <EclipseSim lang={lang} />
                             </InteractiveWrapper>
                         )}
@@ -140,16 +141,36 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
 };
 
 // Wrapper for interactive components to give them a consistent header/layout
-const InteractiveWrapper: React.FC<{title: string, desc: string, children: React.ReactNode}> = ({title, desc, children}) => {
+interface WrapperProps {
+    title: string;
+    desc: string;
+    children: React.ReactNode;
+    explanation?: { what: string; why: string; anim: string };
+}
+
+const InteractiveWrapper: React.FC<WrapperProps> = ({title, desc, children, explanation}) => {
     return (
-        <div className="w-full h-full flex flex-col">
-            <div className="mb-6 text-center">
+        <div className="w-full h-full flex flex-col overflow-y-auto custom-scrollbar">
+            <div className="mb-6 text-center shrink-0">
                 <h2 className="text-3xl font-bold text-white mb-2">{title}</h2>
                 <p className="text-blue-200">{desc}</p>
             </div>
-            <div className="flex-1 w-full min-h-[400px] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative bg-black/50 backdrop-blur-xl">
+            
+            {/* Simulation Container */}
+            <div className="w-full min-h-[400px] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative bg-black/50 backdrop-blur-xl shrink-0">
                 {children}
             </div>
+
+            {/* Detailed Explanation */}
+            {explanation && (
+                <div className="mt-4 pb-4 shrink-0">
+                    <ExplanationCard 
+                        what={explanation.what}
+                        why={explanation.why}
+                        anim={explanation.anim}
+                    />
+                </div>
+            )}
         </div>
     );
 };

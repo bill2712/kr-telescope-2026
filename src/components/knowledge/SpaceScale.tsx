@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { translations } from '../../utils/i18n';
 import { Language } from '../../types';
 
+import ExplanationCard from '../ui/ExplanationCard';
+
 interface SpaceScaleProps {
   lang: Language;
   onBack: () => void;
+  expl?: { what: string; why: string; anim: string };
 }
-
 const GRAVITY_DATA = [
   { id: 'moon', factor: 0.166, icon: 'fa-moon', color: 'bg-gray-400' },
   { id: 'mercury', factor: 0.38, icon: 'fa-thermometer-half', color: 'bg-orange-300' },
@@ -20,8 +22,7 @@ const GRAVITY_DATA = [
   { id: 'pluto', factor: 0.06, icon: 'fa-snowflake', color: 'bg-blue-200' },
   { id: 'sun', factor: 27.07, icon: 'fa-sun', color: 'bg-yellow-500' }
 ];
-
-const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack }) => {
+const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack, expl }) => {
   const t = translations[lang] as any;
   const [weight, setWeight] = useState<string>('30'); // Default 30kg
 
@@ -65,6 +66,12 @@ const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack }) => {
           <div className="text-center text-gray-300 text-sm px-4">
               <p>{t.scaleDesc}</p>
           </div>
+
+          {expl && (
+             <div className="mb-2">
+                <ExplanationCard what={expl.what} why={expl.why} anim={expl.anim} />
+             </div>
+          )}
 
           {/* Planet Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-8">

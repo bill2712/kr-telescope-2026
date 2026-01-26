@@ -405,6 +405,70 @@ export const translations = {
         startBtn: '開始任務'
     },
 
+    // Detailed Explanations
+    expl: {
+        // Black Hole
+        blackHole: {
+            what: '黑洞是宇宙中的超級吸塵器！它的質量非常大，引力強到連光都跑不掉。',
+            why: '當一顆超大恆星死掉後，因為太重了，自己塌陷成一個小點，就形成了黑洞。',
+            anim: '動畫顯示中間黑色的圓是「事件視界」，那是進去就出不來的界線。周圍亮亮的是被吸進去的氣體！'
+        },
+        // Meteor
+        meteor: {
+            what: '流星不是星星，而是太空中掉下來的小石頭或灰塵。',
+            why: '當這些小石頭高速衝進地球，會和空氣摩擦燒起來，發出一道光，這就是流星。',
+            anim: '注意看！畫面上劃過天空的亮線就是流星。點擊天空可以召喚更多流星許願喔！'
+        },
+        // Comet
+        comet: {
+            what: '彗星是來自遙遠太空的「髒雪球」，由冰和塵埃組成。',
+            why: '當它稍微靠近太陽時，冰受熱變成氣體，噴出來就變成了長長的尾巴。',
+            anim: '看看那條白色的尾巴！它總是背對著太陽（橘色圓點）。拖動滑桿看看它靠近太陽時尾巴怎麼變長。'
+        },
+        // Galaxy
+        galaxy: {
+            what: '星系是星星的超級大城市。我們的太陽就住在「銀河系」這座城市裡。',
+            why: '引力把數千億顆恆星、氣體和塵埃拉在一起，讓它們繞著中心旋轉。',
+            anim: '這是一個螺旋星系。你可以調整傾斜角度，看看它扁扁的形狀，就像一個旋轉的盤子！'
+        },
+        // Nebula
+        nebula: {
+            what: '星雲是漂浮在宇宙中的美麗雲朵，由氣體和灰塵組成。',
+            why: '有些星雲是星星死掉後留下的，有些則是新星星誕生的地方（恆星托兒所）。',
+            anim: '這些彩色的雲氣正在慢慢移動。在真實宇宙中，這些顏色代表不同的氣體，比如紅色的氫氣。'
+        },
+        // Eclipse
+        eclipse: {
+            what: '日食就是月亮跑到太陽前面，把太陽光擋住的遊戲。',
+            why: '因為月亮繞地球轉，有時候剛好擋在太陽和地球中間，就會發生日食。',
+            anim: '拖動月亮（灰色圓）去遮住太陽（橘色圓）。完全遮住時（日全食），你會看到周圍有一圈光，那是太陽的日冕！'
+        },
+        // Solar System
+        solar: {
+            what: '太陽系就是太陽的一家人。太陽在中間，八顆行星繞著它轉。',
+            why: '太陽太重了，它的引力抓住所有行星，讓它們乖乖繞圈圈，不會亂跑。',
+            anim: '這些圈圈是行星的軌道。點擊任何一顆行星，看看它們的樣子和關於它們的小秘密！'
+        },
+        // Moon Phases
+        moonPhase: {
+            what: '月相就是月亮形狀的變化。有時候圓圓的，有時候像眉毛。',
+            why: '其實月亮不會變形！是因為太陽光照亮月亮的角度不同，我們在地球上看到的亮面就不一樣。',
+            anim: '拖動滑桿讓時間快轉！觀察月亮旁邊的陰影怎麽移動，讓月亮變圓又變缺。'
+        },
+        // Star Colors
+        starColor: {
+            what: '星星的顏色告訴我們它的溫度。這就像火焰一樣！',
+            why: '越熱的火是藍色的，比較冷的火是紅色的。星星也一樣！',
+            anim: '拖動滑桿改變溫度。看！溫度低時變成紅色大星星，溫度高時變成藍色小星星。'
+        },
+        // Space Scale
+        spaceScale: {
+            what: '這個工具可以讓你知道如果你住在別的星球，你的體重會變成多少。',
+            why: '每個星球的引力（地心吸力）都不同！像木星引力很大，你就會變很重；月亮引力很小，你就會變很輕。',
+            anim: '輸入你的體重，我們幫你算出在其他星球的數字。看看下方的「跳躍高度」，在月球上你可以跳得超級高喔！'
+        }
+    },
+
     // WIZARD GUIDE (Expanded to 8 steps)
     wizard: {
         steps: [
@@ -1076,6 +1140,70 @@ export const translations = {
                 note: 'Patience is an astronomer\'s best virtue.'
             }
         ]
+    },
+
+    // Detailed Explanations
+    expl: {
+        // Black Hole
+        blackHole: {
+            what: 'A Black Hole is a super vacuum cleaner in space! Its gravity is so strong that even light cannot escape.',
+            why: 'It forms when a huge star collapses under its own weight into a tiny point.',
+            anim: 'The black circle in the middle is the "Event Horizon" - the point of no return. The glowing ring is gas freezing into it!'
+        },
+        // Meteor
+        meteor: {
+            what: 'A meteor is not a star, but a small space rock or dust crashing into Earth.',
+            why: 'When it hits our air very fast, it gets super hot and glows, creating a streak of light.',
+            anim: 'Watch the light streaks crossing the sky! Tap the sky to summon a meteor shower and make a wish.'
+        },
+        // Comet
+        comet: {
+            what: 'A comet is a "dirty snowball" from deep space, made of ice and dust.',
+            why: 'When it gets near the Sun, the ice melts into gas, creating a long beautiful tail.',
+            anim: 'See the white tail? It always points AWAY from the Sun (orange dot). Drag the slider to see the tail grow as it gets closer!'
+        },
+        // Galaxy
+        galaxy: {
+            what: 'A galaxy is a mega city of stars. Our Sun lives in a galaxy called the "Milky Way".',
+            why: 'Gravity pulls billions of stars, gas, and dust together to spin around a center.',
+            anim: 'This is a Spiral Galaxy. Change the tilt to see that it is flat like a frisbee!'
+        },
+        // Nebula
+        nebula: {
+            what: 'A Nebula is a beautiful cloud in space made of gas and dust.',
+            why: 'Some nebulae are leftovers from dead stars, while others are nurseries where new stars are born!',
+            anim: 'These colorful clouds are drifting slowly. In real space, colors represent different gases, like red hydrogen.'
+        },
+        // Eclipse
+        eclipse: {
+            what: 'A solar eclipse is when the Moon blocks the Sun.',
+            why: 'The Moon moves between Earth and the Sun, casting a shadow on us.',
+            anim: 'Drag the Moon (grey) to cover the Sun (orange). When totally covered (Totality), you see a glowing ring called the Corona!'
+        },
+        // Solar System
+        solar: {
+            what: 'The Solar System is the Sun\'s family. The Sun is in the center with 8 planets orbiting it.',
+            why: 'The Sun is huge! Its gravity holds all the planets in their lanes (orbits).',
+            anim: 'The lines are orbits. Tap on any planet to zoom in and learn a cool fact about it!'
+        },
+        // Moon Phases
+        moonPhase: {
+            what: 'Moon Phases are the changing shapes of the Moon we see.',
+            why: 'The Moon doesn\'t actually change shape! It\'s just the Sun lighting up different parts as the Moon circles Earth.',
+            anim: 'Drag the slider to pass time! Watch how the shadow moves across the Moon\'s face.'
+        },
+        // Star Colors
+        starColor: {
+            what: 'A star\'s color tells us its temperature. Just like fire!',
+            why: 'Hotter fire is blue, and cooler fire is red. Stars work the same way!',
+            anim: 'Drag the slider to change temperature. Watch it turn into a big Red Giant (cool) or a small Blue Star (hot)!'
+        },
+        // Space Scale
+        spaceScale: {
+            what: 'This tool shows you how much you would weigh on other planets.',
+            why: 'Gravity is different everywhere! Jupiter pulls you down very hard (heavy), but the Moon pulls gently (light).',
+            anim: 'Enter your weight to see the magic numbers. Check the "Jump Height" - you could be a superhero on the Moon!'
+        }
     },
 
     // TELESCOPE ENCYCLOPEDIA (Renamed from manual)
