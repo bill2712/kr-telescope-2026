@@ -10,6 +10,7 @@ import Quiz from './components/Quiz';
 import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
 import StarMapControls from './components/StarMapControls';
+import UsageGuide from './components/UsageGuide';
 import UsageGuideWizard from './components/UsageGuideWizard';
 import TelescopeManual from './components/guide/TelescopeManual';
 import Hero from './components/Hero';
@@ -184,7 +185,7 @@ function App() {
     >
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
-      {showUsageGuide && <UsageGuideWizard lang={lang} onClose={() => setShowUsageGuide(false)} />}
+      {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
 
       {/* Hero Landing Page */}
       {currentPage === 'hero' && (

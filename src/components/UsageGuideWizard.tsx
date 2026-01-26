@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../utils/i18n';
-import telescopeImg from '../assets/knowledge/amazing-telescope-transparent.png'; 
+
+// Import images for 7 steps
+import step1Img from '../assets/knowledge/amazing-telescope-step01.png';
+import step2Img from '../assets/knowledge/amazing-telescope-step02.png';
+import step3Img from '../assets/knowledge/amazing-telescope-step03.png';
+import step4Img from '../assets/knowledge/amazing-telescope-step04.png';
+import step5Img from '../assets/knowledge/amazing-telescope-step05.png';
+import step6Img from '../assets/knowledge/amazing-telescope-step06.png';
+import step7Img from '../assets/knowledge/amazing-telescope-step07.jpg';
 
 interface UsageGuideWizardProps {
     lang: Language;
@@ -13,7 +21,9 @@ const UsageGuideWizard: React.FC<UsageGuideWizardProps> = ({ lang, onClose }) =>
     const w = t.wizard;
     const [step, setStep] = useState(0);
 
-    const steps = w.steps.map(s => ({...s, image: telescopeImg}));
+    const stepImages = [step1Img, step2Img, step3Img, step4Img, step5Img, step6Img, step7Img];
+
+    const steps = w.steps.map((s, index) => ({...s, image: stepImages[index] || stepImages[0]}));
     const totalSteps = steps.length;
 
     const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps - 1));

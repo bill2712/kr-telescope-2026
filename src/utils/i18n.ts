@@ -474,43 +474,38 @@ export const translations = {
         steps: [
             {
                 title: '1. 開箱檢查 (Unboxing)',
-                desc: '打開盒子，確認所有零件都在：主鏡筒、三腳架、尋星鏡、兩個目鏡 (H20mm, H6mm)、天頂鏡和濾鏡。請小心輕放，不要觸摸任何玻璃鏡片喔！',
+                desc: '打開盒子，確認所有零件都在：主鏡筒、三腳架、尋星鏡、天頂鏡、兩個目鏡 (H20mm, H6mm) 、底座和鏡筒固定器。請小心輕放，不要觸摸任何玻璃鏡片喔！',
                 note: '將所有零件平放在桌面上，清點好再開始！'
             },
             {
                 title: '2. 架設三腳架 (Tripod)',
-                desc: '將三腳架的三條腿完全拉開，並鎖緊固定旋鈕。確保它在地面上站得穩穩的，不會搖晃。如果地面不平，可以調整腳管長度。',
+                desc: '將三腳架的三條腿完全拉開，並鎖緊固定旋鈕。確保它在地面上站得穩穩的，不會搖晃。',
                 note: '穩固的地基是觀測成功的關鍵！'
             },
             {
-                title: '3. 安裝主鏡筒 (Mounting)',
-                desc: '將白色的主鏡筒放在三腳架的雲台上。對準螺絲孔，旋緊底部的鎖定旋鈕。手要扶著鏡筒直到確認鎖緊為止，以免滑落。',
+                title: '3. 安裝旋轉鎖 (Rotary Lock) 固定底座 (Base)',
+                desc: '先將底座孔洞與三角架孔洞位置對齊，使用旋轉鎖螺絲穿越孔洞，並用旋鈕固定旋轉鎖。',
                 note: '不要鎖得太死，以免損壞螺絲，只要穩固即可。'
             },
             {
-                title: '4. 安裝尋星鏡 (Finder)',
-                desc: '找到鏡筒上方的小支架，將尋星鏡（小望遠鏡）插入並鎖緊螺絲。尋星鏡是你的「瞄準器」，非常重要！',
-                note: '注意尋星鏡的方向，應該是大鏡頭朝前（指向目標）。'
-            },
-            {
-                title: '5. 安裝天頂鏡與目鏡',
+                title: '4. 安裝天頂鏡與目鏡',
                 desc: '將「天頂鏡」（呈90度的黑色彎頭）插入主鏡筒後端，鎖緊。然後放入倍率最低的目鏡標示「H20」），也鎖緊。',
                 note: '永遠從低倍率 (H20) 開始尋找目標，找到後再換高倍率 (H6)！'
             },
             {
-                title: '6. 白天校準 (Alignment)',
-                desc: '這步最重要！在白天，將望遠鏡對準遠處的一個目標（如避雷針尖端）。先看主鏡筒確認目標在視野中，然後調整「尋星鏡」上的小螺絲，讓尋星鏡的十字中心也對準同一個點。',
-                note: '千萬不要對著太陽看！校準好後，晚上找星星就容易多了。'
+                title: '5. 安裝主鏡筒 (Mounting)',
+                desc: '將主鏡筒置於底座上，把鏡筒固定器套入底座軌道，旋緊頂部的鎖定旋鈕。手要扶著鏡筒直到確認鎖緊為止，以免滑落。',
+                note: '小心輕放，確保鏡筒穩固。'
             },
             {
-                title: '7. 開始觀測 (First Light)',
-                desc: '晚上將望遠鏡搬到戶外。先用「尋星鏡」找到月亮，將它放在十字中心。然後看主目鏡，你應該就能看到月亮了！',
+                title: '6. 安裝尋星鏡 (Finder)',
+                desc: '找到鏡筒上方的小支架，將尋星鏡（小望遠鏡）插入。',
+                note: '注意尋星鏡的方向，應該是大鏡頭朝前（指向目標）。'
+            },
+            {
+                title: '7. 校準 (Alignment) 及觀測 (First Light)',
+                desc: '在白天，將望遠鏡對準遠處的一個目標（如避雷針尖端）。先用「尋星鏡」找到目標，然後調整主鏡筒確認目標在視野中。晚上將望遠鏡搬到戶外。先用「尋星鏡」找到月亮，然後調整主鏡筒 (或切換目鏡），你應該就能看到月亮了！',
                 note: '慢慢轉動調焦輪，直到月球坑洞變得清晰銳利。'
-            },
-            {
-                title: '8. 疑難排解 (Tips)',
-                desc: '影像上下顛倒？這是正常的，因為光學鏡片會讓影像翻轉。如果不清楚，試著重新對焦。如果全黑，請確認「鏡頭蓋」已經拿下來了！',
-                note: '耐心是天文學家最重要的美德。'
             }
         ]
     },
@@ -670,14 +665,15 @@ export const translations = {
     },
     // How to Use Guide
     howToUse: {
-        title: '使用方法',
-        step1Title: '1. 對齊時間',
-        step1Desc: '轉動星盤使觀測日期和時間對齊。',
-        step2Title: '2. 尋找方向',
-        step2Desc: '如下列例子所示，拿着旋轉星圖，便可得知夜空中星座的名稱。橢圓窗口內所示的便是香港此刻可以看到的星座。',
+        title: '星圖使用方法',
+        step1Title: '1. 對齊觀測時間',
+        step1Desc: '轉動黑色的星盤（最內層），使您想要觀測的「日期」對齊外圈的「時間」。\n\n例如：若要在 10 月 1 日晚上 9 點觀星，請將星盤上的「10月1日」刻度轉動到對準底座顯示的「21:00」。',
+        step2Title: '2. 辨認方位與星座',
+        step2Desc: '星盤中間橢圓形窗口顯示的，就是此時此刻在香港夜空中可見的星空範圍。\n\n拿出實體旋轉星圖，將其舉高至頭頂，並依照實際的地標方位（如建築物或街道方向）調整星圖拿法，便能對照出天空中的星座名稱。',
         step3Title: '3. 觀測技巧',
-        step3Desc: '觀看西方夜空時，將盤上的「西」字向下；觀看北方時，將「北」字向下。',
-        note: '在 App 中，你可以：\n1. 改變時間：拖動黑色星盤、日期環，或直接在背景黑色區域滑動。\n2. 移動星圖：按住最外層的外框拖動。\n3. 放大縮小：使用滑鼠滾輪 (桌面版) 或雙指開合 (手機版)。'
+        step3Desc: '不同的觀測方向，拿法也不同：\n\n• 面向【北方】時：將星圖上的「北」字朝下，對準地面的北方。\n• 面向【西方】時：將星圖上的「西」字朝下，對準地面的西方。\n\n以此類推，讓星圖的方位與實際地平線方位一致。',
+        step4Title: 'App 操作指南',
+        note: '在 Web App 中，我們模擬了真實星盤的操作體驗：\n\n1.【改變時間】：您可以拖動黑色的星盤、日期環，甚至直接按住黑色背景區域滑動，就能快速穿梭時間！\n2.【移動整張星圖】：按住最外層的半透明外框，即可拖曳整個星圖的位置。\n3.【放大縮小】：電腦版請使用滑鼠滾輪；手機版請用雙指開合手勢縮放。'
     },
     mapStyleInfo: {
         western: '國際 (IAU)：顯示國際天文學聯合會定義的 88 個現代星座，包含 4 等以上的恆星。',
@@ -1015,14 +1011,15 @@ export const translations = {
     rank5: 'Universe Master',
 
     howToUse: {
-        title: 'How to Use',
-        step1Title: '1. Align Time',
-        step1Desc: 'Turn the Star Dial (Dark Background) to align the observation date with the time on the Holder.',
-        step2Title: '2. Find Direction',
-        step2Desc: 'The constellations shown in the oval opening reflect those that can be observed in Hong Kong now. Hold the planisphere as described below.',
-        step3Title: '3. Observation',
-        step3Desc: 'The "W" should point downwards when viewing the western sky. The "N" should point downwards when viewing the northern sky.',
-        note: 'Interactive Controls:\n1. Change Time: Drag the black Star Disk, Date Ring, or the background area.\n2. Move Map: Drag the outer frame.\n3. Zoom: Use mouse wheel (Desktop) or pinch gesture (Mobile).'
+        title: 'How to Use Star Map',
+        step1Title: '1. Time Alignment',
+        step1Desc: 'Rotate the inner Star Dial (black circle) to align your desired "Observation Date" with the "Time" shown on the outer holder.\n\nExample: To observe on October 1st at 9:00 PM, rotate the dial so the "Oct 1" mark aligns with "21:00" on the holder.',
+        step2Title: '2. Orientation & Constellations',
+        step2Desc: 'The oval window in the center shows the exact starry sky visible in Hong Kong at that specific time.\n\nHold the physical planisphere above your head. Align it with actual landmarks (like buildings or streets) to identify the constellations in the real sky.',
+        step3Title: '3. Observation Techniques',
+        step3Desc: 'Adjust how you hold the map based on your facing direction:\n\n• Facing [NORTH]: Hold the map with "N" pointing down towards the northern horizon.\n• Facing [WEST]: Hold the map with "W" pointing down towards the western horizon.\n\nAlways ensure the direction on the map matches the actual horizon you are facing.',
+        step4Title: 'App Controls',
+        note: 'We have simulated the real planisphere experience in this Web App:\n\n1. [Time Travel]: Drag the black Star Disk, Date Ring, or simply slide anywhere on the black background to change time rapidly!\n2. [Move Map]: Drag the translucent outer frame to move the entire map.\n3. [Zoom]: Use your mouse wheel (Desktop) or pinch with two fingers (Mobile).'
     },
     mapStyleInfo: {
         western: 'IAU: Shows the 88 modern constellations defined by the IAU, with stars up to magnitude 4.',

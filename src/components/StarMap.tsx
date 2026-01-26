@@ -22,17 +22,19 @@ interface StarMapProps {
   isPlanisphere?: boolean; 
 }
 
-const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
-  location,
-  date,
-  onDateChange,
-  lang,
-  mapStyle = 'western',
-  enableGyro,
-  isPlanisphere = true
-}, ref) => {
+const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) => {
+  const {
+    location,
+    date,
+    onDateChange,
+    lang,
+    mapStyle = 'western',
+    enableGyro,
+    isPlanisphere = true
+  } = props;
   const [rotation, setRotation] = useState(0);
   const [jacketSvg, setJacketSvg] = useState<string>('');
+  const [diskSvg, setDiskSvg] = useState<string>('');
   
   // D3 Transform State (x, y, k)
   const [transform, setTransform] = useState<d3.ZoomTransform>(d3.zoomIdentity);
@@ -84,6 +86,18 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
       }
   }));
 
+  // Resolve Assets based on State
+  const getDiskImage = () => {
+    let styleKey = 'IAU';
+    if (mapStyle === 'chinese') styleKey = 'CHN';
+    if (mapStyle === 'urban') styleKey = 'URBAN';
+    let langKey = 'ENG';
+    if (lang === 'zh-HK') langKey = 'CHN';
+    return `${import.meta.env.BASE_URL}planisphere/STARMAP_${styleKey}_${langKey}.svg`;
+  };
+
+  const diskUrl = getDiskImage();
+
   // 0. Fetch Jacket SVG for inline rendering
   useEffect(() => {
     const fetchJacket = async () => {
@@ -97,6 +111,20 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
     };
     fetchJacket();
   }, []);
+
+  // 0.1 Fetch Disk SVG for inline rendering
+  useEffect(() => {
+    const fetchDisk = async () => {
+        try {
+            const response = await fetch(diskUrl);
+            const text = await response.text();
+            setDiskSvg(text);
+        } catch (e) {
+            console.error('Failed to load disk svg', e);
+        }
+    };
+    fetchDisk();
+  }, [diskUrl]);
   
 
   // 1. Calculate Rotation based on Legacy Logic (Reverse engineered from original app)
@@ -218,17 +246,7 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
   }, [date, onDateChange]); 
 
 
-  // Resolve Assets based on State
-  const getDiskImage = () => {
-    let styleKey = 'IAU';
-    if (mapStyle === 'chinese') styleKey = 'CHN';
-    if (mapStyle === 'urban') styleKey = 'URBAN';
-    let langKey = 'ENG';
-    if (lang === 'zh-HK') langKey = 'CHN';
-    return `${import.meta.env.BASE_URL}planisphere/STARMAP_${styleKey}_${langKey}.svg`;
-  };
 
-  const diskUrl = getDiskImage();
 
   // Gyro Rotation (Device Orientation)
   const [deviceHeading, setDeviceHeading] = useState(0);
@@ -264,26 +282,41 @@ const StarMap = forwardRef<StarMapHandle, StarMapProps>(({
                 {/* 1. Underlying Star Disk (Rotates with Time) */}
                 <div 
                     ref={diskRef}
-                    className="absolute inset-0 will-change-transform"
+                    className="absolute inset-0" // Removed will-change-transform to prevent bitmap caching
                     style={{ 
                         transform: `rotate(${rotation}deg)`,
                     }}
                 >
-                    {/* Replaced img with object for sharpness (Vector) */}
-                    <object
-                        data={diskUrl}
-                        type="image/svg+xml"
-                        className="w-full h-full pointer-events-none"
-                        title="Star Disk"
-                    />
+                    {/* High-Res Container: Render at 5x size, scale down to fit. 
+                        This forces the SVG to rasterize at a higher resolution (1:1 with max zoom).
+                    */}
+                    <div 
+                        className="w-full h-full pointer-events-none [&_svg]:w-full [&_svg]:h-full [&_svg]:block"
+                        style={{ 
+                            width: '100%', 
+                            height: '100%', 
+                        }}
+                        dangerouslySetInnerHTML={{ __html: diskSvg }}
+                    >
+                    </div>
                 </div>
 
-                {/* 2. Horizon Mask (Fixed relative to Holder) - INLINE SVG */}
+                {/* 2. Horizon Mask (Fixed relative to Holder) - INLINE SVG 
+                    Applied the same High-Res Container fix to the Jacket 
+                */}
                 <div 
-                    className="absolute inset-0 z-10 jacket-layer cursor-move pointer-events-none [&_svg]:pointer-events-none [&_path]:pointer-events-auto [&_rect]:pointer-events-auto [&_circle]:pointer-events-auto"
-                    dangerouslySetInnerHTML={{ __html: jacketSvg }}
+                    className="absolute inset-0 z-10 jacket-layer cursor-move pointer-events-none [&_path]:pointer-events-auto [&_rect]:pointer-events-auto [&_circle]:pointer-events-auto"
                     style={{}}
                 >
+     <div
+        style={{
+            width: '100%',
+            height: '100%',
+        }}
+        dangerouslySetInnerHTML={{ __html: jacketSvg }}
+        className="w-full h-full pointer-events-none [&_svg]:w-full [&_svg]:h-full [&_svg]:block"
+    >
+                    </div>
                 </div>
             </div>
         </div>

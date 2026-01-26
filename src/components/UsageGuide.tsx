@@ -34,7 +34,7 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
             tip: lang === 'zh-HK' ? '觀察北方時，找北極星！' : 'Find Polaris when looking North!'
         },
         {
-            title: lang === 'zh-HK' ? '準備完成' : 'Ready',
+            title: g.step4Title || (lang === 'zh-HK' ? 'App 操作指南' : 'App Controls'),
             desc: g.note,
             image: telescopeImg,
             tip: null
