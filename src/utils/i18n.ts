@@ -675,13 +675,15 @@ export const translations = {
     // How to Use Guide
     howToUse: {
         title: '星圖使用方法',
-        step1Title: '1. 對齊觀測時間',
-        step1Desc: '轉動黑色的星盤（最內層），使您想要觀測的「日期」對齊外圈的「時間」。\n\n例如：若要在 10 月 1 日晚上 9 點觀星，請將星盤上的「10月1日」刻度轉動到對準底座顯示的「21:00」。',
-        step2Title: '2. 辨認方位與星座',
-        step2Desc: '星盤中間橢圓形窗口顯示的，就是此時此刻在香港夜空中可見的星空範圍。\n\n拿出實體旋轉星圖，將其舉高至頭頂，並依照實際的地標方位（如建築物或街道方向）調整星圖拿法，便能對照出天空中的星座名稱。',
-        step3Title: '3. 觀測技巧',
-        step3Desc: '不同的觀測方向，拿法也不同：\n\n• 面向【北方】時：將星圖上的「北」字朝下，對準地面的北方。\n• 面向【西方】時：將星圖上的「西」字朝下，對準地面的西方。\n\n以此類推，讓星圖的方位與實際地平線方位一致。',
-        step4Title: 'App 操作指南',
+        step1Title: '1. 自選時間／用實時功能',
+        step1Desc: '您可以點擊「實時」按鈕回到現在，或使用時間旅行功能穿梭到任何日期和時間。',
+        step2Title: '2. 對齊觀測時間',
+        step2Desc: '轉動星盤使觀測日期和時間對齊。橢圓窗口內所示的便是香港此刻可以看到的星座。',
+        step3Title: '3. 辨認方位',
+        step3Desc: '尋找方向，如下列例子所示，拿着旋轉星圖，便可得知夜空中星座的名稱。',
+        step4Title: '4. 觀測技巧',
+        step4Desc: '觀看西方時，「西」字向下。觀看北方時，「北」字向下。',
+        step5Title: 'App 操作指南',
         note: '在 Web App 中，我們模擬了真實星盤的操作體驗：\n\n1.【改變時間】：您可以拖動黑色的星盤、日期環，甚至直接按住黑色背景區域滑動，就能快速穿梭時間！\n2.【移動整張星圖】：按住最外層的半透明外框，即可拖曳整個星圖的位置。\n3.【放大縮小】：電腦版請使用滑鼠滾輪；手機版請用雙指開合手勢縮放。'
     },
     mapStyleInfo: {
@@ -714,17 +716,17 @@ export const translations = {
       welcomeTitle: 'Welcome to Kidrise Explorer!',
       welcomeDesc: 'I am your AI Co-pilot. Ready to explore the universe together?',
       
-      step1Title: 'Look Around',
-      step1Desc: 'Drag to fly! Pinch to zoom. ★ Tap on any star to LOCK onto it and see its secrets!',
+      step1Title: 'Select Time / Real-time',
+      step1Desc: 'Tap "Real-time" to sync with now, or use Time Travel to visit any date and time.',
       
-      step2Title: 'Mission Dock',
-      step2Desc: 'This is your main dashboard. Switch between Star Map, Planner, Learn, and Quiz modes.',
+      step2Title: 'Align Observation Time',
+      step2Desc: 'Rotate the star dial to align your desired date with the time to see the sky for that moment.',
       
-      step3Title: 'Super Tools',
-      step3Desc: 'Can\'t find a star? Tap the "Compass" button and point your phone at the sky. The map will move with you!',
+      step3Title: 'Identify Direction',
+      step3Desc: 'Tap the Compass button and point your phone at the sky to identify directions easily.',
       
-      step4Title: 'Ready to Launch!',
-      step4Desc: 'That\'s it! Now, let\'s blast off into the infinity of space!',
+      step4Title: 'Observation Tips',
+      step4Desc: 'Hold the map with "N" down when facing North. Use a red flashlight to preserve night vision.',
 
       nextBtn: 'Next',
       prevBtn: 'Back',
@@ -1029,15 +1031,17 @@ export const translations = {
     rank5: 'Universe Master',
 
     howToUse: {
-        title: 'How to Use Star Map',
-        step1Title: '1. Time Alignment',
-        step1Desc: 'Rotate the inner Star Dial (black circle) to align your desired "Observation Date" with the "Time" shown on the outer holder.\n\nExample: To observe on October 1st at 9:00 PM, rotate the dial so the "Oct 1" mark aligns with "21:00" on the holder.',
-        step2Title: '2. Orientation & Constellations',
-        step2Desc: 'The oval window in the center shows the exact starry sky visible in Hong Kong at that specific time.\n\nHold the physical planisphere above your head. Align it with actual landmarks (like buildings or streets) to identify the constellations in the real sky.',
-        step3Title: '3. Observation Techniques',
-        step3Desc: 'Adjust how you hold the map based on your facing direction:\n\n• Facing [NORTH]: Hold the map with "N" pointing down towards the northern horizon.\n• Facing [WEST]: Hold the map with "W" pointing down towards the western horizon.\n\nAlways ensure the direction on the map matches the actual horizon you are facing.',
-        step4Title: 'App Controls',
-        note: 'We have simulated the real planisphere experience in this Web App:\n\n1. [Time Travel]: Drag the black Star Disk, Date Ring, or simply slide anywhere on the black background to change time rapidly!\n2. [Move Map]: Drag the translucent outer frame to move the entire map.\n3. [Zoom]: Use your mouse wheel (Desktop) or pinch with two fingers (Mobile).'
+        title: 'Star Map Guide',
+        step1Title: '1. Select Time / Real-time',
+        step1Desc: 'Tap "Real-time" to sync with now, or use Time Travel to visit any date and time.',
+        step2Title: '2. Align Observation Time',
+        step2Desc: 'Turn the Star Dial to align the observation date with the time on the Holder. The constellations shown in the oval opening reflect those that can be observed in Hong Kong now.',
+        step3Title: '3. Identify Direction',
+        step3Desc: 'Find the direction and then hold the Planisphere as shown below. You can then name the constellations in the night sky.',
+        step4Title: '4. Observation Tips',
+        step4Desc: 'The "W" should point downwards when viewing the western sky. The "N" should point downwards when viewing the northern sky.',
+        step5Title: 'App Controls',
+        note: 'Web App Controls:\n\n1. [Time Travel]: Drag the black Star Disk, Date Ring, or simply slide anywhere on the black background to change time rapidly!\n2. [Move Map]: Drag the translucent outer frame to move the entire map.\n3. [Zoom]: Use your mouse wheel (Desktop) or pinch with two fingers (Mobile).'
     },
     mapStyleInfo: {
         western: 'IAU: Shows the 88 modern constellations defined by the IAU, with stars up to magnitude 4.',

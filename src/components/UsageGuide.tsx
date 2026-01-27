@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../utils/i18n';
-import telescopeImg from '../assets/knowledge/amazing-telescope-transparent.png'; // Import the new image
+import telescopeImg from '../assets/knowledge/amazing-telescope-transparent.png';
+// Import new step images
+import step1En from '../assets/knowledge/step1-en.png';
+import step1Zh from '../assets/knowledge/step1-zh.png';
+import step1_5En from '../assets/knowledge/step1.5-en.png';
+import step1_5Zh from '../assets/knowledge/step1.5-zh.png';
+import step2En from '../assets/knowledge/step2-en.png';
+import step2Zh from '../assets/knowledge/step2-zh.png';
+import step3En from '../assets/knowledge/step3-en.png';
+import step3Zh from '../assets/knowledge/step3-zh.png';
+
 
 interface UsageGuideProps {
     lang: Language;
@@ -10,7 +20,7 @@ interface UsageGuideProps {
 
 const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
     const t = translations[lang];
-    const g = t.howToUse;
+    const g = t.howToUse as any; // Cast to any to avoid type errors with recent changes
     const [step, setStep] = useState(0);
 
     // Map existing content into an array format for the wizard
@@ -18,23 +28,29 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
         {
             title: g.step1Title,
             desc: g.step1Desc,
-            image: telescopeImg, // Use specific images per step if available, defaulting to main product
+            image: lang === 'zh-HK' ? step1Zh : step1En,
             tip: null
         },
         {
             title: g.step2Title,
             desc: g.step2Desc,
-            image: telescopeImg,
+            image: lang === 'zh-HK' ? step1_5Zh : step1_5En,
             tip: null
         },
         {
             title: g.step3Title,
             desc: g.step3Desc,
-            image: telescopeImg,
+            image: lang === 'zh-HK' ? step2Zh : step2En,
+            tip: null
+        },
+        {
+            title: g.step4Title,
+            desc: g.step4Desc,
+            image: lang === 'zh-HK' ? step3Zh : step3En,
             tip: lang === 'zh-HK' ? '觀察北方時，找北極星！' : 'Find Polaris when looking North!'
         },
         {
-            title: g.step4Title || (lang === 'zh-HK' ? 'App 操作指南' : 'App Controls'),
+            title: g.step5Title || (lang === 'zh-HK' ? 'App 操作指南' : 'App Controls'),
             desc: g.note,
             image: telescopeImg,
             tip: null
