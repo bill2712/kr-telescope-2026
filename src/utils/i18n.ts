@@ -3,6 +3,8 @@ import { Language } from '../types';
 export const translations = {
   'zh-HK': {
     appTitle: 'Kidrise 星空探索者',
+    homeTitle: 'Kidrise 望遠鏡探秘',
+    homeSlogan: '開啟你的科學探索之旅！',
     subtitle: '小小天文學家的實時星圖',
     visitShop: '參觀商店',
     locationTitle: '觀測地點',
@@ -311,6 +313,7 @@ export const translations = {
     certificate: '及格證書',
     certifiedBy: 'Kidrise 科學團隊',
     date: '日期',
+    certNamePlaceholder: '輸入你的名字...',
     good: '做得好！你對宇宙非常了解！',
     perfect: '完美！你是真正的天文大師！',
     tryAgain: '別灰心，再試一次吧！',
@@ -321,6 +324,20 @@ export const translations = {
     rank3: '火箭隊長 (Rocket Captain)',
     rank4: '銀河守護者 (Galactic Guardian)',
     rank5: '宇宙大師 (Universe Master)',
+
+    // Quiz UI
+    quizQuestionCount: '第 {0}/{1} 題',
+    quizCurrentScore: '分數：{0}',
+    
+    // Certificate Content
+    certTitle: 'Certificate of Achievement',
+    certCertifies: 'This certifies that',
+    certCompleted: 'has successfully completed the STAR CADET TRAINING',
+    certScore: 'with a score of',
+    certDemonstrating: 'demonstrating excellent knowledge of the Telescope and Universe.',
+    certDate: 'Date',
+    certTeam: 'Kidrise Team',
+    certOfficial: 'OFFICIAL',
 
     // Questions
     q1: '哪顆星星是夜空中最亮的？',
@@ -710,6 +727,8 @@ export const translations = {
   },
   'en': {
     appTitle: 'Kidrise Sky Explorer',
+    homeTitle: 'Kidrise Telescope Explorer',
+    homeSlogan: 'Start your scientific journey!',
     subtitle: 'Real-time Star Chart for Young Astronomers',
     visitShop: 'Visit Shop',
     locationTitle: 'Location',
@@ -1035,6 +1054,7 @@ export const translations = {
     certificate: 'Certificate of Achievement',
     certifiedBy: 'Kidrise Science Team',
     date: 'Date',
+    certNamePlaceholder: 'Your Name...',
     good: 'Great job! You know your space stuff!',
     perfect: 'Perfect! You are a master of the universe!',
     tryAgain: 'Don\'t give up! Try again!',
@@ -1045,6 +1065,20 @@ export const translations = {
     rank3: 'Rocket Captain',
     rank4: 'Galactic Guardian',
     rank5: 'Universe Master',
+
+    // Quiz UI
+    quizQuestionCount: 'Question {0}/{1}',
+    quizCurrentScore: 'Score: {0}',
+
+    // Certificate Content
+    certTitle: 'Certificate of Achievement',
+    certCertifies: 'This certifies that',
+    certCompleted: 'has successfully completed the STAR CADET TRAINING',
+    certScore: 'with a score of',
+    certDemonstrating: 'demonstrating excellent knowledge of the Telescope and Universe.',
+    certDate: 'Date',
+    certTeam: 'Kidrise Team',
+    certOfficial: 'OFFICIAL',
 
     howToUse: {
         title: 'Star Map Guide',

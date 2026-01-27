@@ -167,14 +167,9 @@ const InteractiveWrapper: React.FC<WrapperProps> = ({title, desc, children, expl
                 <p className="text-blue-200">{desc}</p>
             </div>
             
-            {/* Simulation Container */}
-            <div className="w-full min-h-[400px] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative bg-black/50 backdrop-blur-xl shrink-0">
-                {children}
-            </div>
-
             {/* Detailed Explanation */}
             {explanation && (
-                <div className="mt-4 pb-4 shrink-0">
+                <div className="mb-6 shrink-0 z-20 relative">
                     <ExplanationCard 
                         what={explanation.what}
                         why={explanation.why}
@@ -182,6 +177,11 @@ const InteractiveWrapper: React.FC<WrapperProps> = ({title, desc, children, expl
                     />
                 </div>
             )}
+            
+            {/* Simulation Container */}
+            <div className="w-full min-h-[400px] border border-white/10 rounded-3xl overflow-hidden shadow-2xl relative bg-black/50 backdrop-blur-xl shrink-0">
+                {children}
+            </div>
         </div>
     );
 };

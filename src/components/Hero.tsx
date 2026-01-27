@@ -50,11 +50,11 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
 
         <div className="space-y-4 max-w-2xl px-4">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-white to-purple-300 drop-shadow-sm leading-tight pb-2">
-            Kidrise 望遠鏡探秘
+            {t.homeTitle || 'Kidrise 望遠鏡探秘'}
           </h1>
           
           <p className="text-lg sm:text-xl md:text-2xl text-slate-200 font-light tracking-wide max-w-xl mx-auto leading-relaxed">
-            開啟你的科學探索之旅！
+            {t.homeSlogan || '開啟你的科學探索之旅！'}
           </p>
         </div>
 

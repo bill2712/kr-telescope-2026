@@ -179,7 +179,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                                 type="text" 
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
-                                placeholder="Your Name..."
+                                placeholder={t.certNamePlaceholder || "Your Name..."}
                                 className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-center text-xl text-white focus:outline-none focus:border-blue-500 transition-colors"
                             />
                             <button 
@@ -212,24 +212,24 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                          <div className="absolute bottom-4 right-4 w-16 h-16 border-b-4 border-r-4 border-amber-600"></div>
 
                          <div className="text-center space-y-6 z-10 w-full max-w-4xl mt-8">
-                             <div className="flex items-center justify-center gap-4 mb-4 opacity-80">
-                                 <div className="text-3xl text-amber-500">★</div>
-                                 <span className="text-xl tracking-[0.3em] font-serif font-bold text-slate-600 uppercase">Certificate of Achievement</span>
-                                 <div className="text-3xl text-amber-500">★</div>
-                             </div>
-                             
-                             <h1 className="text-6xl font-serif font-bold text-slate-900 mb-2 tracking-wide">{t.certificate}</h1>
-                             
-                             <p className="text-xl text-slate-600 italic mt-8">This certifies that</p>
-                             
-                             <div className="text-6xl font-script text-amber-700 border-b-2 border-slate-300 pb-2 px-12 min-w-[400px] inline-block font-bold">
-                                 {userName || "Future Astronomer"}
-                             </div>
-                             
-                             <p className="text-2xl text-slate-600 mt-8 max-w-3xl mx-auto leading-relaxed">
-                                 has successfully completed the <strong>Star Cadet Training</strong> with a score of <strong>{Math.round((score/questions.length)*100)}%</strong>, demonstrating excellent knowledge of the Telescope and Universe.
-                             </p>
-                         </div>
+                              <div className="flex items-center justify-center gap-4 mb-4 opacity-80">
+                                  <div className="text-3xl text-amber-500">★</div>
+                                  <span className="text-xl tracking-[0.3em] font-serif font-bold text-slate-600 uppercase">{t.certTitle}</span>
+                                  <div className="text-3xl text-amber-500">★</div>
+                              </div>
+                              
+                              <h1 className="text-6xl font-serif font-bold text-slate-900 mb-2 tracking-wide">{t.certificate}</h1>
+                              
+                              <p className="text-xl text-slate-600 italic mt-8">{t.certCertifies}</p>
+                              
+                              <div className="text-6xl font-script text-amber-700 border-b-2 border-slate-300 pb-2 px-12 min-w-[400px] inline-block font-bold">
+                                  {userName || "Future Astronomer"}
+                              </div>
+                              
+                              <p className="text-2xl text-slate-600 mt-8 max-w-3xl mx-auto leading-relaxed">
+                                  {t.certCompleted} <strong>{t.quizTitle}</strong> {t.certScore} <strong>{Math.round((score/questions.length)*100)}%</strong>, {t.certDemonstrating}
+                              </p>
+                          </div>
 
                          <div className="absolute bottom-24 w-full flex justify-between px-32 items-end">
                              <div className="text-center">
@@ -245,7 +245,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                                           <path d="M100 0 L108 8 L120 2 L125 12 L138 10 L140 22 L152 24 L150 36 L162 42 L158 52 L168 60 L160 70 L170 80 L160 90 L168 100 L160 110 L170 120 L160 130 L168 140 L158 148 L162 158 L150 164 L152 176 L140 178 L138 190 L125 188 L120 198 L108 192 L100 200 L92 192 L80 198 L75 188 L62 190 L60 178 L48 176 L50 164 L38 158 L42 148 L32 140 L40 130 L30 120 L40 110 L32 100 L40 90 L30 80 L40 70 L32 60 L42 52 L38 42 L50 36 L48 24 L60 22 L62 10 L75 12 L80 2 L92 8 Z" fill="#b45309" stroke="#78350f" strokeWidth="2" />
                                           <circle cx="100" cy="100" r="75" fill="#d97706" stroke="#92400e" strokeWidth="2" />
                                           <text x="100" y="105" fontSize="24" fontFamily="serif" fontWeight="bold" fill="#fff" textAnchor="middle">KIDRISE</text>
-                                          <text x="100" y="130" fontSize="16" fontFamily="serif" fill="#fff" textAnchor="middle">OFFICIAL</text>
+                                          <text x="100" y="130" fontSize="16" fontFamily="serif" fill="#fff" textAnchor="middle">{t.certOfficial || 'OFFICIAL'}</text>
                                       </svg>
                                   </div>
                              </div>
@@ -268,9 +268,9 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         <div className="min-h-full pt-20 px-4 flex flex-col items-center max-w-lg mx-auto pb-10">
             {/* Progress Bar */}
             <div className="w-full mb-4 relative pt-2">
-                 <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">
-                    <span>Question {qIndex + 1}/{questions.length}</span>
-                    <span>Score: {score}</span>
+                <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">
+                    <span>{t.quizQuestionCount?.replace('{0}', (qIndex + 1).toString()).replace('{1}', questions.length.toString())}</span>
+                    <span>{t.quizCurrentScore?.replace('{0}', score.toString())}</span>
                 </div>
                 <div className="h-4 bg-white/10 rounded-full overflow-hidden backdrop-blur-sm border border-white/5">
                     <div 
