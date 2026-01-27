@@ -13,7 +13,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
   const t = translations[lang];
 
   return (
-    <div className="relative w-full h-full overflow-y-auto custom-scrollbar flex flex-col text-center bg-dark">
+    <div className="relative w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col text-center bg-dark">
       <div className="min-h-full flex flex-col items-center justify-between w-full relative">
        <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-4 md:p-4 pb-20 z-10">
       {/* Background Decorative Elements */}
@@ -27,8 +27,8 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
       <div className="z-10 w-full max-w-7xl mx-auto flex flex-col items-center space-y-4 md:space-y-6">
         
         {/* Main Hero Image */}
-        <div className="relative group perspective-1000">
-          <div className="relative z-10 w-[380px] md:w-[500px] lg:w-[600px] animate-float transition-transform duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-[0_0_50px_rgba(6,182,212,0.8)]">
+        <div className="relative group perspective-1000 w-full flex justify-center">
+          <div className="relative z-10 w-full max-w-[300px] xs:max-w-[340px] md:max-w-[500px] lg:max-w-[600px] animate-float transition-transform duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-[0_0_50px_rgba(6,182,212,0.8)]">
              <img 
                src={telescopeImg} 
                alt="KidRise Telescope" 

@@ -264,7 +264,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
 
   return (
     <div 
-        className="w-full h-full relative overflow-hidden bg-black select-none"
+        className="w-full h-full relative overflow-hidden bg-black select-none touch-none"
         ref={containerRef}
     >
         {/* Container for D3 Zoom + Gyro Rotation */}

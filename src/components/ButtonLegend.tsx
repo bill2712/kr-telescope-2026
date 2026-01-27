@@ -28,11 +28,11 @@ const ButtonLegend: React.FC<ButtonLegendProps> = ({ lang, onClose }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
             <div 
-                className="bg-dark border border-white/20 rounded-2xl w-[90%] max-w-lg overflow-hidden shadow-2xl relative"
+                className="bg-dark border border-white/20 rounded-2xl w-[90%] max-w-lg overflow-hidden shadow-2xl relative flex flex-col max-h-[85vh]"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="bg-white/5 p-4 border-b border-white/10 flex justify-between items-center">
+                <div className="bg-white/5 p-4 border-b border-white/10 flex justify-between items-center shrink-0">
                     <h2 className="text-xl font-bold text-white flex items-center gap-2">
                         <i className="fas fa-info-circle text-blue-400"></i>
                         {l.title}
@@ -46,7 +46,7 @@ const ButtonLegend: React.FC<ButtonLegendProps> = ({ lang, onClose }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div className="p-4 overflow-y-auto custom-scrollbar flex-1 min-h-0">
                     <div className="grid gap-3">
                         {items.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-4 p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
@@ -72,7 +72,7 @@ const ButtonLegend: React.FC<ButtonLegendProps> = ({ lang, onClose }) => {
                 </div>
                 
                 {/* Footer */}
-                <div className="p-4 border-t border-white/10 bg-white/5 text-center">
+                <div className="p-4 border-t border-white/10 bg-white/5 text-center shrink-0">
                     <button 
                         onClick={onClose}
                         className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold transition-colors"
