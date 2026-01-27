@@ -69,6 +69,17 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
         setTempDate({ ...tempDate, time: defaultTime });
     };
 
+    const handleRealTime = () => {
+        const now = new Date();
+        setTempDate({
+            month: now.getMonth() + 1,
+            day: now.getDate(),
+            time: now.toTimeString().slice(0, 5)
+        });
+        onDateChange(now);
+        setActivePanel('none');
+    };
+
     const periodOptions = [
         { value: 'AM', label: lang === 'zh-HK' ? '上午' : 'Morning' },
         { value: 'PM', label: lang === 'zh-HK' ? '下午' : 'Night' }
@@ -80,7 +91,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
             for (let m = 0; m < 60; m += 15) {
                 const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
                 const labelH = h > 12 ? h - 12 : h;
-                timeOptions.push({ value: timeStr, label: `${labelH}:${m.toString().padStart(2, '0')} PM` });
+                // Removed AM/PM from label as requested
+                timeOptions.push({ value: timeStr, label: `${labelH}:${m.toString().padStart(2, '0')}` });
             }
         }
     } else {
@@ -89,7 +101,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                 if (h === 6 && m > 0) break;
                 const timeStr = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
                 const labelH = h === 0 ? 12 : h;
-                timeOptions.push({ value: timeStr, label: `${labelH}:${m.toString().padStart(2, '0')} AM` });
+                // Removed AM/PM from label as requested
+                timeOptions.push({ value: timeStr, label: `${labelH}:${m.toString().padStart(2, '0')}` });
             }
         }
     }
@@ -145,32 +158,66 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                                     {lang === 'zh-HK' ? '時間旅行' : 'Time Travel'}
                                 </h3>
                                 <div className="space-y-3">
-                                    {/* Period */}
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-xs text-gray-300">{lang === 'zh-HK' ? '時段' : 'Period'}</label>
-                                        <CustomSelect options={periodOptions} value={period} onChange={(v) => handlePeriodChange(String(v))} width="w-28" />
-                                    </div>
                                     {/* Month */}
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-gray-300">{lang === 'zh-HK' ? '月份' : 'Month'}</label>
-                                        <CustomSelect options={monthOptions} value={tempDate.month} onChange={(v) => setTempDate({...tempDate, month: Number(v)})} width="w-28" />
+                                        <CustomSelect 
+                                            options={monthOptions} 
+                                            value={tempDate.month} 
+                                            onChange={(v) => setTempDate({...tempDate, month: Number(v)})} 
+                                            width="w-28"
+                                            placeholder={lang === 'zh-HK' ? '選擇月份' : 'Select Month'}
+                                        />
                                     </div>
                                     {/* Day */}
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-gray-300">{lang === 'zh-HK' ? '日期' : 'Day'}</label>
-                                        <CustomSelect options={dayOptions} value={tempDate.day} onChange={(v) => setTempDate({...tempDate, day: Number(v)})} width="w-28" />
+                                        <CustomSelect 
+                                            options={dayOptions} 
+                                            value={tempDate.day} 
+                                            onChange={(v) => setTempDate({...tempDate, day: Number(v)})} 
+                                            width="w-28"
+                                            placeholder={lang === 'zh-HK' ? '選擇日期' : 'Select Day'}
+                                        />
+                                    </div>
+                                    {/* Period */}
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-xs text-gray-300">{lang === 'zh-HK' ? '時段' : 'Period'}</label>
+                                        <CustomSelect 
+                                            options={periodOptions} 
+                                            value={period} 
+                                            onChange={(v) => handlePeriodChange(String(v))} 
+                                            width="w-28" 
+                                            placeholder={lang === 'zh-HK' ? '選擇時段' : 'Select Period'}
+                                        />
                                     </div>
                                     {/* Time */}
                                     <div className="flex items-center justify-between">
                                         <label className="text-xs text-gray-300">{lang === 'zh-HK' ? '時間' : 'Time'}</label>
-                                        <CustomSelect options={timeOptions} value={tempDate.time} onChange={(v) => setTempDate({...tempDate, time: String(v)})} width="w-28" />
+                                        <CustomSelect 
+                                            options={timeOptions} 
+                                            value={tempDate.time} 
+                                            onChange={(v) => setTempDate({...tempDate, time: String(v)})} 
+                                            width="w-28"
+                                            placeholder={lang === 'zh-HK' ? '選擇時間' : 'Select Time'}
+                                        />
                                     </div>
-                                    <button 
-                                        onClick={handleGo}
-                                        className="w-full mt-2 bg-primary hover:bg-primary/80 text-white font-bold py-2 rounded-lg transition-colors"
-                                    >
-                                        {lang === 'zh-HK' ? '前往' : 'Go'}
-                                    </button>
+                                    
+                                    <div className="flex gap-2 mt-2">
+                                        <button 
+                                            onClick={handleRealTime}
+                                            className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2 rounded-lg transition-colors border border-white/10"
+                                        >
+                                            {t.btnRealTime || (lang === 'zh-HK' ? '實時' : 'Real-time')}
+                                        </button>
+                                        <button 
+                                            onClick={handleGo}
+                                            className="flex-1 bg-primary hover:bg-primary/80 text-white font-bold py-2 rounded-lg transition-colors"
+                                        >
+                                            {lang === 'zh-HK' ? '前往' : 'Go'}
+                                        </button>
+                                    </div>
+
                                 </div>
                             </div>
                         )}

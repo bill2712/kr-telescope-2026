@@ -9,7 +9,8 @@ interface CompassProps {
 }
 
 const Compass: React.FC<CompassProps> = ({ lang, onClose }) => {
-    const t = translations[lang];
+    // Add type assertion to treat translations[lang] as any to avoid strict type checking on dynamic keys if types.ts isn't updated yet
+    const t = translations[lang] as any;
     const [heading, setHeading] = useState<number>(0);
     const [permissionGranted, setPermissionGranted] = useState(false);
     
@@ -63,7 +64,7 @@ const Compass: React.FC<CompassProps> = ({ lang, onClose }) => {
     }, []);
 
     const getDirectionStr = (deg: number) => {
-        const directions = ['北', '東北', '東', '東南', '南', '西南', '西', '西北'];
+        const directions = t.directions || ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
         const index = Math.round(((deg %= 360) < 0 ? deg + 360 : deg) / 45) % 8;
         return directions[index];
     };
@@ -100,7 +101,7 @@ const Compass: React.FC<CompassProps> = ({ lang, onClose }) => {
                     <>
                         {/* Status Hint */}
                         <div className="text-xs text-slate-400 mb-10 font-mono bg-black/40 px-4 py-2 rounded-full border border-white/5">
-                            {lang === 'zh-HK' ? '請以「8」字形揮動手機校準' : 'Wave phone in figure 8 to calibrate'}
+                            {t.compassCalibrate || (lang === 'zh-HK' ? '請以「8」字形揮動手機校準' : 'Wave phone in figure 8 to calibrate')}
                         </div>
 
                         {/* Compass Visual */}

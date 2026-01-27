@@ -50,6 +50,7 @@ export const translations = {
     btnGyro: '開啟陀螺儀',
     btnGyroOff: '關閉陀螺儀',
     btnArt: '顯示圖案',
+    btnRealTime: '實時',
     // Directions
     dirN: '北',
     dirS: '南',
@@ -75,6 +76,14 @@ export const translations = {
     menuQuiz: '太空挑戰',
     menuGuide: '使用教學',
     menuEncyclopedia: '望遠鏡小百科',
+    
+    // Compass
+    enableCompass: '啟用指南針',
+    compassPermDesc: '為了讓指南針正常運作，我們需要您授權存取裝置的方向感測器。',
+    btnGrantPerm: '✅ 同意並啟用',
+    directions: ['北', '東北', '東', '東南', '南', '西南', '西', '西北'],
+    compassCalibrate: '請以「8」字形揮動手機校準',
+
 
     
     // Planner
@@ -730,6 +739,7 @@ export const translations = {
     btnGyro: 'Enable Gyro',
     btnGyroOff: 'Disable Gyro',
     btnArt: 'Show Art',
+    btnRealTime: 'Real-time',
     // Directions
     dirN: 'N',
     dirS: 'S',
@@ -747,6 +757,14 @@ export const translations = {
     menuQuiz: 'Space Quiz',
     menuGuide: 'Usage Guide',
     menuEncyclopedia: 'Telescope Encyclopedia',
+
+    // Compass
+    enableCompass: 'Enable Compass',
+    compassPermDesc: 'To use the compass, we need your permission to access the device orientation sensors.',
+    btnGrantPerm: '✅ Agree & Enable',
+    directions: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
+    compassCalibrate: 'Wave phone in figure 8 to calibrate',
+
 
     postcard: {
        title: 'Space Postcard',
