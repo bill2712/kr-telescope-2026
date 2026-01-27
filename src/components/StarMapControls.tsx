@@ -24,6 +24,8 @@ interface StarMapControlsProps {
 
     // Usage Guide
     onToggleGuide: () => void;
+    // Legend
+    onToggleLegend: () => void;
 }
 
 const StarMapControls: React.FC<StarMapControlsProps> = ({
@@ -40,7 +42,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     onZoomToSky,
     mapStyle,
     onMapStyleChange,
-    onToggleGuide
+    onToggleGuide,
+    onToggleLegend
 }) => {
     const t = translations[lang];
     const [tempDate, setTempDate] = useState({
@@ -128,20 +131,20 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     };
 
     return (
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-end gap-3 pointer-events-none">
+        <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-end gap-2 md:gap-3 pointer-events-none">
             
             {showCompass && <Compass lang={lang} onClose={() => setShowCompass(false)} />}
 
             {/* MAIN SIDEBAR */}
-            <div className="pointer-events-auto flex flex-col gap-3">
+            <div className="pointer-events-auto flex flex-col gap-2 md:gap-3">
                 
                 {/* 1. Time & Animation Group */}
-                <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
+                <div className="glass-panel rounded-2xl p-1 md:p-2 flex flex-col items-center gap-1 md:gap-2 w-12 md:w-14 shadow-xl">
                      {/* Time Panel Toggle */}
                      <div className="relative">
                         <button 
                             onClick={() => setActivePanel(activePanel === 'time' ? 'none' : 'time')}
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
                                 activePanel === 'time' 
                                 ? 'bg-kidrise-orange text-white shadow-lg' 
                                 : 'text-kidrise-orange hover:bg-white/10'
@@ -228,7 +231,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                      {/* Animation Controls */}
                      <button
                         onClick={onToggleAnimation}
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
                             isAnimating ? 'bg-secondary text-white shadow-lg animate-pulse-slow' : 'text-gray-300 hover:text-white hover:bg-white/10'
                         }`}
                         title={isAnimating ? 'Pause' : 'Play'}
@@ -238,7 +241,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
 
                      <button
                         onClick={handleSpeedClick}
-                        className={`w-10 h-8 rounded-lg flex items-center justify-center transition-all text-[10px] font-bold font-mono ${
+                        className={`w-8 h-8 md:w-10 md:h-8 rounded-lg flex items-center justify-center transition-all text-[10px] font-bold font-mono ${
                             animationSpeed > 1 ? 'text-secondary' : 'text-gray-400 hover:text-white'
                         }`}
                         title="Speed"
@@ -252,7 +255,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                     <div className="relative">
                         <button 
                             onClick={() => setActivePanel(activePanel === 'style' ? 'none' : 'style')}
-                            className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
                                 activePanel === 'style' 
                                 ? 'bg-indigo-500 text-white shadow-lg' 
                                 : 'text-indigo-400 hover:bg-white/10'
@@ -302,17 +305,17 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
 
                 {/* 3. Zoom Controls */}
                 <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
-                    <button onClick={onZoomIn} className="w-10 h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <button onClick={onZoomIn} className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors">
                         <i className="fas fa-plus"></i>
                     </button>
-                    <button onClick={onResetZoom} className="w-10 h-8 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold">
+                    <button onClick={onResetZoom} className="w-8 h-8 md:w-10 md:h-8 rounded-lg hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors text-xs font-bold">
                         100%
                     </button>
-                    <button onClick={onZoomOut} className="w-10 h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors">
+                    <button onClick={onZoomOut} className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors">
                         <i className="fas fa-minus"></i>
                     </button>
                     <div className="w-8 h-px bg-white/10"></div>
-                     <button onClick={onZoomToSky} className="w-10 h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors" title="Zoom to Sky">
+                     <button onClick={onZoomToSky} className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors" title="Zoom to Sky">
                          <svg viewBox="0 0 1182 1182" xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" className="w-4 h-4">
                             <path d="M593.352,191.596C1037.26,200.331 1152.14,411.603 1131.2,572.477C1096.86,836.357 826.467,989.517 593.352,989.517C249.565,989.517 68.179,726.567 49.478,572.477C33.265,438.885 120.438,309.582 285.011,243.282C418.548,189.486 593.352,191.596 593.352,191.596ZM587.751,350.79L529.704,529.44L341.86,529.44L493.829,639.851L435.782,818.501L587.751,708.09L739.719,818.501L681.673,639.851L833.641,529.44L645.798,529.44L587.751,350.79Z" fill="currentColor"/>
                         </svg>
@@ -321,10 +324,19 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
 
                 {/* 4. Tools Group */}
                 <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
+                    {/* Legend Button */}
+                    <button
+                        onClick={onToggleLegend}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '按鈕說明' : 'Button Legend'}
+                    >
+                        <i className="fas fa-info-circle text-lg"></i>
+                    </button>
+
                     {/* Guide Button */}
                     <button
                         onClick={onToggleGuide}
-                        className="w-10 h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
                         title={lang === 'zh-HK' ? '教學' : 'Guide'}
                     >
                         <i className="fas fa-question text-lg"></i>
@@ -333,7 +345,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                     {/* Compass Button */}
                     <button
                         onClick={() => setShowCompass(true)}
-                        className="w-10 h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors animate-pulse-slow"
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors animate-pulse-slow"
                         title={lang === 'zh-HK' ? '指南針' : 'Compass'}
                     >
                         <i className="fas fa-compass text-lg"></i>

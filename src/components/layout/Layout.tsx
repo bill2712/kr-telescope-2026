@@ -30,6 +30,12 @@ const Layout: React.FC<LayoutProps> = ({
   onSetLiveTime,
   onShiftTime,
 }) => {
+  // Scroll to top when page changes
+  React.useEffect(() => {
+    document.querySelector('main')?.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col relative bg-dark text-white font-sans selection:bg-secondary/30 selection:text-secondary">
       {/* Subtle grid background overlay */}

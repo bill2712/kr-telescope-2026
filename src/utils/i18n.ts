@@ -690,6 +690,22 @@ export const translations = {
         western: '國際 (IAU)：顯示國際天文學聯合會定義的 88 個現代星座，包含 4 等以上的恆星。',
         chinese: '中國：顯示中國古代星官系統 (三垣二十八宿)。',
         urban: '市區：僅顯示在光害嚴重的城市夜空中較易看見的亮星與主要星座連線。'
+    },
+    // Button Legend
+    buttonLegend: {
+        title: 'App 按鈕說明',
+        time: '時間設定：設定日期與時間，或回到實時。',
+        animation: '播放／暫停：控制星空旋轉動畫。',
+        speed: '速度控制：調整星空旋轉的速度 (1x - 100x)。',
+        style: '星圖風格：切換國際、中國或市區觀測模式。',
+        zoomIn: '放大：拉近星圖。',
+        zoomOut: '縮小：拉遠星圖。',
+        reset: '重置：回到預設大小 (100%)。',
+        zoomSky: '全天視野：自動縮放至完整可見天空。',
+        guide: '星盤教學：查看如何使用實體旋轉星盤。',
+        compass: '指南針：開啟手機指南針模式，舉起手機對準天空！',
+        legend: '按鈕說明：開啟此說明頁面。',
+        close: '關閉'
     }
   },
   'en': {
@@ -1375,6 +1391,22 @@ export const translations = {
       careDesc: 'Keep away from dust and moisture. Clean lenses with soft, non-abrasive cloth. Store in box when not in use.',
       
       footer: 'Kidrise STEM Educational Toys (HK) | www.stemtoy.com.hk'
+    },
+    // Button Legend
+    buttonLegend: {
+        title: 'Button Legend',
+        time: 'Time Settings: Set date & time, or sync to real-time.',
+        animation: 'Play/Pause: Control sky rotation animation.',
+        speed: 'Speed: Adjust rotation speed (1x - 100x).',
+        style: 'Map Style: Switch between IAU, Chinese, or Urban modes.',
+        zoomIn: 'Zoom In: Get a closer look.',
+        zoomOut: 'Zoom Out: See more area.',
+        reset: 'Reset: Reset zoom to default (100%).',
+        zoomSky: 'Sky View: Zoom to fit the visible sky.',
+        guide: 'Usage Guide: Learn how to use the physical planisphere.',
+        compass: 'Compass: Enable compass mode. Point phone at the sky!',
+        legend: 'Legend: Show this help menu.',
+        close: 'Close'
     }
   }
 };

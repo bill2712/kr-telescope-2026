@@ -265,9 +265,9 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     }
 
     return (
-        <div className="min-h-full pt-28 px-4 flex flex-col items-center max-w-lg mx-auto pb-20">
+        <div className="min-h-full pt-20 px-4 flex flex-col items-center max-w-lg mx-auto pb-10">
             {/* Progress Bar */}
-            <div className="w-full mb-8 relative pt-6">
+            <div className="w-full mb-4 relative pt-2">
                  <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">
                     <span>Question {qIndex + 1}/{questions.length}</span>
                     <span>Score: {score}</span>
@@ -319,7 +319,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                     </div>
                 )}
 
-                <h3 className="text-xl sm:text-2xl font-bold mb-8 text-white leading-relaxed">
+                <h3 className="text-xl sm:text-2xl font-bold mb-4 text-white leading-relaxed">
                     {questions[qIndex].q}
                 </h3>
                 

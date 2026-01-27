@@ -11,6 +11,7 @@ import Layout from './components/layout/Layout';
 import MapTools from './components/MapTools';
 import StarMapControls from './components/StarMapControls';
 import UsageGuide from './components/UsageGuide';
+import ButtonLegend from './components/ButtonLegend';
 import UsageGuideWizard from './components/UsageGuideWizard';
 import TelescopeManual from './components/guide/TelescopeManual';
 import Hero from './components/Hero';
@@ -40,6 +41,7 @@ function App() {
   const [showPostcard, setShowPostcard] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyle>('western');
   const [showUsageGuide, setShowUsageGuide] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   
   // Animation State
   const [isAnimating, setIsAnimating] = useState(false);
@@ -186,6 +188,7 @@ function App() {
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
       {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
+      {showLegend && <ButtonLegend lang={lang} onClose={() => setShowLegend(false)} />}
 
       {/* Hero Landing Page */}
       {currentPage === 'hero' && (
@@ -245,6 +248,7 @@ function App() {
                     onMapStyleChange={setMapStyle}
 
                     onToggleGuide={() => setShowUsageGuide(true)}
+                    onToggleLegend={() => setShowLegend(true)}
                 />
             </>
           )}

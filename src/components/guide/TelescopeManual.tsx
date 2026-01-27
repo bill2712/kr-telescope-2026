@@ -16,11 +16,17 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
   // Find active content
   const activeSection = data.find(s => s.id === activeTabId) || data[0];
 
+  // Scroll to top when switching tabs
+  React.useEffect(() => {
+    document.querySelector('main')?.scrollTo(0, 0);
+    window.scrollTo(0, 0);
+  }, [activeTabId]);
+
   return (
-    <div className="w-full text-white flex flex-col pt-24 pb-20 max-w-7xl mx-auto px-4 lg:px-8">
+    <div className="w-full text-white flex flex-col pt-20 pb-10 max-w-7xl mx-auto px-4 lg:px-8">
       
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-[#161825]/80 border border-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-[#161825]/80 border border-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 shadow-xl">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 uppercase tracking-wider">
             {t.menuEncyclopedia}
@@ -72,7 +78,7 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
               <div key={activeTabId} className="space-y-8 animate-fadeIn relative z-10">
                   
                   {/* Title Header */}
-                  <div className="border-l-4 border-cyan-500 pl-6 py-2 mb-8 bg-gradient-to-r from-white/5 to-transparent rounded-r-xl">
+                  <div className="border-l-4 border-cyan-500 pl-6 py-2 mb-4 bg-gradient-to-r from-white/5 to-transparent rounded-r-xl">
                       <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">{activeSection.title}</h2>
                       <div className="h-1 w-20 bg-gradient-to-r from-cyan-500 to-transparent rounded-full"></div>
                   </div>

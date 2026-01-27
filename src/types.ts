@@ -18,6 +18,50 @@ export interface ConstellationLine {
   target: string; // Star name or ID
 }
 
+export interface TranslationKeys {
+    moonDesc: string;
+    starDesc: string;
+    blackHoleDesc: string;
+    meteorDesc: string;
+    cometDesc: string;
+    galaxyDesc: string;
+    nebulaDesc: string;
+    eclipseDesc: string;
+    constellationDesc: string;
+    
+    // Missing Keys Added
+    scaleTitle?: string;
+    scaleDesc?: string;
+    interactive?: {
+        tapCard: string;
+        btnBack: string;
+        eventHorizon: string;
+        gravitySlider: string;
+        tapSky: string;
+        orbitPos: string;
+        cometTip: string;
+        tilt: string;
+        rotation: string;
+        nursery: string;
+        totality: string;
+        partial: string;
+        daytime: string;
+        eclipseSlider: string;
+    };
+    expl?: {
+        blackHole: { what: string; why: string; anim: string };
+        meteor: { what: string; why: string; anim: string };
+        comet: { what: string; why: string; anim: string };
+        galaxy: { what: string; why: string; anim: string };
+        nebula: { what: string; why: string; anim: string };
+        eclipse: { what: string; why: string; anim: string };
+        solar?: { what: string; why: string; anim: string };
+        moonPhase?: { what: string; why: string; anim: string };
+        starColor?: { what: string; string; anim: string };
+        spaceScale?: { what: string; why: string; anim: string };
+    };
+}
+
 export interface ConstellationArt {
   con: string; // Constellation code (e.g. "Ori")
   path?: string; // Legacy SVG path string (screen space)

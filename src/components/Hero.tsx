@@ -15,7 +15,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
   return (
     <div className="relative w-full h-full overflow-y-auto custom-scrollbar flex flex-col text-center bg-dark">
       <div className="min-h-full flex flex-col items-center justify-between w-full relative">
-       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-8 md:p-4 pb-32 z-10">
+       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-4 md:p-4 pb-20 z-10">
       {/* Background Decorative Elements */}
       <div className="absolute top-10 left-10 w-24 h-24 bg-primary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '0s' }} />
       <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -24,7 +24,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
       {/* Ambient Glow behind the telescope */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-secondary/20 rounded-full blur-3xl animate-pulse-slow pointer-events-none" />
 
-      <div className="z-10 w-full max-w-7xl mx-auto flex flex-col items-center space-y-6 md:space-y-10">
+      <div className="z-10 w-full max-w-7xl mx-auto flex flex-col items-center space-y-4 md:space-y-6">
         
         {/* Main Hero Image */}
         <div className="relative group perspective-1000">
@@ -58,7 +58,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
           </p>
         </div>
 
-        <div className="pt-8 pb-16">
+        <div className="pt-4 pb-10">
           <button 
             onClick={onStart} 
             className="mx-auto group shadow-xl shadow-secondary/20 hover:shadow-secondary/40 w-full xs:w-auto px-8 py-4 text-xl rounded-2xl border border-secondary/50 bg-secondary/20 backdrop-blur-md text-white font-bold transition-all hover:bg-secondary/40 flex items-center justify-center gap-2"
