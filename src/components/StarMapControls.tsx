@@ -146,14 +146,31 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                 <i className={`fas ${isExpanded ? 'fa-compress-alt' : 'fa-expand-alt'} text-lg`}></i>
             </button>
 
-            {/* MAIN SIDEBAR (Centered Right) */}
-            <div className={`pointer-events-auto absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex flex-col items-end gap-2 md:gap-3 transition-all duration-300 origin-right
+            {/* MAIN SIDEBAR (Centered Right on Desktop, Top Offset on Mobile) */}
+            <div className={`pointer-events-auto absolute right-2 md:right-4 top-16 md:top-1/2 md:-translate-y-1/2 flex flex-col items-end gap-2 md:gap-3 transition-all duration-300 origin-right
                 ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8 pointer-events-none md:opacity-100 md:translate-x-0 md:pointer-events-auto'}
             `}>
                 
-                {/* 1. Time & Animation Group */}
-                <div className="glass-panel rounded-2xl p-1 md:p-2 flex flex-col items-center gap-1 md:gap-2 w-12 md:w-14 shadow-xl">
-                     {/* Time Panel Toggle */}
+                {/* 1. Guide & Legend (Teaching & Info) */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
+                    <button
+                        onClick={onToggleGuide}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '教學' : 'Guide'}
+                    >
+                        <i className="fas fa-question text-lg"></i>
+                    </button>
+                    <button
+                        onClick={onToggleLegend}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '按鈕說明' : 'Button Legend'}
+                    >
+                        <i className="fas fa-info-circle text-lg"></i>
+                    </button>
+                </div>
+
+                {/* 2. Time Travel */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
                      <div className="relative">
                         <button 
                             onClick={() => setActivePanel(activePanel === 'time' ? 'none' : 'time')}
@@ -238,33 +255,21 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                             </div>
                         )}
                      </div>
-
-                     <div className="w-8 h-px bg-white/10"></div>
-
-                     {/* Animation Controls */}
-                     <button
-                        onClick={onToggleAnimation}
-                        className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
-                            isAnimating ? 'bg-secondary text-white shadow-lg animate-pulse-slow' : 'text-gray-300 hover:text-white hover:bg-white/10'
-                        }`}
-                        title={isAnimating ? 'Pause' : 'Play'}
-                     >
-                         <i className={`fas ${isAnimating ? 'fa-pause' : 'fa-play'}`}></i>
-                     </button>
-
-                     <button
-                        onClick={handleSpeedClick}
-                        className={`w-8 h-8 md:w-10 md:h-8 rounded-lg flex items-center justify-center transition-all text-[10px] font-bold font-mono ${
-                            animationSpeed > 1 ? 'text-secondary' : 'text-gray-400 hover:text-white'
-                        }`}
-                        title="Speed"
-                     >
-                         {animationSpeed}x
-                     </button>
                 </div>
 
-                {/* 2. Map Style & Overlay */}
-                <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
+                {/* 3. Compass */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
+                    <button
+                        onClick={() => setShowCompass(true)}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors animate-pulse-slow"
+                        title={lang === 'zh-HK' ? '指南針' : 'Compass'}
+                    >
+                        <i className="fas fa-compass text-lg"></i>
+                    </button>
+                </div>
+
+                {/* 4. Map Style */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
                     <div className="relative">
                         <button 
                             onClick={() => setActivePanel(activePanel === 'style' ? 'none' : 'style')}
@@ -316,8 +321,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                     </div>
                 </div>
 
-                {/* 3. Zoom Controls */}
-                <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
+                {/* 5. Zoom Controls */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
                     <button onClick={onZoomIn} className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors">
                         <i className="fas fa-plus"></i>
                     </button>
@@ -335,34 +340,27 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                     </button>
                 </div>
 
-                {/* 4. Tools Group */}
-                <div className="glass-panel rounded-2xl p-2 flex flex-col items-center gap-2 w-14 shadow-xl">
-                    {/* Legend Button */}
-                    <button
-                        onClick={onToggleLegend}
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
-                        title={lang === 'zh-HK' ? '按鈕說明' : 'Button Legend'}
-                    >
-                        <i className="fas fa-info-circle text-lg"></i>
-                    </button>
+                {/* 6. Animation/Speed */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
+                     <button
+                        onClick={onToggleAnimation}
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
+                            isAnimating ? 'bg-secondary text-white shadow-lg animate-pulse-slow' : 'text-gray-300 hover:text-white hover:bg-white/10'
+                        }`}
+                        title={isAnimating ? 'Pause' : 'Play'}
+                     >
+                         <i className={`fas ${isAnimating ? 'fa-pause' : 'fa-play'}`}></i>
+                     </button>
 
-                    {/* Guide Button */}
-                    <button
-                        onClick={onToggleGuide}
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-white flex items-center justify-center transition-colors"
-                        title={lang === 'zh-HK' ? '教學' : 'Guide'}
-                    >
-                        <i className="fas fa-question text-lg"></i>
-                    </button>
-                    
-                    {/* Compass Button */}
-                    <button
-                        onClick={() => setShowCompass(true)}
-                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-cyan-400 hover:text-cyan-300 flex items-center justify-center transition-colors animate-pulse-slow"
-                        title={lang === 'zh-HK' ? '指南針' : 'Compass'}
-                    >
-                        <i className="fas fa-compass text-lg"></i>
-                    </button>
+                     <button
+                        onClick={handleSpeedClick}
+                        className={`w-8 h-8 md:w-10 md:h-8 rounded-lg flex items-center justify-center transition-all text-[10px] font-bold font-mono ${
+                            animationSpeed > 1 ? 'text-secondary' : 'text-gray-400 hover:text-white'
+                        }`}
+                        title="Speed"
+                     >
+                         {animationSpeed}x
+                     </button>
                 </div>
 
             </div>

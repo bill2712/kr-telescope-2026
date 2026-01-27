@@ -12,17 +12,17 @@ const ButtonLegend: React.FC<ButtonLegendProps> = ({ lang, onClose }) => {
     const l = t.buttonLegend;
 
     const items = [
+        { icon: 'fas fa-question', label: l.guide, color: 'text-white' },
         { icon: 'fas fa-info-circle', label: l.legend, color: 'text-white' },
         { icon: 'fas fa-clock', label: l.time, color: 'text-kidrise-orange' },
-        { icon: 'fas fa-play', label: l.animation, color: 'text-secondary' },
-        { icon: 'text', text: '1x', label: l.speed, color: 'text-gray-400' },
+        { icon: 'fas fa-compass', label: l.compass, color: 'text-cyan-400' },
         { icon: 'fas fa-layer-group', label: l.style, color: 'text-indigo-400' },
         { icon: 'fas fa-plus', label: l.zoomIn, color: 'text-white' },
         { icon: 'text', text: '100%', label: l.reset, color: 'text-gray-400' },
         { icon: 'fas fa-minus', label: l.zoomOut, color: 'text-white' },
         { icon: 'svg', label: l.zoomSky, color: 'text-cyan-400' }, // Custom SVG for zoom sky
-        { icon: 'fas fa-question', label: l.guide, color: 'text-white' },
-        { icon: 'fas fa-compass', label: l.compass, color: 'text-cyan-400' },
+        { icon: 'fas fa-play', label: l.animation, color: 'text-secondary' },
+        { icon: 'text', text: '1x', label: l.speed, color: 'text-gray-400' },
     ];
 
     return (
