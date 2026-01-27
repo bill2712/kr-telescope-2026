@@ -175,8 +175,15 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
   // 2. Setup D3 Zoom & Drag on Container
   // Combined logic to handle event filtering on the SAME element
   // 2. Setup D3 Zoom & Drag on Container
+  // Ref to access latest date/props inside D3 callbacks without re-running effect
+  const latestProps = useRef({ date, onDateChange });
   useEffect(() => {
-    if (!containerRef.current || !onDateChange) return;
+    latestProps.current = { date, onDateChange };
+  }, [date, onDateChange]);
+
+  // 2. Setup D3 Zoom & Drag on Container
+  useEffect(() => {
+    if (!containerRef.current) return;
 
     const selection = d3.select(containerRef.current);
 
@@ -193,6 +200,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
              // 3. For Single Touch / Mouse Down:
              //    - Allow Pan if target is Jacket
              //    - Block Pan if target is Disk (allow Drag-Rotate instead)
+             // Check if target or any parent up to container is the jacket layer
              const target = event.target as Element;
              const isJacket = target.closest('.jacket-layer') !== null;
              
@@ -208,7 +216,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     // --- DRAG BEHAVIOR (Rotate Disk) ---
     const rate = 15.04107;
     let startAngle = 0;
-    let startDate = date;
+    let dragStartDate = new Date();
 
     const drag = d3.drag<HTMLDivElement, unknown>()
         .filter((event) => {
@@ -217,6 +225,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
              if (event.touches && event.touches.length > 1) return false; // Ignore multi-touch
 
              const target = event.target as Element;
+             // If NOT jacket, then it's Disk (or background) -> Allow Rotation
              return target.closest('.jacket-layer') === null;
         })
         .on('start', (event) => {
@@ -230,7 +239,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
             const clientY = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientY : event.sourceEvent.clientY;
             
             startAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
-            startDate = date; 
+            dragStartDate = latestProps.current.date; // Capture start date
         })
         .on('drag', (event) => {
            if (!diskRef.current) return;
@@ -244,13 +253,13 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
            const currentAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
            
            let deltaRaw = currentAngle - startAngle;
-           // Handle crossing the -180/180 boundary smoothly? 
-           // Math.atan2 returns -PI to PI (-180 to 180).
-           // This simple delta is usually fine for relative movement unless jumping 0-360.
+           // Handle 180/-180 wrap-around if necessary, but simple delta works for small steps
            
            const hoursDelta = deltaRaw / rate;
-           const newTime = startDate.getTime() - (hoursDelta * 60 * 60 * 1000);
-           onDateChange(new Date(newTime));
+           const newTime = dragStartDate.getTime() - (hoursDelta * 60 * 60 * 1000);
+           
+           // Call the latest callback
+           latestProps.current.onDateChange(new Date(newTime));
         });
 
     selection.call(drag);
@@ -260,7 +269,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
        selection.on('.drag', null);
     };
 
-  }, [date, onDateChange]); 
+  }, []); // Run ONLY once on mount 
 
 
 

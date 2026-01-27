@@ -723,7 +723,14 @@ export const translations = {
         compass: '指南針：開啟手機指南針模式，舉起手機對準天空！',
         legend: '按鈕說明：開啟此說明頁面。',
         close: '關閉'
-    }
+    },
+    login: {
+        title: '輸入通行證號碼',
+        desc: '請輸入盒裝上的通行證號碼以開啟望遠鏡探險之旅',
+        placeholder: '輸入代碼',
+        error: '代碼無效，請檢查後再試',
+        submit: '開始探索'
+    },
   },
   'en': {
     appTitle: 'Kidrise Sky Explorer',
@@ -1444,6 +1451,13 @@ export const translations = {
         compass: 'Compass: Enable compass mode. Point phone at the sky!',
         legend: 'Legend: Show this help menu.',
         close: 'Close'
+    },
+    login: {
+        title: 'Enter Access Code',
+        desc: 'Enter the access code from your box to start the telescope adventure',
+        placeholder: 'ENTER CODE',
+        error: 'Invalid/Expired Code. Try again.',
+        submit: 'START EXPLORING'
     }
   }
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import StarMap, { StarMapHandle, MapStyle } from './components/StarMap';
 
 import Tutorial from './components/Tutorial';
@@ -17,6 +17,7 @@ import TelescopeManual from './components/guide/TelescopeManual';
 import Hero from './components/Hero';
 import { Coordinates, Language, Star } from './types';
 import { translations } from './utils/i18n';
+import { LoginGate } from './components/LoginGate';
 
 import SpacePostcard from './components/SpacePostcard';
 
@@ -32,6 +33,25 @@ const DEFAULT_LOCATION: Coordinates = {
 
 function App() {
   const [lang, setLang] = useState<Language>('zh-HK');
+  
+  // Auth State
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return localStorage.getItem('kr_telescope_auth') === 'true';
+  });
+
+  const t = translations[lang];
+
+  if (!isAuthenticated) {
+    return (
+      <LoginGate 
+        lang={lang} 
+        onToggleLang={() => setLang(prev => prev === 'zh-HK' ? 'en' : 'zh-HK')} 
+        onLogin={() => setIsAuthenticated(true)}
+        t={t}
+      />
+    );
+  }
+
   const [location, setLocation] = useState<Coordinates>(DEFAULT_LOCATION);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<'stereo' | 'ortho'>('stereo');
@@ -57,8 +77,6 @@ function App() {
   const [enableGyro, setEnableGyro] = useState(false);
   const [selectedStar, setSelectedStar] = useState<Star | null>(null);
   const [locationName, setLocationName] = useState<string>("");
-
-  const t = translations[lang];
 
   // Time ticker (Live Time)
   useEffect(() => {

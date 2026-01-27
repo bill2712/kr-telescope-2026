@@ -11,8 +11,8 @@ export const Footer: React.FC<FooterProps> = ({ lang }) => {
   const link = isEn ? "https://stemtoy.com.hk/en" : "https://stemtoy.com.hk/";
   
   // Hardcoded for now until added to i18n or passed properly
-  const copyright = "© 2026 Kidrise STEM香港教育玩具";
-  const support = "由 Kidrise童樂高飛 提供技術支援";
+  const copyright = isEn ? "© 2026 Kidrise STEM Hong Kong Educational Toy" : "© 2026 Kidrise STEM香港教育玩具";
+  const support = isEn ? "Technical Support by Kidrise" : "由 Kidrise童樂高飛 提供技術支援";
 
   return (
     <footer className="mt-auto border-t border-white/10 bg-slate-900/50 backdrop-blur-sm py-8 z-10 relative">

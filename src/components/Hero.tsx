@@ -15,7 +15,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
   return (
     <div className="relative w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar flex flex-col text-center bg-dark">
       <div className="min-h-full flex flex-col items-center justify-between w-full relative">
-       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 py-4 md:p-4 pb-20 z-10">
+       <div className="flex-1 flex flex-col items-center justify-center w-full px-4 pt-16 md:pt-24 pb-20 z-10">
       {/* Background Decorative Elements */}
       <div className="absolute top-10 left-10 w-24 h-24 bg-primary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '0s' }} />
       <div className="absolute bottom-20 right-10 w-32 h-32 bg-secondary/30 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
@@ -28,7 +28,7 @@ const Hero: React.FC<HeroProps> = ({ lang, onStart }) => {
         
         {/* Main Hero Image */}
         <div className="relative group perspective-1000 w-full flex justify-center">
-          <div className="relative z-10 w-full max-w-[300px] xs:max-w-[340px] md:max-w-[500px] lg:max-w-[600px] animate-float transition-transform duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-[0_0_50px_rgba(6,182,212,0.8)]">
+          <div className="relative z-10 w-full max-w-[220px] xs:max-w-[260px] md:max-w-[400px] lg:max-w-[480px] animate-float transition-transform duration-500 ease-out group-hover:scale-105 group-hover:drop-shadow-[0_0_50px_rgba(6,182,212,0.8)]">
              <img 
                src={telescopeImg} 
                alt="KidRise Telescope" 
