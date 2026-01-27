@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
         >
           <img src={`${import.meta.env.BASE_URL}images/kidrise-logo_new.png`} alt="Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:rotate-12 transition-transform" />
           <span className="font-bold text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-colors">
-            Kidrise 望遠鏡探秘
+            {text.homeTitle}
           </span>
         </div>
 
