@@ -52,6 +52,8 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
         time: currentDate.toTimeString().slice(0, 5) // HH:MM
     });
     const [activePanel, setActivePanel] = useState<'none' | 'time' | 'style'>('none');
+    const [isExpanded, setIsExpanded] = useState(true);
+
     const [showCompass, setShowCompass] = useState(false);
 
     // --- TIME LOGIC ---
@@ -131,12 +133,23 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     };
 
     return (
-        <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-30 flex flex-col items-end gap-2 md:gap-3 pointer-events-none">
+        <div className="absolute inset-0 z-30 pointer-events-none">
             
             {showCompass && <Compass lang={lang} onClose={() => setShowCompass(false)} />}
 
-            {/* MAIN SIDEBAR */}
-            <div className="pointer-events-auto flex flex-col gap-2 md:gap-3">
+            {/* Mobile Toggle Button (Top Right) */}
+            <button 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="pointer-events-auto md:hidden absolute top-4 right-2 glass-panel w-10 h-10 rounded-full flex items-center justify-center text-white shadow-xl active:scale-95 transition-transform z-50"
+                style={{ marginTop: 'env(safe-area-inset-top)' }} 
+            >
+                <i className={`fas ${isExpanded ? 'fa-compress-alt' : 'fa-expand-alt'} text-lg`}></i>
+            </button>
+
+            {/* MAIN SIDEBAR (Centered Right) */}
+            <div className={`pointer-events-auto absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex flex-col items-end gap-2 md:gap-3 transition-all duration-300 origin-right
+                ${isExpanded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8 pointer-events-none md:opacity-100 md:translate-x-0 md:pointer-events-auto'}
+            `}>
                 
                 {/* 1. Time & Animation Group */}
                 <div className="glass-panel rounded-2xl p-1 md:p-2 flex flex-col items-center gap-1 md:gap-2 w-12 md:w-14 shadow-xl">
