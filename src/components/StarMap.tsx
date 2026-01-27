@@ -198,11 +198,9 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
              if (event.touches && event.touches.length > 1) return true;
 
              // 3. For Single Touch / Mouse Down:
-             //    Only allow Panning if touching the JACKET (Frame)
-             const target = event.target as Element;
-             const isJacket = target.closest('.jacket-layer') !== null;
-             
-             return isJacket;
+             //    Allow panning everywhere else (Jacket, Background, etc.)
+             //    (Disk touches are handled by the separate Drag listener which stops propagation, preventing Zoom here)
+             return true; 
         })
         .on('zoom', (event) => {
             setTransform(event.transform);
