@@ -181,7 +181,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     latestProps.current = { date, onDateChange };
   }, [date, onDateChange]);
 
-  // 2. Setup D3 Zoom & Drag on Container
+  // 2. Setup D3 Zoom on Container (Panning & Zooming)
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -198,9 +198,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
              if (event.touches && event.touches.length > 1) return true;
 
              // 3. For Single Touch / Mouse Down:
-             //    - Allow Pan if target is Jacket
-             //    - Block Pan if target is Disk (allow Drag-Rotate instead)
-             // Check if target or any parent up to container is the jacket layer
+             //    Only allow Panning if touching the JACKET (Frame)
              const target = event.target as Element;
              const isJacket = target.closest('.jacket-layer') !== null;
              
@@ -213,37 +211,53 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     zoomBehavior.current = zoom;
     selection.call(zoom);
 
-    // --- DRAG BEHAVIOR (Rotate Disk) ---
+    return () => {
+       selection.on('.zoom', null);
+    };
+  }, []); 
+
+  // 3. Setup D3 Drag on Disk (Rotation) - SEPARATE LISTENER
+  useEffect(() => {
+    if (!diskRef.current) return;
+    
+    // We bind drag strictly to the DISK element
+    // Because disk is "under" the jacket visually in the center, we rely on pointer-events passing through the hole.
+    const selection = d3.select(diskRef.current);
     const rate = 15.04107;
     let startAngle = 0;
     let dragStartDate = new Date();
 
     const drag = d3.drag<HTMLDivElement, unknown>()
+         // No complex filter needed here because we attach ONLY to the disk (and events bubble to it)
+         // But we should ensure we ignore multi-touch
         .filter((event) => {
-             // Allow drag ONLY on single touch/mouse AND on the Disk (not jacket)
-             if (event.type === 'mousedown' && event.button !== 0) return false; // Ignore non-left click
-             if (event.touches && event.touches.length > 1) return false; // Ignore multi-touch
-
-             const target = event.target as Element;
-             // If NOT jacket, then it's Disk (or background) -> Allow Rotation
-             return target.closest('.jacket-layer') === null;
+             if (event.type === 'mousedown' && event.button !== 0) return false;
+             if (event.touches && event.touches.length > 1) return false;
+             return true;
         })
         .on('start', (event) => {
-            if (!diskRef.current) return;
-            const rect = diskRef.current.getBoundingClientRect();
+            // CRITICAL: Stop propagation so Container doesn't start Panning!
+            if(event.sourceEvent && event.sourceEvent.stopPropagation) {
+                event.sourceEvent.stopPropagation();
+            }
+
+            const rect = diskRef.current!.getBoundingClientRect();
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             
-            // Handle touch or mouse coordinates
             const clientX = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientX : event.sourceEvent.clientX;
             const clientY = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientY : event.sourceEvent.clientY;
             
             startAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
-            dragStartDate = latestProps.current.date; // Capture start date
+            dragStartDate = latestProps.current.date; 
         })
         .on('drag', (event) => {
-           if (!diskRef.current) return;
-           const rect = diskRef.current.getBoundingClientRect();
+            // Stop propagation during drag too
+            if(event.sourceEvent && event.sourceEvent.stopPropagation) {
+                event.sourceEvent.stopPropagation();
+            }
+
+           const rect = diskRef.current!.getBoundingClientRect();
            const cx = rect.left + rect.width / 2;
            const cy = rect.top + rect.height / 2;
            
@@ -253,23 +267,18 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
            const currentAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
            
            let deltaRaw = currentAngle - startAngle;
-           // Handle 180/-180 wrap-around if necessary, but simple delta works for small steps
-           
            const hoursDelta = deltaRaw / rate;
            const newTime = dragStartDate.getTime() - (hoursDelta * 60 * 60 * 1000);
            
-           // Call the latest callback
            latestProps.current.onDateChange(new Date(newTime));
         });
 
     selection.call(drag);
-
+    
     return () => {
-       selection.on('.zoom', null);
-       selection.on('.drag', null);
+        selection.on('.drag', null);
     };
-
-  }, []); // Run ONLY once on mount 
+  }, []); 
 
 
 
