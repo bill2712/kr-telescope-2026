@@ -676,13 +676,13 @@ export const translations = {
     howToUse: {
         title: '星圖使用方法',
         step1Title: '1. 自選時間／用實時功能',
-        step1Desc: '您可以點擊「實時」按鈕回到現在，或使用時間旅行功能穿梭到任何日期和時間。',
+        step1Desc: '您可以按功能列上的 [CLOCK] 設定想要的時間，或是使用「實時」功能回到現在。時間設定：設定日期與時間，或回到實時。',
         step2Title: '2. 對齊觀測時間',
-        step2Desc: '轉動星盤使觀測日期和時間對齊。橢圓窗口內所示的便是香港此刻可以看到的星座。',
+        step2Desc: '轉動星盤，將觀測日期（如：10月1日）對準觀測時間（如：下午9時）。您可按 [SKY] 或 [PLUS] 鍵只放大橢圓窗口；窗口內的星空即為香港當時可見的星座。',
         step3Title: '3. 辨認方位',
-        step3Desc: '尋找方向，如下列例子所示，拿着旋轉星圖，便可得知夜空中星座的名稱。',
+        step3Desc: '您可以按功能列上的 [COMPASS] 來知道自己在什麼方位。尋找方向，如下列例子所示，拿着旋轉星圖，便可得知夜空中星座的名稱。',
         step4Title: '4. 觀測技巧',
-        step4Desc: '觀看西方時，「西」字向下。觀看北方時，「北」字向下。',
+        step4Desc: '觀看北方時，請將「北」字向下，並將星盤高舉過頭仰望。這時星盤上的星星排列，就會跟您眼前看到的真實星空完全一致！想要觀測其他方位？只需轉身並將相應的方位字向下即可。',
         step5Title: 'App 操作指南',
         note: '在 Web App 中，我們模擬了真實星盤的操作體驗：\n\n1.【改變時間】：您可以拖動黑色的星盤、日期環，甚至直接按住黑色背景區域滑動，就能快速穿梭時間！\n2.【移動整張星圖】：按住最外層的半透明外框，即可拖曳整個星圖的位置。\n3.【放大縮小】：電腦版請使用滑鼠滾輪；手機版請用雙指開合手勢縮放。'
     },
@@ -1049,13 +1049,13 @@ export const translations = {
     howToUse: {
         title: 'Star Map Guide',
         step1Title: '1. Select Time / Real-time',
-        step1Desc: 'Tap "Real-time" to sync with now, or use Time Travel to visit any date and time.',
+        step1Desc: 'Tap [CLOCK] on the toolbar to set any date and time, or use "Real-time" to sync with now. Time Settings: Set date & time, or return to real-time.',
         step2Title: '2. Align Observation Time',
-        step2Desc: 'Turn the Star Dial to align the observation date with the time on the Holder. The constellations shown in the oval opening reflect those that can be observed in Hong Kong now.',
+        step2Desc: 'Rotate the star dial to align the date (e.g. Oct 1) with the time (e.g. 9 PM). Use [SKY] or [PLUS] button to focus on the oval window, which shows the stars visible in Hong Kong at that moment.',
         step3Title: '3. Identify Direction',
-        step3Desc: 'Find the direction and then hold the Planisphere as shown below. You can then name the constellations in the night sky.',
+        step3Desc: 'Tap [COMPASS] on the toolbar to check your orientation. Find the direction and then hold the Planisphere as shown below to name the constellations.',
         step4Title: '4. Observation Tips',
-        step4Desc: 'The "W" should point downwards when viewing the western sky. The "N" should point downwards when viewing the northern sky.',
+        step4Desc: 'When viewing the Northern sky, hold the map with "North" at the bottom and lift it overhead. The stars on the map will now match the real sky! To view other directions, just turn your body and rotate the map so that direction is at the bottom.',
         step5Title: 'App Controls',
         note: 'Web App Controls:\n\n1. [Time Travel]: Drag the black Star Disk, Date Ring, or simply slide anywhere on the black background to change time rapidly!\n2. [Move Map]: Drag the translucent outer frame to move the entire map.\n3. [Zoom]: Use your mouse wheel (Desktop) or pinch with two fingers (Mobile).'
     },
@@ -1241,6 +1241,43 @@ export const translations = {
         }
     },
 
+
+    // Space Scale
+    scaleTitle: 'Space Scale',
+    scaleDesc: 'See how much you would weigh on other planets!',
+    enterWeight: 'Enter Your Weight (kg)',
+    pluto: 'Pluto',
+
+    // Star Colors
+    starOrange: 'Orange',
+    starWhite: 'White',
+    tempCold: 'Cold',
+    tempHot: 'Hot!',
+
+    // Interactive Modules
+    interactive: {
+        tapCard: 'Tap a card to start your space adventure!',
+        btnBack: 'Back',
+        // Black Hole
+        eventHorizon: 'Event Horizon Size',
+        gravitySlider: 'Drag slider to change gravity!',
+        // Meteor
+        tapSky: 'Tap sky to make a wish!',
+        // Comet
+        orbitPos: 'Orbit Position',
+        cometTip: 'Notice how the tail gets longer and brighter as it nears the Sun, and always points away!',
+        // Galaxy
+        tilt: 'Tilt Angle',
+        rotation: 'Rotation Speed',
+        // Nebula
+        nursery: 'Stellar Nursery Simulation',
+        // Eclipse
+        totality: 'TOTALITY! 🌑',
+        partial: 'Partial Eclipse 🌗',
+        daytime: 'Daytime ☀️',
+        eclipseSlider: 'Slide the Moon to cover the Sun!'
+    },
+
     // TELESCOPE ENCYCLOPEDIA (Renamed from manual)
     encyclopedia: {
       title: 'EYES TO NEW HORIZONS',
@@ -1295,41 +1332,7 @@ export const translations = {
       ],
 
       
-    // Space Scale
-    scaleTitle: 'Space Scale',
-    scaleDesc: 'See how much you would weigh on other planets!',
-    enterWeight: 'Enter Your Weight (kg)',
-    pluto: 'Pluto',
 
-    // Star Colors
-    starOrange: 'Orange',
-    starWhite: 'White',
-    tempCold: 'Cold',
-    tempHot: 'Hot!',
-
-    // Interactive Modules
-    interactive: {
-        tapCard: 'Tap a card to start your space adventure!',
-        btnBack: 'Back',
-        // Black Hole
-        eventHorizon: 'Event Horizon Size',
-        gravitySlider: 'Drag slider to change gravity!',
-        // Meteor
-        tapSky: 'Tap sky to make a wish!',
-        // Comet
-        orbitPos: 'Orbit Position',
-        cometTip: 'Notice how the tail gets longer and brighter as it nears the Sun, and always points away!',
-        // Galaxy
-        tilt: 'Tilt Angle',
-        rotation: 'Rotation Speed',
-        // Nebula
-        nursery: 'Stellar Nursery Simulation',
-        // Eclipse
-        totality: 'TOTALITY! 🌑',
-        partial: 'Partial Eclipse 🌗',
-        daytime: 'Daytime ☀️',
-        eclipseSlider: 'Slide the Moon to cover the Sun!'
-    },
       assemblyTitle: 'Telescope Assembly',
       assemblySteps: {
         1: '1. Base Rotary Lock Knob',

@@ -32,6 +32,14 @@ export interface TranslationKeys {
     // Missing Keys Added
     scaleTitle?: string;
     scaleDesc?: string;
+    enterWeight?: string;
+    pluto?: string;
+
+    // Star Colors
+    starOrange?: string;
+    starWhite?: string;
+    tempCold?: string;
+    tempHot?: string;
     interactive?: {
         tapCard: string;
         btnBack: string;
@@ -57,7 +65,7 @@ export interface TranslationKeys {
         eclipse: { what: string; why: string; anim: string };
         solar?: { what: string; why: string; anim: string };
         moonPhase?: { what: string; why: string; anim: string };
-        starColor?: { what: string; string; anim: string };
+        starColor?: { what: string; why: string; anim: string };
         spaceScale?: { what: string; why: string; anim: string };
     };
 }

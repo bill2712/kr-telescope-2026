@@ -11,6 +11,8 @@ import step2En from '../assets/knowledge/step2-en.png';
 import step2Zh from '../assets/knowledge/step2-zh.png';
 import step3En from '../assets/knowledge/step3-en.png';
 import step3Zh from '../assets/knowledge/step3-zh.png';
+import step5En from '../assets/knowledge/step5-en.png';
+import step5Zh from '../assets/knowledge/step5-zh.png';
 
 
 interface UsageGuideProps {
@@ -52,7 +54,7 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
         {
             title: g.step5Title || (lang === 'zh-HK' ? 'App 操作指南' : 'App Controls'),
             desc: g.note,
-            image: telescopeImg,
+            image: lang === 'zh-HK' ? step5Zh : step5En,
             tip: null
         }
     ];
@@ -115,9 +117,46 @@ const UsageGuide: React.FC<UsageGuideProps> = ({ lang, onClose }) => {
                             {steps[step].title}
                         </h2>
                         
+
                         <div className="text-lg text-slate-300 leading-relaxed space-y-4">
                             {steps[step].desc.split('\n').map((line, i) => (
-                                <p key={i}>{line}</p>
+                                <p key={i} className="flex flex-wrap items-center gap-1">
+                                    {line.split(/(\[.*?\])/).map((part, j) => {
+                                        if (part === '[CLOCK]') {
+                                            return (
+                                                <span key={j} className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 mx-1 align-middle">
+                                                    <span className="w-6 h-6 md:w-8 md:h-8 rounded-lg bg-kidrise-orange flex items-center justify-center text-white shadow-sm">
+                                                        <i className="fas fa-clock text-xs"></i>
+                                                    </span>
+                                                </span>
+                                            );
+                                        }
+                                        if (part === '[SKY]') {
+                                            return (
+                                                <span key={j} className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 mx-1 align-middle">
+                                                     <svg viewBox="0 0 1182 1182" xmlns="http://www.w3.org/2000/svg" xmlSpace="preserve" className="w-4 h-4 text-cyan-400 fill-current">
+                                                        <path d="M593.352,191.596C1037.26,200.331 1152.14,411.603 1131.2,572.477C1096.86,836.357 826.467,989.517 593.352,989.517C249.565,989.517 68.179,726.567 49.478,572.477C33.265,438.885 120.438,309.582 285.011,243.282C418.548,189.486 593.352,191.596 593.352,191.596ZM587.751,350.79L529.704,529.44L341.86,529.44L493.829,639.851L435.782,818.501L587.751,708.09L739.719,818.501L681.673,639.851L833.641,529.44L645.798,529.44L587.751,350.79Z"/>
+                                                    </svg>
+                                                </span>
+                                            );
+                                        }
+                                        if (part === '[PLUS]') {
+                                            return (
+                                                <span key={j} className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 mx-1 align-middle">
+                                                    <i className="fas fa-plus text-xs text-white"></i>
+                                                </span>
+                                            );
+                                        }
+                                        if (part === '[COMPASS]') {
+                                            return (
+                                                <span key={j} className="inline-flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-xl bg-white/10 mx-1 align-middle">
+                                                    <i className="fas fa-compass text-lg text-cyan-400 animate-pulse-slow"></i>
+                                                </span>
+                                            );
+                                        }
+                                        return <span key={j}>{part}</span>;
+                                    })}
+                                </p>
                             ))}
                         </div>
 
