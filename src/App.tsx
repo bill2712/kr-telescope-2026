@@ -41,16 +41,7 @@ function App() {
 
   const t = translations[lang];
 
-  if (!isAuthenticated) {
-    return (
-      <LoginGate 
-        lang={lang} 
-        onToggleLang={() => setLang(prev => prev === 'zh-HK' ? 'en' : 'zh-HK')} 
-        onLogin={() => setIsAuthenticated(true)}
-        t={t}
-      />
-    );
-  }
+
 
   const [location, setLocation] = useState<Coordinates>(DEFAULT_LOCATION);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -184,6 +175,17 @@ function App() {
   };
 
 
+
+  if (!isAuthenticated) {
+    return (
+      <LoginGate 
+        lang={lang} 
+        onToggleLang={() => setLang(prev => prev === 'zh-HK' ? 'en' : 'zh-HK')} 
+        onLogin={() => setIsAuthenticated(true)}
+        t={t}
+      />
+    );
+  }
 
   return (
     <Layout
