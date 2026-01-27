@@ -109,7 +109,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     // --- 1. Intro View ---
     if (!started) {
         return (
-            <div className="h-full pt-20 px-4 flex flex-col items-center justify-center animate-fade-in-up-simple">
+            <div className="h-full pt-10 md:pt-20 px-4 flex flex-col items-center justify-center animate-fade-in-up-simple">
                 <div className="max-w-md w-full bg-[#1c1e33] p-8 rounded-3xl border border-white/10 text-center relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-full bg-blue-500/5 pointer-events-none animate-pulse"></div>
                     <div className="text-6xl mb-6">🚀</div>
@@ -133,7 +133,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
         const isPass = percentage >= 0.6; // 60% pass rate
 
         return (
-            <div className="min-h-full pt-20 px-4 flex flex-col items-center justify-center animate-pop pb-20">
+            <div className="min-h-full pt-10 md:pt-20 px-4 flex flex-col items-center justify-center animate-pop pb-20">
                  <style>
                     {`
                     @media print {
@@ -265,7 +265,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     }
 
     return (
-        <div className="min-h-full pt-20 px-4 flex flex-col items-center max-w-lg mx-auto pb-10">
+        <div className="min-h-full pt-10 md:pt-20 px-4 flex flex-col items-center max-w-lg mx-auto pb-10">
             {/* Progress Bar */}
             <div className="w-full mb-4 relative pt-2">
                 <div className="flex justify-between text-sm font-bold text-gray-400 mb-2">

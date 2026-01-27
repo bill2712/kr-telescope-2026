@@ -49,7 +49,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
 
     if (activeModule) {
         return (
-            <div className="min-h-full pt-16 px-4 pb-16 flex flex-col">
+            <div className="min-h-full pt-8 md:pt-16 px-4 pb-16 flex flex-col">
                 <div className="flex-1 w-full max-w-5xl mx-auto bg-[#1a1d2d]/80 rounded-[2.5rem] border border-white/10 overflow-hidden shadow-2xl relative">
                      {/* Dynamic Background based on type */}
                      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none bg-gradient-to-br from-indigo-900 to-black"></div>
@@ -66,7 +66,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
                      </div>
 
                     {/* Content Container */}
-                     <div className="relative z-10 w-full h-full p-4 md:p-8 flex flex-col pt-16 md:pt-8">
+                     <div className="relative z-10 w-full h-full p-4 md:p-8 flex flex-col pt-10 md:pt-8">
                         {activeModule === 'solar' && <SolarSystem lang={lang} expl={t.expl?.solar} />}
                         {activeModule === 'moon' && <MoonPhaseLearn lang={lang} expl={t.expl?.moonPhase} />}
                         {activeModule === 'star' && <StarColors lang={lang} expl={t.expl?.starColor} />}
@@ -110,7 +110,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
     }
 
   return (
-    <div className="pt-20 px-4 pb-20 max-w-6xl mx-auto">
+    <div className="pt-10 md:pt-20 px-4 pb-20 max-w-6xl mx-auto">
        <div className="text-center mb-6">
             <h2 className="text-4xl font-black mb-2 text-white tracking-tight drop-shadow-lg">{t.menuLearn}</h2>
             <p className="text-blue-200">{t.interactive?.tapCard || 'Tap a card to start your space adventure!'}</p>

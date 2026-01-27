@@ -117,7 +117,7 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
   const scoreBg = stargazingScore >= 80 ? 'from-green-500/20 to-green-900/10' : stargazingScore >= 50 ? 'from-yellow-500/20 to-yellow-900/10' : 'from-red-500/20 to-red-900/10';
 
   return (
-    <div className="flex flex-col w-full bg-space-black text-white pt-28 px-4 pb-12 max-w-5xl mx-auto">
+    <div className="flex flex-col w-full bg-space-black text-white pt-14 md:pt-28 px-4 pb-12 max-w-5xl mx-auto">
       {/* 1. Stargazing Index Dashboard */}
       <div className={`w-full bg-gradient-to-br ${scoreBg} backdrop-blur-md rounded-[3rem] p-8 border border-white/10 shadow-2xl relative overflow-hidden mb-8`}>
           <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">

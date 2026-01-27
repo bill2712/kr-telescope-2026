@@ -174,20 +174,29 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
 
   // 2. Setup D3 Zoom & Drag on Container
   // Combined logic to handle event filtering on the SAME element
+  // 2. Setup D3 Zoom & Drag on Container
   useEffect(() => {
     if (!containerRef.current || !onDateChange) return;
 
     const selection = d3.select(containerRef.current);
 
-    // --- ZOOM BEHAVIOR (Pan Map) ---
+    // --- ZOOM BEHAVIOR (Pan & Scale) ---
     const zoom = d3.zoom<HTMLDivElement, unknown>()
         .scaleExtent([0.5, 5])
         .filter((event) => {
-             // Always allow wheel
+             // 1. Always allow Wheel (Desktop Zoom)
              if (event.type === 'wheel') return true;
-             // Allow mousedown/touchstart ONLY if target is part of Jacket
+             
+             // 2. Always allow Multi-touch (Pinch Zoom)
+             if (event.touches && event.touches.length > 1) return true;
+
+             // 3. For Single Touch / Mouse Down:
+             //    - Allow Pan if target is Jacket
+             //    - Block Pan if target is Disk (allow Drag-Rotate instead)
              const target = event.target as Element;
-             return target.closest('.jacket-layer') !== null;
+             const isJacket = target.closest('.jacket-layer') !== null;
+             
+             return isJacket;
         })
         .on('zoom', (event) => {
             setTransform(event.transform);
@@ -197,14 +206,16 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     selection.call(zoom);
 
     // --- DRAG BEHAVIOR (Rotate Disk) ---
-    // Sidereal Rate: ~15.041 degrees per hour
     const rate = 15.04107;
     let startAngle = 0;
     let startDate = date;
 
     const drag = d3.drag<HTMLDivElement, unknown>()
         .filter((event) => {
-             // Allow ONLY if target is NOT the jacket
+             // Allow drag ONLY on single touch/mouse AND on the Disk (not jacket)
+             if (event.type === 'mousedown' && event.button !== 0) return false; // Ignore non-left click
+             if (event.touches && event.touches.length > 1) return false; // Ignore multi-touch
+
              const target = event.target as Element;
              return target.closest('.jacket-layer') === null;
         })
@@ -214,7 +225,11 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
             const cx = rect.left + rect.width / 2;
             const cy = rect.top + rect.height / 2;
             
-            startAngle = Math.atan2(event.sourceEvent.clientY - cy, event.sourceEvent.clientX - cx) * (180 / Math.PI);
+            // Handle touch or mouse coordinates
+            const clientX = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientX : event.sourceEvent.clientX;
+            const clientY = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientY : event.sourceEvent.clientY;
+            
+            startAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
             startDate = date; 
         })
         .on('drag', (event) => {
@@ -223,15 +238,17 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
            const cx = rect.left + rect.width / 2;
            const cy = rect.top + rect.height / 2;
            
-           const currentAngle = Math.atan2(event.sourceEvent.clientY - cy, event.sourceEvent.clientX - cx) * (180 / Math.PI);
+           const clientX = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientX : event.sourceEvent.clientX;
+           const clientY = event.sourceEvent.touches ? event.sourceEvent.touches[0].clientY : event.sourceEvent.clientY;
+
+           const currentAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
            
-           const deltaRaw = currentAngle - startAngle;
-           // If we rotate visually by deltaRaw degrees...
-           // One hour = 15.041 degrees.
-           // hoursDelta = delta / rate
+           let deltaRaw = currentAngle - startAngle;
+           // Handle crossing the -180/180 boundary smoothly? 
+           // Math.atan2 returns -PI to PI (-180 to 180).
+           // This simple delta is usually fine for relative movement unless jumping 0-360.
+           
            const hoursDelta = deltaRaw / rate;
-           
-           // Drag interaction: Invert logic to match direct manipulation
            const newTime = startDate.getTime() - (hoursDelta * 60 * 60 * 1000);
            onDateChange(new Date(newTime));
         });

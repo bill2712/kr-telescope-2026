@@ -23,10 +23,28 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
   }, [activeTabId]);
 
   return (
-    <div className="w-full text-white flex flex-col pt-20 pb-10 max-w-7xl mx-auto px-4 lg:px-8">
+    <div className="w-full text-white flex flex-col pt-4 md:pt-20 pb-10 max-w-7xl mx-auto px-4 lg:px-8 h-[100dvh] md:h-auto overflow-y-auto md:overflow-visible custom-scrollbar">
       
-      {/* Header Bar */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-[#161825]/80 border border-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 shadow-xl">
+      {/* Mobile Header (Sticky & Compact) */}
+      <div className="md:hidden sticky top-0 z-50 bg-[#0B0D14]/90 backdrop-blur-xl border-b border-white/10 -mx-4 px-4 py-3 flex justify-between items-center mb-6 shadow-2xl">
+          <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/20">
+                  <i className="fas fa-book-open text-white text-xs"></i>
+              </div>
+              <h1 className="text-lg font-bold text-white tracking-wide">
+                  {t.menuEncyclopedia}
+              </h1>
+          </div>
+          <button 
+             onClick={onClose}
+             className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors border border-white/5 active:scale-95"
+          >
+             <i className="fas fa-times"></i>
+          </button>
+      </div>
+
+      {/* Desktop Header Bar (Original) */}
+      <div className="hidden md:flex flex-col md:flex-row justify-between items-center bg-[#161825]/80 border border-white/10 backdrop-blur-md rounded-2xl p-4 mb-4 shadow-xl">
         <div>
           <h1 className="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 uppercase tracking-wider">
             {t.menuEncyclopedia}
@@ -43,79 +61,76 @@ const TelescopeManual: React.FC<TelescopeManualProps> = ({ lang, onClose }) => {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 relative">
+      <div className="flex flex-col lg:flex-row gap-6 relative">
           
-          {/* Sidebar (Desktop Sticky / Mobile Scroll) */}
-          <div className="w-full lg:w-72 flex-shrink-0">
-             <div className="lg:sticky lg:top-32 bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-2xl p-2 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible shadow-lg">
+          {/* Navigation Tabs (Mobile: Horizontal Scroll / Desktop: Sticky Sidebar) */}
+          <div className="w-full lg:w-72 flex-shrink-0 sticky top-[60px] md:static z-40">
+             <div className="bg-[#161825]/90 md:bg-[#161825]/90 backdrop-blur-xl border border-white/10 rounded-xl p-1.5 flex lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible shadow-lg no-scrollbar md:custom-scrollbar">
                  {data.map((section) => (
                      <button
                         key={section.id}
-                        onClick={() => setActiveTabId(section.id)}
+                        onClick={() => {
+                            setActiveTabId(section.id);
+                            // On mobile, maybe scroll slightly up to content but not needed if sticky header
+                        }}
                         className={`
-                            flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 text-left shrink-0
+                            flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-all duration-300 text-left shrink-0 whitespace-nowrap lg:whitespace-normal
                             ${activeTabId === section.id 
-                                ? 'bg-gradient-to-r from-cyan-900/60 to-blue-900/60 border border-cyan-500/50 text-white shadow-lg shadow-cyan-900/20' 
-                                : 'hover:bg-white/5 text-gray-400 hover:text-white border border-transparent'
+                                ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-md' 
+                                : 'hover:bg-white/5 text-slate-400 hover:text-white'
                             }
                         `}
                      >
-                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${activeTabId === section.id ? 'bg-cyan-500 text-black' : 'bg-white/10 text-gray-400'}`}>
+                         <div className={`w-6 h-6 rounded flex items-center justify-center text-xs shrink-0 ${activeTabId === section.id ? 'bg-black/20 text-white' : 'bg-white/5 text-slate-500'}`}>
                              <i className={`fas ${section.icon}`}></i>
                          </div>
-                         <span className={`font-bold text-sm whitespace-nowrap ${activeTabId === section.id ? 'text-cyan-100' : ''}`}>{section.title}</span>
+                         <span className={`font-bold text-sm ${activeTabId === section.id ? 'text-white' : ''}`}>{section.title}</span>
                      </button>
                  ))}
              </div>
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 pb-20 md:pb-0">
               
-              {/* Background Glow */}
-              <div className="fixed top-1/2 right-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none mix-blend-screen z-0"></div>
-
-              <div key={activeTabId} className="space-y-8 animate-fadeIn relative z-10">
+              <div key={activeTabId} className="space-y-6 animate-fade-in relative z-10">
                   
-                  {/* Title Header */}
-                  <div className="border-l-4 border-cyan-500 pl-6 py-2 mb-4 bg-gradient-to-r from-white/5 to-transparent rounded-r-xl">
-                      <h2 className="text-3xl md:text-4xl font-bold text-white mb-2">{activeSection.title}</h2>
-                      <div className="h-1 w-20 bg-gradient-to-r from-cyan-500 to-transparent rounded-full"></div>
+                  {/* Section Title Header */}
+                  <div className="flex items-center gap-4 mb-2">
+                       <div className="h-8 w-1 bg-cyan-500 rounded-full"></div>
+                       <h2 className="text-2xl md:text-4xl font-black text-white">{activeSection.title}</h2>
                   </div>
 
                   {/* Content Blocks */}
-                  <div className="grid grid-cols-1 gap-6">
+                  <div className="grid grid-cols-1 gap-4 md:gap-6">
                       {activeSection.content.map((block, idx) => (
                           <div 
                             key={idx} 
-                            className="bg-[#161825]/80 backdrop-blur-sm border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.07] transition-colors group shadow-lg"
+                            className="bg-[#161825] border border-white/10 rounded-2xl p-5 md:p-8 hover:bg-[#1c1f2e] transition-colors shadow-sm"
                           >
                               {block.subtitle && (
-                                  <h3 className="text-xl font-bold text-cyan-300 mb-4 flex items-center gap-2">
+                                  <h3 className="text-lg md:text-xl font-bold text-cyan-300 mb-3 flex items-center gap-2">
                                       {block.subtitle}
-                                      <i className="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-50 transition-opacity -translate-x-2 group-hover:translate-x-0"></i>
                                   </h3>
                               )}
                               
-                              <p className="text-gray-300 leading-relaxed text-base md:text-lg whitespace-pre-line">
+                              <p className="text-slate-300 leading-relaxed text-sm md:text-lg whitespace-pre-line">
                                   {block.text}
                               </p>
 
                               {block.tips && (
-                                  <div className="mt-6 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl flex items-start gap-3">
-                                      <div className="w-8 h-8 rounded-full bg-yellow-500/20 flex items-center justify-center shrink-0">
-                                        <i className="fas fa-lightbulb text-yellow-400 text-sm"></i>
-                                      </div>
-                                      <p className="text-yellow-100/80 text-sm font-medium pt-1">{block.tips}</p>
+                                  <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-3">
+                                      <i className="fas fa-lightbulb text-amber-400 mt-1 shrink-0"></i>
+                                      <p className="text-amber-100/80 text-sm font-medium">{block.tips}</p>
                                   </div>
                               )}
                           </div>
                       ))}
                   </div>
 
-                  {/* Footer Decoration */}
-                  <div className="flex justify-center mt-12 opacity-30">
-                      <div className="w-16 h-1 bg-white/20 rounded-full"></div>
+                  {/* End Decoration */}
+                  <div className="flex justify-center mt-12 opacity-20">
+                      <i className="fas fa-star text-white text-xs"></i>
                   </div>
               </div>
           </div>

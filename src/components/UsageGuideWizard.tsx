@@ -22,112 +22,129 @@ const UsageGuideWizard: React.FC<UsageGuideWizardProps> = ({ lang, onClose }) =>
     const [step, setStep] = useState(0);
 
     const stepImages = [step1Img, step2Img, step3Img, step4Img, step5Img, step6Img, step7Img];
-
-    const steps = w.steps.map((s, index) => ({...s, image: stepImages[index] || stepImages[0]}));
+    
+    // Merge translations with local images
+    const steps = w.steps.map((s, index) => ({
+        ...s, 
+        image: stepImages[index] || stepImages[0]
+    }));
+    
     const totalSteps = steps.length;
-
     const nextStep = () => setStep((prev) => Math.min(prev + 1, totalSteps - 1));
     const prevStep = () => setStep((prev) => Math.max(prev - 1, 0));
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in p-4" onClick={onClose}>
-            <div className="w-full h-full flex items-center justify-center pointer-events-none">
-                
-                {/* Main Container */}
-                <div 
-                    className="w-full max-w-6xl aspect-auto md:aspect-[2/1] bg-[#15192B] rounded-[3rem] border border-white/5 shadow-2xl overflow-hidden relative flex flex-col md:flex-row min-h-[600px] max-h-[90vh] pointer-events-auto"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    {/* Back Button (Standard style) */}
-                     <button 
-                      onClick={onClose}
-                      className="absolute top-6 right-6 z-50 w-12 h-12 rounded-full bg-black/40 hover:bg-white/20 flex items-center justify-center text-white/50 hover:text-white transition-all backdrop-blur-md"
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in" onClick={onClose}>
+            {/* Main Interactive Card Container - Responsive Style */}
+            <div 
+                className="bg-dark border border-white/20 rounded-2xl w-[90%] max-w-lg md:max-w-5xl overflow-hidden shadow-2xl relative flex flex-col max-h-[80vh] md:h-[600px]"
+                onClick={(e) => e.stopPropagation()}
+            >
+                {/* Header */}
+                <div className="bg-white/5 p-4 border-b border-white/10 flex justify-between items-center shrink-0">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                        <i className="fas fa-telescope text-cyan-400"></i>
+                        {lang === 'zh-HK' ? '望遠鏡使用教學' : 'Telescope Manual'}
+                    </h2>
+                    <button 
+                        onClick={onClose}
+                        className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/70 hover:text-white transition-colors"
                     >
-                      <i className="fas fa-times text-xl"></i>
+                        <i className="fas fa-times"></i>
                     </button>
-    
-                    {/* Left: Visual Section */}
-                    <div className="w-full md:w-1/2 relative bg-gradient-to-br from-blue-900/20 to-indigo-900/20 overflow-hidden flex items-center justify-center min-h-[300px] md:min-h-0">
-                        {/* Decorative Elements */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-500/10 blur-[100px] rounded-full"></div>
+                </div>
+
+                {/* Content Area (Wizard) - Split Layout on Desktop */}
+                <div className="p-4 md:p-8 overflow-y-auto custom-scrollbar flex-1 min-h-0 flex flex-col md:flex-row gap-6 md:gap-10 items-center">
+                   
+                   {/* Mobile: Step Progress (Top) */}
+                   <div className="w-full flex md:hidden justify-center gap-1.5 mb-2 shrink-0">
+                        {steps.map((_, idx) => (
+                            <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === step ? 'bg-cyan-400 w-6' : 'bg-white/20 w-1.5'}`} />
+                        ))}
+                    </div>
+
+                   {/* Image Section (Top on mobile, Left on desktop) */}
+                   <div className="w-full md:w-1/2 h-[250px] md:h-full relative rounded-xl overflow-hidden border border-white/10 bg-black/30 md:bg-transparent md:border-none flex items-center justify-center p-4 group shrink-0">
+                        {/* Desktop: Background Glow */}
+                        <div className="hidden md:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-cyan-500/10 blur-[50px] rounded-full"></div>
                         
                         <img 
-                          src={steps[step].image} 
-                          alt="Telescope Step"
-                          className="relative z-10 w-[60%] md:w-[80%] max-h-[80%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float"
+                            key={`img-${step}`}
+                            src={steps[step].image} 
+                            alt="Step Illustration" 
+                            className="w-full h-full object-contain drop-shadow-xl z-10 transition-transform duration-500 group-hover:scale-105"
                         />
-    
-                        {/* Step Indicators (Desktop Overlay) */}
-                        <div className="absolute top-8 left-8 flex gap-2">
+                   </div>
+
+                   {/* Text Section (Bottom on mobile, Right on desktop) */}
+                   <div className="w-full md:w-1/2 flex flex-col justify-center animate-fade-in key={step}">
+                        
+                        {/* Desktop: Step Progress */}
+                        <div className="hidden md:flex gap-1.5 mb-6">
                             {steps.map((_, idx) => (
-                                <div 
-                                    key={idx} 
-                                    className={`h-2 rounded-full transition-all duration-500 ${
-                                        idx === step ? 'w-8 bg-cyan-400 shadow-[0_0_10px_#22d3ee]' : 'w-2 bg-white/20'
-                                    }`} 
-                                />
+                                <div key={idx} className={`h-1.5 rounded-full transition-all duration-300 ${idx === step ? 'bg-cyan-400 w-8' : 'bg-white/20 w-2'}`} />
                             ))}
                         </div>
-                    </div>
-    
-                    {/* Right: Content Section */}
-                    <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center relative bg-[#15192B]">
-                        
-                        {/* Header Tag */}
-                        <div className="mb-4 md:mb-6">
-                            <span className="px-4 py-2 bg-indigo-500/20 text-indigo-300 rounded-full text-sm font-bold border border-indigo-500/30 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
-                                {lang === 'zh-HK' ? `步驟 ${step + 1}` : `Step ${step + 1}`}
+
+                         <h3 className="text-xl md:text-3xl font-bold text-white mb-4 flex flex-wrap items-center gap-3">
+                            <span className="bg-white/10 text-xs md:text-sm px-2 py-1 rounded text-cyan-400 border border-cyan-400/30 whitespace-nowrap">
+                               {lang === 'zh-HK' ? `步驟 ${step + 1}` : `Step ${step + 1}`}
                             </span>
-                        </div>
-    
-                        {/* Title */}
-                        <h2 className="text-3xl md:text-5xl font-black text-white mb-4 md:mb-6 leading-tight">
-                            {steps[step].title}
-                        </h2>
-    
-                        {/* Description */}
-                        <p className="text-base md:text-lg text-slate-400 leading-relaxed mb-6 md:mb-8">
+                            {steps[step].title.split(' (')[0]}
+                         </h3>
+                         
+                         <p className="text-slate-300 leading-relaxed text-sm md:text-lg mb-6">
                             {steps[step].desc}
-                        </p>
-    
+                         </p>
+
                         {/* Tip Box */}
                         {steps[step].note && (
-                            <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 md:p-6 flex gap-4 items-start mb-6 md:mb-8">
-                                <i className="fas fa-lightbulb text-yellow-500 text-xl mt-1"></i>
-                                <div>
-                                    <p className="text-yellow-100/90 text-sm font-bold leading-relaxed">
-                                        {steps[step].note}
-                                    </p>
-                                </div>
+                            <div className="bg-cyan-500/10 border border-cyan-500/20 p-4 rounded-xl flex gap-4 items-start">
+                                <span className="text-xl">💡</span>
+                                <p className="text-cyan-200/90 text-sm font-medium leading-relaxed mt-0.5">
+                                    {steps[step].note}
+                                </p>
                             </div>
                         )}
-    
-                        {/* Navigation */}
-                        <div className="mt-auto flex gap-4 pt-4">
+                   </div>
+                </div>
+
+                {/* Footer Action Bar */}
+                <div className="p-4 border-t border-white/10 bg-white/5 text-center shrink-0">
+                     <div className="flex items-center gap-3 md:w-1/2 md:ml-auto">
+                        {/* Prev Button */}
+                        <button 
+                            onClick={prevStep}
+                            disabled={step === 0}
+                            className={`flex-1 py-3 rounded-xl font-bold transition-all text-sm border border-white/10 ${
+                                step === 0 
+                                ? 'opacity-30 cursor-not-allowed text-slate-500 bg-transparent' 
+                                : 'bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white'
+                            }`}
+                        >
+                            {lang === 'zh-HK' ? '上一步' : 'Prev'}
+                        </button>
+
+                        {/* Next / Start Button */}
+                        {step === totalSteps - 1 ? (
                             <button 
-                                onClick={prevStep}
-                                disabled={step === 0}
-                                className={`px-6 py-3 md:px-8 md:py-4 rounded-2xl font-bold transition-all border border-white/10 ${
-                                    step === 0 
-                                    ? 'opacity-0 pointer-events-none' 
-                                    : 'text-slate-400 hover:bg-white/5'
-                                }`}
+                                onClick={onClose}
+                                className="flex-[2] py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition-colors text-sm shadow-lg shadow-cyan-500/20"
                             >
-                                {lang === 'zh-HK' ? '上一步' : 'Prev'}
+                                <span className="flex items-center justify-center gap-2">
+                                    {lang === 'zh-HK' ? '完成教學' : 'Finish'} 
+                                    <i className="fas fa-check text-xs"></i>
+                                </span>
                             </button>
-    
+                        ) : (
                             <button 
-                                onClick={step === totalSteps - 1 ? onClose : nextStep}
-                                className="flex-1 px-6 py-3 md:px-8 md:py-4 rounded-2xl bg-cyan-500 text-black font-black text-lg hover:bg-cyan-400 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] flex items-center justify-center gap-3"
+                                onClick={nextStep}
+                                className="flex-[2] py-3 rounded-xl bg-white hover:bg-gray-100 text-black font-bold transition-colors text-sm shadow-lg"
                             >
-                                {step === totalSteps - 1 
-                                    ? (lang === 'zh-HK' ? '完成教學' : 'Finish') 
-                                    : (lang === 'zh-HK' ? '下一步' : 'Next')
-                                }
-                                <i className={`fas ${step === totalSteps - 1 ? 'fa-check' : 'fa-arrow-right'}`}></i>
+                                {lang === 'zh-HK' ? '下一步' : 'Next'}
                             </button>
-                        </div>
-    
+                        )}
                     </div>
                 </div>
             </div>
