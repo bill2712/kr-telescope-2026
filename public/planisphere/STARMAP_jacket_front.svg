@@ -11,9 +11,7 @@
         stroke-miterlimit: 16.67;
       }
 
-      .st0, .st2, .st3, .st4, .st5, .st6, .st7, .st8, .st9 {
-        stroke: #231f20;
-      }
+
 
       .st0, .st2, .st3, .st4, .st5, .st7, .st8, .st9 {
         stroke-width: 1.04px;
