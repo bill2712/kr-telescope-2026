@@ -4,6 +4,9 @@ import { describe, expect, it } from 'vitest';
 
 const requiredAssets = [
   'images/kidrise-logo_new.png',
+  'images/pwa-192.png',
+  'images/pwa-512.png',
+  'images/apple-touch-icon.png',
   'assets/knowledge/compass-rose.svg',
   'assets/knowledge/compass-needle.svg',
   'planisphere/STARMAP_jacket_front.svg',

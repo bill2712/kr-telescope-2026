@@ -2,10 +2,11 @@ import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import type { StarMapHandle, MapStyle } from './components/StarMap';
 import Layout from './components/layout/Layout';
 import Hero from './components/Hero';
-import { ExperienceMode, Language, Page } from './types';
+import { AchievementId, ExperienceMode, Language, Page } from './types';
 import { translations } from './utils/i18n';
 import { LoginGate } from './components/LoginGate';
 import FirstRunGuide from './components/FirstRunGuide';
+import InstallAppPrompt from './components/InstallAppPrompt';
 
 const StarMap = lazy(() => import('./components/StarMap'));
 const StarMapControls = lazy(() => import('./components/StarMapControls'));
@@ -52,6 +53,35 @@ function App() {
       return true;
     }
   });
+  const [nightVision, setNightVision] = useState(() => {
+    try {
+      return localStorage.getItem('kr_telescope_night_vision') === 'true';
+    } catch {
+      return false;
+    }
+  });
+  const [achievements, setAchievements] = useState<AchievementId[]>(() => {
+    const valid: AchievementId[] = ['onboarding', 'planner', 'starmap'];
+    try {
+      const raw = localStorage.getItem('kr_telescope_achievements');
+      if (raw) {
+        const stored = JSON.parse(raw);
+        if (Array.isArray(stored)) return stored.filter((item): item is AchievementId => valid.includes(item));
+      }
+    } catch {
+      // Infer progress for returning users below.
+    }
+    const inferred: AchievementId[] = [];
+    try {
+      if (localStorage.getItem('kr_telescope_onboarding_complete') === 'true') inferred.push('onboarding');
+      const previous = localStorage.getItem('kr_telescope_last_page');
+      if (previous === 'planner') inferred.push('planner');
+      if (previous === 'starmap') inferred.push('starmap');
+    } catch {
+      // Start with an empty in-memory progress list.
+    }
+    return inferred;
+  });
   
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -68,6 +98,34 @@ function App() {
     document.documentElement.lang = lang;
     document.title = t.appTitle;
   }, [lang, t.appTitle]);
+
+  useEffect(() => {
+    if (nightVision) document.documentElement.dataset.nightVision = 'true';
+    else delete document.documentElement.dataset.nightVision;
+    document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', nightVision ? '#120000' : '#0f172a');
+    try {
+      localStorage.setItem('kr_telescope_night_vision', String(nightVision));
+    } catch {
+      // Keep the preference for this visit.
+    }
+    return () => {
+      delete document.documentElement.dataset.nightVision;
+      document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')?.setAttribute('content', '#0f172a');
+    };
+  }, [nightVision]);
+
+  const unlockAchievement = (achievement: AchievementId) => {
+    setAchievements((current) => {
+      if (current.includes(achievement)) return current;
+      const next = [...current, achievement];
+      try {
+        localStorage.setItem('kr_telescope_achievements', JSON.stringify(next));
+      } catch {
+        // The achievement still lasts for this visit.
+      }
+      return next;
+    });
+  };
 
 
 
@@ -91,6 +149,8 @@ function App() {
 
   const navigate = (page: Page) => {
     if (page === 'starmap') setHasOpenedStarMap(true);
+    if (page === 'starmap') unlockAchievement('starmap');
+    if (page === 'planner') unlockAchievement('planner');
     setCurrentPage(page);
     if (page !== 'hero') {
       setLastPage(page);
@@ -113,6 +173,7 @@ function App() {
 
   const completeFirstRunGuide = () => {
     setShowFirstRunGuide(false);
+    unlockAchievement('onboarding');
     try {
       localStorage.setItem('kr_telescope_onboarding_complete', 'true');
     } catch {
@@ -186,16 +247,20 @@ function App() {
 
   if (!isAuthenticated) {
     return (
-      <LoginGate 
-        lang={lang} 
-        onToggleLang={() => setLang(prev => prev === 'zh-HK' ? 'en' : 'zh-HK')} 
-        onLogin={() => setIsAuthenticated(true)}
-        t={t}
-      />
+      <>
+        <LoginGate
+          lang={lang}
+          onToggleLang={() => setLang(prev => prev === 'zh-HK' ? 'en' : 'zh-HK')}
+          onLogin={() => setIsAuthenticated(true)}
+          t={t}
+        />
+        <InstallAppPrompt lang={lang} visible={false} />
+      </>
     );
   }
 
   return (
+    <>
     <Layout
       lang={lang}
       currentPage={currentPage}
@@ -203,6 +268,8 @@ function App() {
       onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
       mode={mode}
       onToggleMode={() => changeMode(mode === 'beginner' ? 'advanced' : 'beginner')}
+      nightVision={nightVision}
+      onToggleNightVision={() => setNightVision((value) => !value)}
     >
       <Suspense fallback={<LoadingView />}>
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
@@ -217,6 +284,7 @@ function App() {
             lang={lang} 
             mode={mode}
             lastPage={lastPage}
+            achievements={achievements}
             onNavigate={navigate}
             onModeChange={changeMode}
             onReplayGuide={() => setShowFirstRunGuide(true)}
@@ -296,6 +364,8 @@ function App() {
       {showFirstRunGuide && <FirstRunGuide lang={lang} onComplete={completeFirstRunGuide} />}
 
     </Layout>
+    <InstallAppPrompt lang={lang} />
+    </>
   );
 }
 

@@ -12,9 +12,11 @@ interface HeaderProps {
   onNavigate: (page: Page) => void;
   mode: ExperienceMode;
   onToggleMode: () => void;
+  nightVision: boolean;
+  onToggleNightVision: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate, mode, onToggleMode }) => {
+export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate, mode, onToggleMode, nightVision, onToggleNightVision }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const text = translations[lang];
 
@@ -72,6 +74,16 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 z-50 relative">
+            <button
+              type="button"
+              onClick={onToggleNightVision}
+              aria-pressed={nightVision}
+              aria-label={lang === 'zh-HK' ? (nightVision ? '關閉紅光模式' : '開啟紅光模式') : (nightVision ? 'Turn off red-light mode' : 'Turn on red-light mode')}
+              title={lang === 'zh-HK' ? '紅光夜視模式' : 'Red-light night mode'}
+              className={`hidden h-10 w-10 place-items-center rounded-xl border transition-colors xl:grid ${nightVision ? 'border-red-400 bg-red-500/25 text-red-100' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+            >
+              <i className="fas fa-eye" aria-hidden="true" />
+            </button>
             <button type="button" onClick={onToggleMode} className="hidden min-h-10 items-center rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-200 hover:bg-white/10 lg:inline-flex">
               {mode === 'beginner' ? text.homeExperience.beginner : text.homeExperience.advanced}
             </button>
@@ -120,6 +132,10 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
             </nav>
             <button type="button" onClick={onToggleMode} className="mt-3 min-h-12 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 text-left font-bold text-cyan-200">
               {mode === 'beginner' ? `${text.homeExperience.beginner} → ${text.homeExperience.advanced}` : `${text.homeExperience.advanced} → ${text.homeExperience.beginner}`}
+            </button>
+            <button type="button" onClick={onToggleNightVision} aria-pressed={nightVision} className={`mt-2 min-h-12 rounded-xl border px-4 text-left font-bold ${nightVision ? 'border-red-400/50 bg-red-500/20 text-red-100' : 'border-white/10 bg-white/5 text-slate-200'}`}>
+              <i className="fas fa-eye mr-2" aria-hidden="true" />
+              {lang === 'zh-HK' ? `紅光夜視模式：${nightVision ? '開' : '關'}` : `Red-light mode: ${nightVision ? 'On' : 'Off'}`}
             </button>
             
             <div className="mt-auto pt-6 pb-8 text-center text-slate-500 text-sm">

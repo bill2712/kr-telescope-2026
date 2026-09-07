@@ -115,6 +115,26 @@
   }
 }
 
+html[data-night-vision='true'] {
+  background: #090000;
+  color-scheme: dark;
+}
+
+html[data-night-vision='true'] body {
+  background-color: #090000;
+  background-image: none;
+}
+
+html[data-night-vision='true'] #root {
+  filter: grayscale(1) sepia(1) saturate(4.5) hue-rotate(315deg) brightness(0.68) contrast(1.18);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  #root {
+    transition: filter 160ms ease;
+  }
+}
+
 @layer components {
   .glass-panel {
     border: 1px solid rgb(255 255 255 / 10%);

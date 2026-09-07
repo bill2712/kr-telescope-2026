@@ -11,6 +11,8 @@ interface LayoutProps {
   onToggleLang: () => void;
   mode: ExperienceMode;
   onToggleMode: () => void;
+  nightVision: boolean;
+  onToggleNightVision: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -21,6 +23,8 @@ const Layout: React.FC<LayoutProps> = ({
   onToggleLang,
   mode,
   onToggleMode,
+  nightVision,
+  onToggleNightVision,
 }) => {
   // Scroll to top when page changes
   React.useEffect(() => {
@@ -41,6 +45,8 @@ const Layout: React.FC<LayoutProps> = ({
         onNavigate={onNavigate} 
         mode={mode}
         onToggleMode={onToggleMode}
+        nightVision={nightVision}
+        onToggleNightVision={onToggleNightVision}
       />
 
       {/* Main Content Area */}

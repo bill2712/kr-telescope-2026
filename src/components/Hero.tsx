@@ -1,19 +1,21 @@
 import React from 'react';
-import { ExperienceMode, Language, Page } from '../types';
+import { AchievementId, ExperienceMode, Language, Page } from '../types';
 import { translations } from '../utils/i18n';
 import telescopeImg from '../assets/knowledge/amazing-telescope-transparent.png';
 import { Footer } from './layout/Footer';
+import DeviceReadiness from './DeviceReadiness';
 
 interface HeroProps {
   lang: Language;
   mode: ExperienceMode;
   lastPage: Page | null;
+  achievements: AchievementId[];
   onNavigate: (page: Page) => void;
   onModeChange: (mode: ExperienceMode) => void;
   onReplayGuide: () => void;
 }
 
-const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, onNavigate, onModeChange, onReplayGuide }) => {
+const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, achievements, onNavigate, onModeChange, onReplayGuide }) => {
   const t = translations[lang];
   const pageLabels: Record<Page, string> = {
     hero: t.homeTitle,
@@ -28,6 +30,15 @@ const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, onNavigate, onModeCha
   const resumeDescription = lastLabel
     ? t.homeExperience.tasks.resume.desc.replace('{page}', lastLabel)
     : t.homeExperience.tasks.resume.empty;
+  const achievementCopy = lang === 'zh-HK'
+    ? {
+        title: '觀星徽章', count: `${achievements.length}/3 已解鎖`, unlocked: '已解鎖', locked: '未解鎖',
+        items: { onboarding: '完成首次導覽', planner: '查看今晚建議', starmap: '開啟實時星圖' },
+      }
+    : {
+        title: 'Stargazing badges', count: `${achievements.length}/3 unlocked`, unlocked: 'Unlocked', locked: 'Locked',
+        items: { onboarding: 'Complete the first tour', planner: 'Check Tonight’s Picks', starmap: 'Open the Live Star Map' },
+      };
   const tasks = [
     {
       id: 'map', icon: 'fa-map', title: t.homeExperience.tasks.map.title, desc: t.homeExperience.tasks.map.desc,
@@ -85,6 +96,24 @@ const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, onNavigate, onModeCha
           <button type="button" onClick={onReplayGuide} className="mx-auto mt-5 flex min-h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-slate-300 hover:bg-white/5 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
             <i className="fas fa-graduation-cap" /> {t.homeExperience.replayGuide}
           </button>
+          <section className="mt-3 rounded-2xl border border-white/10 bg-slate-900/55 p-4 text-left" aria-labelledby="telescope-achievements-title">
+            <div className="flex items-center justify-between gap-3">
+              <h2 id="telescope-achievements-title" className="flex items-center gap-2 text-sm font-black text-white"><i className="fas fa-trophy text-amber-300" /> {achievementCopy.title}</h2>
+              <span className="text-xs font-bold text-cyan-300">{achievementCopy.count}</span>
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {(Object.keys(achievementCopy.items) as AchievementId[]).map((id) => {
+                const unlocked = achievements.includes(id);
+                return (
+                  <div key={id} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${unlocked ? 'border-emerald-400/25 bg-emerald-500/10 text-emerald-100' : 'border-white/5 bg-white/[0.03] text-slate-500'}`} title={unlocked ? achievementCopy.unlocked : achievementCopy.locked}>
+                    <i className={`fas ${unlocked ? 'fa-circle-check' : 'fa-lock'}`} />
+                    <span>{achievementCopy.items[id]}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+          <DeviceReadiness lang={lang} />
         </div>
       </main>
       <Footer lang={lang} />

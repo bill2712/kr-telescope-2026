@@ -2,6 +2,8 @@
 
 Interactive bilingual learning site for the Kidrise telescope kit. It includes a rotatable planisphere, time controls, map styles, a compass, observing-weather guidance, learning modules, quizzes, a telescope guide, and downloadable space postcards.
 
+The task-first home screen includes beginner/advanced navigation, local achievement badges, a device-readiness check, and an installable PWA. Red-light night mode reduces bright and blue-toned output for outdoor use. The default maps and application shell work offline after the first visit; larger advanced map styles and images are cached after they are opened. Preferences and progress remain in the browser and are not sent to a server.
+
 ## Local development
 
 Requirements: Node.js 22 and npm.
@@ -35,4 +37,4 @@ The site is configured for `https://telescope.stemtoy.com.hk`. The `public/CNAME
 npm run deploy
 ```
 
-After deployment, verify the custom domain directly, sign in with a valid product code, test mouse and touch interactions on the star map, create and download a postcard, and check the browser console and network panel for errors or missing assets.
+After deployment, verify the custom domain directly, sign in with a valid product code, test mouse and touch interactions on the star map, toggle red-light mode, install the PWA, reload once while offline, create and download a postcard, and check the browser console and network panel for errors or missing assets.
