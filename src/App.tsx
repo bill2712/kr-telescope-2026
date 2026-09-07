@@ -2,9 +2,10 @@ import { lazy, Suspense, useState, useEffect, useRef } from 'react';
 import type { StarMapHandle, MapStyle } from './components/StarMap';
 import Layout from './components/layout/Layout';
 import Hero from './components/Hero';
-import { Language } from './types';
+import { ExperienceMode, Language, Page } from './types';
 import { translations } from './utils/i18n';
 import { LoginGate } from './components/LoginGate';
+import FirstRunGuide from './components/FirstRunGuide';
 
 const StarMap = lazy(() => import('./components/StarMap'));
 const StarMapControls = lazy(() => import('./components/StarMapControls'));
@@ -29,6 +30,28 @@ const LoadingView = () => (
 
 function App() {
   const [lang, setLang] = useState<Language>('zh-HK');
+  const [mode, setMode] = useState<ExperienceMode>(() => {
+    try {
+      return localStorage.getItem('kr_telescope_mode') === 'advanced' ? 'advanced' : 'beginner';
+    } catch {
+      return 'beginner';
+    }
+  });
+  const [lastPage, setLastPage] = useState<Page | null>(() => {
+    try {
+      const stored = localStorage.getItem('kr_telescope_last_page') as Page | null;
+      return stored && stored !== 'hero' ? stored : null;
+    } catch {
+      return null;
+    }
+  });
+  const [showFirstRunGuide, setShowFirstRunGuide] = useState(() => {
+    try {
+      return localStorage.getItem('kr_telescope_onboarding_complete') !== 'true';
+    } catch {
+      return true;
+    }
+  });
   
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -63,12 +86,38 @@ function App() {
   
 
   // Navigation State - Default to 'hero'
-  const [currentPage, setCurrentPage] = useState<'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'>('hero');
+  const [currentPage, setCurrentPage] = useState<Page>('hero');
   const [hasOpenedStarMap, setHasOpenedStarMap] = useState(false);
 
-  const navigate = (page: typeof currentPage) => {
+  const navigate = (page: Page) => {
     if (page === 'starmap') setHasOpenedStarMap(true);
     setCurrentPage(page);
+    if (page !== 'hero') {
+      setLastPage(page);
+      try {
+        localStorage.setItem('kr_telescope_last_page', page);
+      } catch {
+        // Keep the in-memory value for this visit.
+      }
+    }
+  };
+
+  const changeMode = (nextMode: ExperienceMode) => {
+    setMode(nextMode);
+    try {
+      localStorage.setItem('kr_telescope_mode', nextMode);
+    } catch {
+      // Keep the in-memory value for this visit.
+    }
+  };
+
+  const completeFirstRunGuide = () => {
+    setShowFirstRunGuide(false);
+    try {
+      localStorage.setItem('kr_telescope_onboarding_complete', 'true');
+    } catch {
+      // The guide still closes without persistent storage.
+    }
   };
 
   // New States
@@ -152,6 +201,8 @@ function App() {
       currentPage={currentPage}
       onNavigate={navigate}
       onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
+      mode={mode}
+      onToggleMode={() => changeMode(mode === 'beginner' ? 'advanced' : 'beginner')}
     >
       <Suspense fallback={<LoadingView />}>
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
@@ -164,7 +215,11 @@ function App() {
         <div className="absolute inset-0 z-[110] bg-dark animate-fade-in">
           <Hero 
             lang={lang} 
-            onStart={() => navigate('starmap')}
+            mode={mode}
+            lastPage={lastPage}
+            onNavigate={navigate}
+            onModeChange={changeMode}
+            onReplayGuide={() => setShowFirstRunGuide(true)}
           />
         </div>
       )}
@@ -230,13 +285,15 @@ function App() {
           {/* {currentPage === 'starmap' && ( <MapTools ... /> )} */}
       </div>}
 
-      {currentPage === 'planner' && <Planner lang={lang} />}
+      {currentPage === 'planner' && <Planner lang={lang} onOpenStarMap={() => navigate('starmap')} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
       {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => navigate('hero')} />}
       {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => navigate('hero')} />}
 
       </Suspense>
+
+      {showFirstRunGuide && <FirstRunGuide lang={lang} onComplete={completeFirstRunGuide} />}
 
     </Layout>
   );

@@ -1,14 +1,16 @@
 import React, { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { Language } from '../../types';
+import { ExperienceMode, Language, Page } from '../../types';
 
 interface LayoutProps {
   children: ReactNode;
   lang: Language;
-  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
   onToggleLang: () => void;
+  mode: ExperienceMode;
+  onToggleMode: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -17,6 +19,8 @@ const Layout: React.FC<LayoutProps> = ({
   currentPage,
   onNavigate,
   onToggleLang,
+  mode,
+  onToggleMode,
 }) => {
   // Scroll to top when page changes
   React.useEffect(() => {
@@ -35,6 +39,8 @@ const Layout: React.FC<LayoutProps> = ({
         onToggleLang={onToggleLang} 
         currentPage={currentPage} 
         onNavigate={onNavigate} 
+        mode={mode}
+        onToggleMode={onToggleMode}
       />
 
       {/* Main Content Area */}

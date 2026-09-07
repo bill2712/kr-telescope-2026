@@ -19,9 +19,10 @@ import iconRain from '../assets/weather/weather_rain.png';
 
 interface PlannerProps {
     lang: Language;
+    onOpenStarMap: () => void;
 }
 
-const Planner: React.FC<PlannerProps> = ({ lang }) => {
+const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap }) => {
   const t = translations[lang];
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState<RHRReadData | null>(null);
@@ -100,6 +101,53 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
   const localWeather = getDistrictData(selectedDistrict);
   const scoreColor = stargazingScore >= 80 ? 'text-green-400' : stargazingScore >= 50 ? 'text-yellow-400' : 'text-red-400';
   const scoreBg = stargazingScore >= 80 ? 'from-green-500/20 to-green-900/10' : stargazingScore >= 50 ? 'from-yellow-500/20 to-yellow-900/10' : 'from-red-500/20 to-red-900/10';
+  const hongKongMonth = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Hong_Kong' })).getMonth();
+  const seasonIndex = hongKongMonth === 11 || hongKongMonth <= 1 ? 0 : hongKongMonth <= 4 ? 1 : hongKongMonth <= 7 ? 2 : 3;
+  const seasonalTargets = lang === 'zh-HK'
+    ? [
+        [{ name: '獵戶座', desc: '冬季最容易辨認的星座之一。' }, { name: '昴宿星團', desc: '先用肉眼找細小星群，再用低倍鏡。' }],
+        [{ name: '獅子座', desc: '利用問號形狀的鐮刀星群開始尋找。' }, { name: '北斗七星', desc: '由斗柄開始辨認北方天空。' }],
+        [{ name: '夏季大三角', desc: '由三顆明亮星星開始定位。' }, { name: '天蠍座', desc: '向南方低空尋找紅色心宿二。' }],
+        [{ name: '飛馬座四邊形', desc: '秋季天空的大型方框標記。' }, { name: '仙后座', desc: '向北找明顯的 W 形星座。' }],
+      ][seasonIndex]
+    : [
+        [{ name: 'Orion', desc: 'One of the easiest winter constellations to recognise.' }, { name: 'Pleiades', desc: 'Find the tiny star cluster by eye, then use low power.' }],
+        [{ name: 'Leo', desc: 'Start with its backwards-question-mark sickle shape.' }, { name: 'Big Dipper', desc: 'Use the bowl and handle to explore the northern sky.' }],
+        [{ name: 'Summer Triangle', desc: 'Start with three bright stars high in the summer sky.' }, { name: 'Scorpius', desc: 'Look low in the south for reddish Antares.' }],
+        [{ name: 'Great Square of Pegasus', desc: 'A large square landmark in the autumn sky.' }, { name: 'Cassiopeia', desc: 'Look north for its recognisable W shape.' }],
+      ][seasonIndex];
+  const recommendationCopy = lang === 'zh-HK'
+    ? {
+        title: '今晚睇咩',
+        subtitle: '按香港目前天氣、月相及季節提供；實際方向及可見時間請在星圖確認。',
+        moon: '月球',
+        moonDesc: `${status?.factors.moon.phase ?? '月相'}；適合先用低倍鏡觀察明暗交界。`,
+        easy: '容易尋找',
+        seasonal: '本季目標',
+        poor: '現時天氣較差，可先用星圖預習，等待雲隙再觀察。',
+        fair: '先找明亮目標；深空天體可能受雲層或月光影響。',
+        good: '條件理想，可先由肉眼定位，再使用望遠鏡。',
+        map: '在實時星圖尋找',
+        updated: '天文台資料更新：',
+      }
+    : {
+        title: 'Tonight’s Picks',
+        subtitle: 'Based on current Hong Kong weather, Moon phase and season. Confirm direction and visibility time in the map.',
+        moon: 'Moon',
+        moonDesc: `${status?.factors.moon.phase ?? 'Moon phase'}; start at low power and examine the light-dark boundary.`,
+        easy: 'Easy to find',
+        seasonal: 'Seasonal target',
+        poor: 'Conditions are poor. Preview the targets in the map and wait for a clear gap.',
+        fair: 'Start with bright targets; cloud or moonlight may affect faint objects.',
+        good: 'Conditions look promising. Locate each target by eye before using the telescope.',
+        map: 'Find in Live Star Map',
+        updated: 'HKO data updated:',
+      };
+  const conditionAdvice = stargazingScore >= 80 ? recommendationCopy.good : stargazingScore >= 40 ? recommendationCopy.fair : recommendationCopy.poor;
+  const updateTime = current?.updateTime ? new Date(current.updateTime) : null;
+  const formattedUpdateTime = updateTime && !Number.isNaN(updateTime.getTime())
+    ? updateTime.toLocaleString(lang === 'zh-HK' ? 'zh-HK' : 'en-HK', { timeZone: 'Asia/Hong_Kong', dateStyle: 'medium', timeStyle: 'short' })
+    : null;
 
   return (
     <div className="flex flex-col w-full bg-space-black text-white pt-14 md:pt-28 px-4 pb-12 max-w-5xl mx-auto">
@@ -139,6 +187,35 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
               </div>
           </div>
       </div>
+
+      <section className="mb-8 rounded-3xl border border-cyan-400/20 bg-cyan-500/5 p-5 shadow-xl sm:p-7" aria-labelledby="tonight-picks-title">
+        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-cyan-300">{recommendationCopy.easy}</p>
+            <h2 id="tonight-picks-title" className="mt-1 text-3xl font-black text-white">{recommendationCopy.title}</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">{recommendationCopy.subtitle}</p>
+            <p className={`mt-3 text-sm font-bold ${scoreColor}`}>{conditionAdvice}</p>
+            {formattedUpdateTime && <p className="mt-2 text-xs text-slate-500">{recommendationCopy.updated} {formattedUpdateTime}</p>}
+          </div>
+          <button type="button" onClick={onOpenStarMap} className="min-h-12 shrink-0 rounded-xl bg-cyan-500 px-5 font-black text-slate-950 shadow-lg shadow-cyan-500/20 hover:bg-cyan-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">
+            <i className="fas fa-location-arrow mr-2" />{recommendationCopy.map}
+          </button>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <article className="rounded-2xl border border-white/10 bg-black/20 p-4">
+            <span className="text-xs font-bold text-yellow-300">{recommendationCopy.easy}</span>
+            <h3 className="mt-2 text-xl font-black text-white"><i className="fas fa-moon mr-2 text-yellow-200" />{recommendationCopy.moon}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-300">{recommendationCopy.moonDesc}</p>
+          </article>
+          {seasonalTargets.map((target) => (
+            <article key={target.name} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <span className="text-xs font-bold text-cyan-300">{recommendationCopy.seasonal}</span>
+              <h3 className="mt-2 text-xl font-black text-white"><i className="fas fa-star mr-2 text-cyan-200" />{target.name}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">{target.desc}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           

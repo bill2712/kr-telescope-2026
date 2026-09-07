@@ -1,6 +1,6 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { Language } from '../../types';
+import { ExperienceMode, Language, Page } from '../../types';
 import { translations } from '../../utils/i18n';
 
 // Update Page type to include hero
@@ -8,11 +8,13 @@ interface HeaderProps {
   lang: Language;
   onToggleLang: () => void;
   // Navigation
-  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
+  mode: ExperienceMode;
+  onToggleMode: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate, mode, onToggleMode }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const text = translations[lang];
 
@@ -25,8 +27,11 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
     { id: 'guide', label: text.menuGuide },
     { id: 'encyclopedia', label: text.menuEncyclopedia },
   ];
+  const visibleNavItems = mode === 'beginner'
+    ? navItems.filter((item) => ['starmap', 'planner', 'guide'].includes(item.id))
+    : navItems;
 
-  const handleNavigate = (id: HeaderProps['currentPage']) => {
+  const handleNavigate = (id: Page) => {
     onNavigate(id);
     setIsMenuOpen(false);
   };
@@ -50,7 +55,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-1 bg-black/20 backdrop-blur-sm p-1 rounded-full border border-white/5">
-          {navItems.map((item) => (
+          {visibleNavItems.map((item) => (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
@@ -67,6 +72,9 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 z-50 relative">
+            <button type="button" onClick={onToggleMode} className="hidden min-h-10 items-center rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-200 hover:bg-white/10 lg:inline-flex">
+              {mode === 'beginner' ? text.homeExperience.beginner : text.homeExperience.advanced}
+            </button>
             {/* Language Toggle */}
             <button 
             type="button"
@@ -95,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
       {isMenuOpen && createPortal(
         <div className="fixed inset-0 top-[56px] z-[9999] bg-dark opacity-100 border-t border-white/10 flex flex-col p-4 md:hidden">
             <nav className="flex flex-col gap-2">
-                {navItems.map((item) => (
+                {visibleNavItems.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => handleNavigate(item.id)}
@@ -110,6 +118,9 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
                     </button>
                 ))}
             </nav>
+            <button type="button" onClick={onToggleMode} className="mt-3 min-h-12 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 text-left font-bold text-cyan-200">
+              {mode === 'beginner' ? `${text.homeExperience.beginner} → ${text.homeExperience.advanced}` : `${text.homeExperience.advanced} → ${text.homeExperience.beginner}`}
+            </button>
             
             <div className="mt-auto pt-6 pb-8 text-center text-slate-500 text-sm">
                 KidRise Telescope Explorer
