@@ -61,7 +61,7 @@ function App() {
     }
   });
   const [achievements, setAchievements] = useState<AchievementId[]>(() => {
-    const valid: AchievementId[] = ['onboarding', 'planner', 'starmap'];
+    const valid: AchievementId[] = ['onboarding', 'planner', 'starmap', 'nightVision', 'guide', 'learn', 'quiz', 'encyclopedia', 'journal', 'postcard'];
     try {
       const raw = localStorage.getItem('kr_telescope_achievements');
       if (raw) {
@@ -75,8 +75,8 @@ function App() {
     try {
       if (localStorage.getItem('kr_telescope_onboarding_complete') === 'true') inferred.push('onboarding');
       const previous = localStorage.getItem('kr_telescope_last_page');
-      if (previous === 'planner') inferred.push('planner');
-      if (previous === 'starmap') inferred.push('starmap');
+      if (previous && valid.includes(previous as AchievementId)) inferred.push(previous as AchievementId);
+      if (localStorage.getItem('kr_telescope_night_vision') === 'true') inferred.push('nightVision');
     } catch {
       // Start with an empty in-memory progress list.
     }
@@ -151,6 +151,9 @@ function App() {
     if (page === 'starmap') setHasOpenedStarMap(true);
     if (page === 'starmap') unlockAchievement('starmap');
     if (page === 'planner') unlockAchievement('planner');
+    if (page === 'guide') unlockAchievement('guide');
+    if (page === 'learn') unlockAchievement('learn');
+    if (page === 'encyclopedia') unlockAchievement('encyclopedia');
     setCurrentPage(page);
     if (page !== 'hero') {
       setLastPage(page);
@@ -269,7 +272,10 @@ function App() {
       mode={mode}
       onToggleMode={() => changeMode(mode === 'beginner' ? 'advanced' : 'beginner')}
       nightVision={nightVision}
-      onToggleNightVision={() => setNightVision((value) => !value)}
+      onToggleNightVision={() => setNightVision((value) => {
+        if (!value) unlockAchievement('nightVision');
+        return !value;
+      })}
     >
       <Suspense fallback={<LoadingView />}>
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
@@ -292,7 +298,7 @@ function App() {
         </div>
       )}
 
-      {showPostcard && <SpacePostcard lang={lang} onClose={() => setShowPostcard(false)} />}
+      {showPostcard && <SpacePostcard lang={lang} onClose={() => setShowPostcard(false)} onSaved={() => unlockAchievement('postcard')} />}
 
 
 
@@ -353,9 +359,9 @@ function App() {
           {/* {currentPage === 'starmap' && ( <MapTools ... /> )} */}
       </div>}
 
-      {currentPage === 'planner' && <Planner lang={lang} onOpenStarMap={() => navigate('starmap')} />}
+      {currentPage === 'planner' && <Planner lang={lang} onOpenStarMap={() => navigate('starmap')} onJournalExported={() => unlockAchievement('journal')} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
-      {currentPage === 'quiz' && <Quiz lang={lang} />}
+      {currentPage === 'quiz' && <Quiz lang={lang} onComplete={() => unlockAchievement('quiz')} />}
       {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => navigate('hero')} />}
       {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => navigate('hero')} />}
 

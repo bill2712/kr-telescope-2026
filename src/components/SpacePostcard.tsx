@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 interface SpacePostcardProps {
     onClose: () => void;
     lang: 'zh-HK' | 'en';
+    onSaved?: () => void;
 }
 
 interface Decoration {
@@ -17,7 +18,7 @@ interface Decoration {
 
 const STICKERS = ['👩‍🚀', '🚀', '🛸', '🪐', '⭐', '👽', '🛰️', '🌑'];
 
-const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
+const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang, onSaved }) => {
     const [capturedImage, setCapturedImage] = useState<string | null>(null);
     const [decorations, setDecorations] = useState<Decoration[]>([]);
     const [activeId, setActiveId] = useState<number | null>(null);
@@ -186,6 +187,7 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
                 link.download = `kidrise-postcard-${Date.now()}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
+                onSaved?.();
                 
                 setShowSaved(true);
                 setTimeout(() => setShowSaved(false), 2000);

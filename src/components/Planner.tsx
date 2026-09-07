@@ -16,13 +16,15 @@ import iconSunny from '../assets/weather/weather_sunny.png';
 import iconCloudy from '../assets/weather/weather_cloudy.png';
 import iconPartlyCloudy from '../assets/weather/weather_partly_cloudy.png';
 import iconRain from '../assets/weather/weather_rain.png';
+import ObservationJournal from './ObservationJournal';
 
 interface PlannerProps {
     lang: Language;
     onOpenStarMap: () => void;
+    onJournalExported?: () => void;
 }
 
-const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap }) => {
+const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap, onJournalExported }) => {
   const t = translations[lang];
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState<RHRReadData | null>(null);
@@ -33,6 +35,7 @@ const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap }) => {
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([]);
   const [selectedDistrict, setSelectedDistrict] = useState<string>("Hong Kong Observatory"); // Default fallback
   const [stargazingScore, setStargazingScore] = useState(0);
+  const [showJournal, setShowJournal] = useState(false);
 
   // Helper to get Custom Icon
   const getWeatherIcon = (psr: string) => {
@@ -151,6 +154,22 @@ const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap }) => {
 
   return (
     <div className="flex flex-col w-full bg-space-black text-white pt-14 md:pt-28 px-4 pb-12 max-w-5xl mx-auto">
+      {showJournal && (
+        <ObservationJournal
+          lang={lang}
+          onClose={() => setShowJournal(false)}
+          onExported={onJournalExported}
+          conditions={{
+            district: selectedDistrict,
+            temperature: localWeather.temp,
+            humidity: localWeather.humid,
+            score: stargazingScore,
+            moonPhase: status?.factors.moon.phase ?? '—',
+            weatherSummary: conditionAdvice,
+            suggestedTargets: seasonalTargets.map((target) => target.name),
+          }}
+        />
+      )}
       {/* 1. Stargazing Index Dashboard */}
       <div className={`w-full bg-gradient-to-br ${scoreBg} backdrop-blur-md rounded-[3rem] p-8 border border-white/10 shadow-2xl relative overflow-hidden mb-8`}>
           <div className="absolute top-0 right-0 p-12 opacity-10 pointer-events-none">
@@ -215,6 +234,15 @@ const Planner: React.FC<PlannerProps> = ({ lang, onOpenStarMap }) => {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="mb-8 flex flex-col gap-4 rounded-3xl border border-amber-300/20 bg-gradient-to-r from-amber-500/10 to-cyan-500/5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-amber-300">PDF JOURNAL</p>
+          <h2 className="mt-1 text-2xl font-black text-white">{lang === 'zh-HK' ? '記錄今晚觀察' : 'Record tonight’s observations'}</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">{lang === 'zh-HK' ? '自動帶入地區、天氣、月相及觀星指數，再加入你實際看到的內容。' : 'Automatically include your district, weather, Moon phase and stargazing score, then add what you actually saw.'}</p>
+        </div>
+        <button type="button" onClick={() => setShowJournal(true)} className="min-h-12 shrink-0 rounded-xl bg-amber-300 px-5 font-black text-slate-950 shadow-lg hover:bg-amber-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><i className="fas fa-book-open mr-2" />{lang === 'zh-HK' ? '開啟觀星紀錄' : 'Open stargazing log'}</button>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

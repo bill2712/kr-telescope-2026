@@ -5,9 +5,10 @@ import CanvasConfetti from 'canvas-confetti';
 
 interface QuizProps {
     lang: Language;
+    onComplete?: () => void;
 }
 
-const Quiz: React.FC<QuizProps> = ({ lang }) => {
+const Quiz: React.FC<QuizProps> = ({ lang, onComplete }) => {
     const t = translations[lang];
     const [score, setScore] = useState(0);
     const [qIndex, setQIndex] = useState(0);
@@ -41,6 +42,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     ];
 
     useEffect(() => {
+        if (finished) onComplete?.();
         if (finished && (score / questions.length >= 0.6)) {
             CanvasConfetti({
                 particleCount: 150,
@@ -48,7 +50,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                 origin: { y: 0.6 }
             });
         }
-    }, [finished, score]);
+    }, [finished, score, onComplete]);
 
     const handleAnswer = (idx: number) => {
         if (feedback !== null || showExplanation) return;

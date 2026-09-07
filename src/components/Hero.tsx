@@ -32,13 +32,16 @@ const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, achievements, onNavig
     : t.homeExperience.tasks.resume.empty;
   const achievementCopy = lang === 'zh-HK'
     ? {
-        title: '觀星徽章', count: `${achievements.length}/3 已解鎖`, unlocked: '已解鎖', locked: '未解鎖',
-        items: { onboarding: '完成首次導覽', planner: '查看今晚建議', starmap: '開啟實時星圖' },
+        title: '小天文學家任務', count: `${achievements.length}/10 已完成`, unlocked: '已完成', locked: '未完成', next: '下一個任務', complete: '全部任務完成！',
+        items: { onboarding: '完成首次導覽', planner: '查看今晚建議', starmap: '開啟實時星圖', nightVision: '啟用紅光模式', guide: '閱讀使用指南', learn: '探索天文知識', quiz: '完成天文測驗', encyclopedia: '查閱望遠鏡百科', journal: '匯出觀星 PDF 紀錄', postcard: '儲存太空明信片' },
       }
     : {
-        title: 'Stargazing badges', count: `${achievements.length}/3 unlocked`, unlocked: 'Unlocked', locked: 'Locked',
-        items: { onboarding: 'Complete the first tour', planner: 'Check Tonight’s Picks', starmap: 'Open the Live Star Map' },
+        title: 'Junior astronomer missions', count: `${achievements.length}/10 complete`, unlocked: 'Complete', locked: 'Not complete', next: 'Next mission', complete: 'All missions complete!',
+        items: { onboarding: 'Complete the first tour', planner: 'Check Tonight’s Picks', starmap: 'Open the Live Star Map', nightVision: 'Enable red-light mode', guide: 'Read the usage guide', learn: 'Explore astronomy knowledge', quiz: 'Complete the astronomy quiz', encyclopedia: 'Open the telescope encyclopedia', journal: 'Export a stargazing PDF log', postcard: 'Save a space postcard' },
       };
+  const achievementIds = Object.keys(achievementCopy.items) as AchievementId[];
+  const nextAchievement = achievementIds.find((id) => !achievements.includes(id));
+  const progress = Math.round((achievements.length / achievementIds.length) * 100);
   const tasks = [
     {
       id: 'map', icon: 'fa-map', title: t.homeExperience.tasks.map.title, desc: t.homeExperience.tasks.map.desc,
@@ -101,8 +104,12 @@ const Hero: React.FC<HeroProps> = ({ lang, mode, lastPage, achievements, onNavig
               <h2 id="telescope-achievements-title" className="flex items-center gap-2 text-sm font-black text-white"><i className="fas fa-trophy text-amber-300" /> {achievementCopy.title}</h2>
               <span className="text-xs font-bold text-cyan-300">{achievementCopy.count}</span>
             </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              {(Object.keys(achievementCopy.items) as AchievementId[]).map((id) => {
+            <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
+              <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-emerald-400 transition-all" style={{ width: `${progress}%` }} />
+            </div>
+            <p className="mt-2 text-xs text-slate-300"><span className="font-bold text-amber-200">{nextAchievement ? `${achievementCopy.next}:` : ''}</span> {nextAchievement ? achievementCopy.items[nextAchievement] : achievementCopy.complete}</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              {achievementIds.map((id) => {
                 const unlocked = achievements.includes(id);
                 return (
                   <div key={id} className={`flex min-h-11 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-bold ${unlocked ? 'border-emerald-400/25 bg-emerald-500/10 text-emerald-100' : 'border-white/5 bg-white/[0.03] text-slate-500'}`} title={unlocked ? achievementCopy.unlocked : achievementCopy.locked}>
