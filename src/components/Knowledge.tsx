@@ -6,6 +6,7 @@ import SolarSystem from './knowledge/SolarSystem';
 import MoonPhaseLearn from './knowledge/MoonPhaseLearn';
 import StarColors from './knowledge/StarColors';
 import SpaceScale from './knowledge/SpaceScale';
+import ConstellationGame from './knowledge/ConstellationGame';
 
 // New Interactive Modules
 import BlackHoleSim from './knowledge/interactive/BlackHoleSim';
@@ -20,7 +21,7 @@ interface KnowledgeProps {
     lang: Language;
 }
 
-type ModuleType = 'solar' | 'moon' | 'star' | 'blackhole' | 'meteor' | 'comet' | 'galaxy' | 'nebula' | 'eclipse' | 'spacescale' | null;
+type ModuleType = 'solar' | 'moon' | 'star' | 'constellation' | 'blackhole' | 'meteor' | 'comet' | 'galaxy' | 'nebula' | 'eclipse' | 'spacescale' | null;
 
 const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
     const t = translations[lang];
@@ -30,6 +31,7 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
         { id: 'solar', title: t.knowSolar, desc: t.solarDesc, icon: "fa-sun", color: "from-orange-400 to-red-500", size: 'large' },
         { id: 'moon', title: t.knowMoon, desc: t.moonDesc, icon: "fa-moon", color: "from-gray-300 to-slate-400", size: 'small' },
         { id: 'star', title: t.knowStar, desc: t.starDesc, icon: "fa-star", color: "from-blue-400 to-indigo-600", size: 'small' }, 
+        { id: 'constellation', title: t.knowConstellation, desc: t.constellationDesc, icon: "fa-draw-polygon", color: "from-indigo-500 to-violet-700", size: 'small' },
         
         { id: 'blackhole', title: t.knowBlackHole, desc: t.blackHoleDesc, icon: "fa-circle", color: "from-gray-900 to-black", size: 'large' }, 
         { id: 'galaxy', title: t.knowGalaxy, desc: t.galaxyDesc, icon: "fa-atom", color: "from-purple-500 to-pink-600", size: 'small' },
@@ -70,7 +72,8 @@ const Knowledge: React.FC<KnowledgeProps> = ({ lang }) => {
                         {activeModule === 'solar' && <SolarSystem lang={lang} expl={t.expl?.solar} />}
                         {activeModule === 'moon' && <MoonPhaseLearn lang={lang} expl={t.expl?.moonPhase} />}
                         {activeModule === 'star' && <StarColors lang={lang} expl={t.expl?.starColor} />}
-                        {activeModule === 'spacescale' && <SpaceScale lang={lang} expl={t.expl?.spaceScale} onBack={() => setActiveModule(null)} />}
+                        {activeModule === 'spacescale' && <SpaceScale lang={lang} expl={t.expl?.spaceScale} />}
+                        {activeModule === 'constellation' && <ConstellationGame lang={lang} />}
                         
                        {/* Interactive Modules */}
                         {activeModule === 'blackhole' && (

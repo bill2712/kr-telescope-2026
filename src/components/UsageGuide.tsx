@@ -4,12 +4,12 @@ import { translations } from '../utils/i18n';
 // Import step images
 import step1En from '../assets/knowledge/step1-en.png';
 import step1Zh from '../assets/knowledge/step1-zh.png';
-import step1_5En from '../assets/knowledge/step1.5-en.png';
-import step1_5Zh from '../assets/knowledge/step1.5-zh.png';
+import step1_5En from '../assets/knowledge/step1.5-en.webp';
+import step1_5Zh from '../assets/knowledge/step1.5-zh.webp';
 import step2En from '../assets/knowledge/step2-en.png';
 import step2Zh from '../assets/knowledge/step2-zh.png';
-import step3En from '../assets/knowledge/step3-en.png';
-import step3Zh from '../assets/knowledge/step3-zh.png';
+import step3En from '../assets/knowledge/step3-en.webp';
+import step3Zh from '../assets/knowledge/step3-zh.webp';
 import step5En from '../assets/knowledge/step5-en.png';
 import step5Zh from '../assets/knowledge/step5-zh.png';
 

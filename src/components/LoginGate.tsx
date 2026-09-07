@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
 import telescopeHero from '../assets/knowledge/amazing-telescope-transparent.png';
+import { translations } from '../utils/i18n';
 
 interface LoginGateProps {
   lang: Language;
   onToggleLang: () => void;
   onLogin: () => void;
-  // Translation is now loosely typed or we access via i18n directly, 
-  // but preserving prop structure from Microscope for consistency
-  t: any; 
+  t: typeof translations.en;
 }
 
 export const LoginGate: React.FC<LoginGateProps> = ({ t, lang, onToggleLang, onLogin }) => {
@@ -24,8 +23,11 @@ export const LoginGate: React.FC<LoginGateProps> = ({ t, lang, onToggleLang, onL
     const cleanCode = code.trim().toUpperCase();
     
     if (VALID_CODES.includes(cleanCode)) {
-      // Save auth state
-      localStorage.setItem('kr_telescope_auth', 'true');
+      try {
+        localStorage.setItem('kr_telescope_auth', 'true');
+      } catch {
+        // Storage can be unavailable in privacy-restricted browsers; login still works for this session.
+      }
       onLogin();
     } else {
       setError(true);

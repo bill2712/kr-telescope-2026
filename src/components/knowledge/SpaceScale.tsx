@@ -6,7 +6,6 @@ import ExplanationCard from '../ui/ExplanationCard';
 
 interface SpaceScaleProps {
   lang: Language;
-  onBack: () => void;
   expl?: { what: string; why: string; anim: string };
 }
 const GRAVITY_DATA = [
@@ -22,7 +21,7 @@ const GRAVITY_DATA = [
   { id: 'pluto', factor: 0.06, icon: 'fa-snowflake', color: 'bg-blue-200' },
   { id: 'sun', factor: 27.07, icon: 'fa-sun', color: 'bg-yellow-500' }
 ];
-const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, onBack, expl }) => {
+const SpaceScale: React.FC<SpaceScaleProps> = ({ lang, expl }) => {
   const t = translations[lang] as any;
   const [weight, setWeight] = useState<string>('30'); // Default 30kg
 

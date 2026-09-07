@@ -9,7 +9,6 @@ const EclipseSim: React.FC<{lang: Language}> = ({lang}) => {
   // Calculation
   // Sun at center (0)
   // Moon moves from -100 to 100
-  const overlap = Math.max(0, 100 - Math.abs(position)); // rough overlap metric
   const isTotality = Math.abs(position) < 5;
 
   return (

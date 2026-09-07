@@ -1,8 +1,6 @@
-
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Language } from '../../types';
 import { translations } from '../../utils/i18n';
-
 import ExplanationCard from '../ui/ExplanationCard';
 
 interface Props {
@@ -10,196 +8,112 @@ interface Props {
   expl?: { what: string; why: string; anim: string };
 }
 
+const buildLitPath = (phase: number) => {
+  const center = 80;
+  const radius = 70;
+  const steps = 64;
+  const angle = phase * Math.PI * 2;
+  const rightEdge: string[] = [];
+  const leftEdge: string[] = [];
+
+  for (let index = 0; index <= steps; index += 1) {
+    const y = -radius + (index / steps) * radius * 2;
+    const limb = Math.sqrt(Math.max(0, radius * radius - y * y));
+    const left = phase <= 0.5 ? Math.cos(angle) * limb : -limb;
+    const right = phase <= 0.5 ? limb : -Math.cos(angle) * limb;
+    rightEdge.push(`${center + right},${center + y}`);
+    leftEdge.unshift(`${center + left},${center + y}`);
+  }
+
+  return `M ${rightEdge.concat(leftEdge).join(' L ')} Z`;
+};
+
 const MoonPhaseLearn: React.FC<Props> = ({ lang, expl }) => {
   const t = translations[lang];
-  const [day, setDay] = useState(1); 
-
-  // Calculations
-  const phase = (day - 1) / 29.5; // 0 to 1
+  const [day, setDay] = useState(1);
+  const phase = (day - 1) / 29.5;
   const isWaxing = phase < 0.5;
-  const isCrescent = (phase < 0.25) || (phase > 0.75);
-  
-  // Text Info
-  const getPhaseInfo = (d: number) => {
-      if (d <= 1.5 || d >= 29) return { name: t.moonNew, reason: t.moonReasonNew };
-      if (d < 7) return { name: t.moonWaxCres, reason: t.moonReasonWax };
-      if (d < 9) return { name: t.moonFirstQ, reason: t.moonReasonWax };
-      if (d < 14) return { name: t.moonWaxGib, reason: t.moonReasonWax };
-      if (d < 17) return { name: t.moonFull, reason: t.moonReasonFull };
-      if (d < 22) return { name: t.moonWanGib, reason: t.moonReasonWan };
-      if (d < 24) return { name: t.moonLastQ, reason: t.moonReasonWan };
-      return { name: t.moonWanCres, reason: t.moonReasonWan };
+  const illumination = Math.round((1 - Math.cos(phase * Math.PI * 2)) * 50);
+  const litPath = useMemo(() => buildLitPath(phase), [phase]);
+
+  const getPhaseInfo = (value: number) => {
+    if (value <= 1.5 || value >= 29) return { name: t.moonNew, reason: t.moonReasonNew };
+    if (value < 7) return { name: t.moonWaxCres, reason: t.moonReasonWax };
+    if (value < 9) return { name: t.moonFirstQ, reason: t.moonReasonWax };
+    if (value < 14) return { name: t.moonWaxGib, reason: t.moonReasonWax };
+    if (value < 17) return { name: t.moonFull, reason: t.moonReasonFull };
+    if (value < 22) return { name: t.moonWanGib, reason: t.moonReasonWan };
+    if (value < 24) return { name: t.moonLastQ, reason: t.moonReasonWan };
+    return { name: t.moonWanCres, reason: t.moonReasonWan };
   };
+
   const info = getPhaseInfo(day);
-
-  // CSS Trick for Moon Phases
-  // Source: https://codepen.io/fraziern/pen/RMyWBy logic adapted
-  // We use a base sphere. 
-  // A shadow hemisphere rotates.
-  // Actually, easiest is: 
-  // 1. Base color (Shadow)
-  // 2. Light Hemisphere (rotates)?
-  // Let's use a simpler "Shadow Mask" approach.
-  
-  // Calculate dynamic shadow offset
-  // Shadow covers from right to left (Waxing) -> No wait.
-  // New Moon (0): Dark
-  // Waxing: Light appears on Right. 
-  // Full (0.5): All Light.
-  // Waning: Shadow appears on Right.
-
-  // We can simulate this with two halves and z-index flips.
-  
-  // Simplified for Kid App:
-  // JUST USE CSS FILTER/Gradient? No.
-  // Let's use a sprite-like logic or simply:
-  // Use a mask div that changes width/position?
-  // Let's use the `box-shadow` inset trick if circular?
-  // No, 3D sphere rotation is best.
-  
-  // Let's try 3 overlays.
-  // Base: Dark.
-  // Half: Light (Right side if waxing, Left side if waning).
-  // Ellipse: Covers the middle to create crescent/gibbous.
-
-  const getMoonStyle = () => {
-    // 0..100% illumination roughly
-    const illum = Math.abs((phase - 0.5) * 2); // 1->0->1 (New->Full->New) inverted?
-    // 0 (New) -> 0.5 (Full) -> 1 (New)
-    // 1 at New, 0 at Full.
-    
-    // This is hard to code perfect CSS in one shot without preview.
-    // I will use a simpler approximation: 
-    // Slide a "Shadow" div across.
-    const pos = (day / 30) * 100; // 0 to 100%
-    return {
-        background: `radial-gradient(circle at ${pos}% 50%, rgb(240,240,240) ${day > 15 ? '30%' : '10%'}, transparent 60%)`, // Fake light
-        backgroundColor: '#111'
-    };
-  };
+  const direction = isWaxing
+    ? (lang === 'zh-HK' ? '漸盈' : 'waxing')
+    : (lang === 'zh-HK' ? '漸虧' : 'waning');
 
   return (
-    <div className="flex flex-col h-full bg-black/60 rounded-3xl p-4 relative overflow-y-auto custom-scrollbar">
-       <h3 className="text-xl font-bold text-center mb-2 text-white">{t.knowMoon}</h3>
-       
-       {expl && (
-         <div className="mb-4">
-            <ExplanationCard 
-                what={expl.what} 
-                why={expl.why} 
-                anim={expl.anim} 
-            />
-         </div>
-       )}
-       
-       <div className="flex-1 flex flex-col items-center justify-center">
-            
-            {/* Visual */}
-            <div className="relative w-48 h-48 bg-[#0b0d17] rounded-full border border-white/10 shadow-[0_0_50px_rgba(255,255,255,0.05)] mb-8 flex items-center justify-center">
-                
-                {/* Moon Container */}
-                <div className="w-40 h-40 rounded-full bg-black relative overflow-hidden shadow-inner ring-1 ring-white/10">
-                    
-                    {/* Texture/Crater Image (Optional) */}
-                    <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+    <div className="relative flex h-full flex-col overflow-y-auto rounded-3xl bg-black/60 p-4 custom-scrollbar">
+      <h3 className="mb-2 text-center text-xl font-bold text-white">{t.knowMoon}</h3>
 
-                    {/* Phase Masking - The "Hemisphere" approach */}
-                    {/* Layer 1: The Dark Side (Background is Black) */}
-                    
-                    {/* Layer 2: The Lit Side */}
-                    {/* We rotate a hemi-sphere? */}
-                    {/* Let's try the simplest: A white circle that is masked by a black ellipse? */}
-                    
-                    {/* REACT COMPONENT FOR PHASE */}
-                    {/* Logic: 
-                        If Waxing (0-0.5): Right side is Lit. 
-                           Crescent: Right side lit but obscured by inner dark ellipse.
-                           Gibbous: Right side lit + Left side partially lit by ellipse.
-                    */}
-                    
-                    <div className={`absolute inset-0 rounded-full border-[1px] border-white/5`} 
-                         style={{
-                             backgroundColor: '#1a1a1a' // Dark Moon base
-                         }}>
-                    </div>
+      {expl && (
+        <div className="mb-4">
+          <ExplanationCard what={expl.what} why={expl.why} anim={expl.anim} />
+        </div>
+      )}
 
-                    {/* Implementation of CSS Sphere Phase */}
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                        {/* Right Hemisphere */}
-                        <div className={`absolute top-0 right-0 w-1/2 h-full bg-[#e0e0e0] transition-colors duration-300 ${phase > 0.5 ? 'opacity-0' : 'opacity-100'}`}></div>
-                        {/* Left Hemisphere */}
-                        <div className={`absolute top-0 left-0 w-1/2 h-full bg-[#e0e0e0] transition-colors duration-300 ${phase <= 0.5 ? 'opacity-0' : 'opacity-100'}`}></div>
-                        
-                        {/* The "Flip" Ellipse */}
-                        {/* Rotates to cover/reveal */}
-                        <div 
-                           className="absolute top-0 left-0 w-full h-full rounded-full bg-[#1a1a1a] transition-transform duration-0"
-                           style={{
-                               transform: `rotateY(${ (phase * 360) }deg)`,
-                               backgroundColor: isCrescent ? '#1a1a1a' : '#e0e0e0', // Dark for crescent, Light for gibbous
-                               backfaceVisibility: 'hidden', // Hide back
-                               // Actually this 3D transform is the standard way!
-                               // But requires perspective on parent?
-                           }}
-                        >
-                        </div>
-                         {/* We need a specific structure for 3D phase. 
-                             Let's fallback to "Shadow Slide" which is robust enough for kids. 
-                         */}
-                         
-                         {/* RESET INTERIOR */}
-                    </div>
-                     
-                    {/* ROBUST SIMPLE VERSION: OVERLAPPING SHADOW */}
-                    <div className="absolute inset-0 bg-transparent rounded-full shadow-[inset_-10px_-10px_40px_rgba(0,0,0,0.9)] z-20"></div> {/* Surface depth */}
-                    
-                     {/* Dynamic Light */}
-                    <div 
-                      className="absolute inset-0 rounded-full mix-blend-screen"
-                      style={{
-                          background: `radial-gradient(circle at ${(1-phase)*100}% 50%, #fff 20%, transparent 60%)`,
-                          opacity: day === 15 || day === 16 ? 1 : 0.8
-                      }}
-                    ></div>
-                    {/* Dynamic Shadow Cover */}
-                     <div 
-                      className="absolute inset-0 rounded-full bg-black transition-all duration-75"
-                      style={{
-                          clipPath: isWaxing 
-                             ? (isCrescent 
-                                 ? `ellipse(${50 - (phase*200)}% 100% at left)`  // Waxing Crescent: Shadow on Left? No, light on right.
-                                 : `ellipse(0% 0% at center)` ) // Fallback, this math is too trial-and-error without preview.
-                             : `none`
-                      }}
-                    ></div>
-                    
-                    {/* FINAL ATTEMPT: Text-based visual or simple opacity fade for MVP reliability if visual is complex */}
-                    {/* Combining with the gradient approach above (lines 75-79) which effectively moves a 'light source' across the face */}
-                </div>
-            </div>
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <div className="relative mb-8 flex h-48 w-48 items-center justify-center rounded-full border border-white/10 bg-[#0b0d17] shadow-[0_0_50px_rgba(255,255,255,0.05)]">
+          <svg
+            viewBox="0 0 160 160"
+            className="h-40 w-40 rounded-full shadow-inner ring-1 ring-white/10"
+            role="img"
+            aria-label={`${info.name}, ${illumination}% ${direction}`}
+          >
+            <defs>
+              <radialGradient id="moon-surface" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stopColor="#fff" />
+                <stop offset="65%" stopColor="#d4d4d8" />
+                <stop offset="100%" stopColor="#9ca3af" />
+              </radialGradient>
+              <clipPath id="moon-lit-area">
+                <path d={litPath} />
+              </clipPath>
+            </defs>
+            <circle cx="80" cy="80" r="70" fill="#111827" />
+            <g clipPath="url(#moon-lit-area)">
+              <circle cx="80" cy="80" r="70" fill="url(#moon-surface)" />
+              <circle cx="52" cy="48" r="9" fill="#9ca3af" opacity="0.35" />
+              <circle cx="103" cy="65" r="13" fill="#a1a1aa" opacity="0.28" />
+              <circle cx="70" cy="108" r="7" fill="#71717a" opacity="0.25" />
+            </g>
+            <circle cx="80" cy="80" r="69" fill="none" stroke="white" strokeOpacity="0.12" />
+          </svg>
+        </div>
 
-            {/* Info */}
-            <div className="text-center mb-6">
-                <div className="text-kidrise-orange font-bold text-xl mb-1">{t.moonDay} {Math.round(day)}</div>
-                <div className="text-2xl font-bold text-white mb-2">{info.name}</div>
-                <p className="text-sm text-gray-400 max-w-xs h-10">{info.reason}</p>
-            </div>
+        <div className="mb-6 text-center">
+          <div className="mb-1 text-xl font-bold text-kidrise-orange">{t.moonDay} {Math.round(day)}</div>
+          <div className="mb-2 text-2xl font-bold text-white">{info.name}</div>
+          <p className="mx-auto min-h-10 max-w-xs text-sm text-gray-400">{info.reason}</p>
+          <p className="mt-2 text-xs text-slate-500">{illumination}% · {direction}</p>
+        </div>
 
-            {/* Slider */}
-            <div className="w-full max-w-xs px-4">
-                <label className="text-xs text-gray-500 mb-2 block text-center uppercase tracking-widest">{t.moonPhaseTitle}</label>
-                <input 
-                  type="range" 
-                  min="1" 
-                  max="30" 
-                  step="1"
-                  value={day} 
-                  onChange={(e) => setDay(parseFloat(e.target.value))}
-                  className="w-full accent-kidrise-orange h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                />
-            </div>
-
-       </div>
+        <div className="w-full max-w-xs px-4">
+          <label htmlFor="moon-phase-day" className="mb-2 block text-center text-xs uppercase tracking-widest text-gray-500">
+            {t.moonPhaseTitle}
+          </label>
+          <input
+            id="moon-phase-day"
+            type="range"
+            min="1"
+            max="30"
+            step="1"
+            value={day}
+            onChange={(event) => setDay(Number(event.target.value))}
+            className="h-2 w-full cursor-pointer appearance-none bg-gray-700 accent-kidrise-orange"
+          />
+        </div>
+      </div>
     </div>
   );
 };

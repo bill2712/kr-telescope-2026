@@ -1,20 +1,18 @@
 import React, { ReactNode } from 'react';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { Language } from '../../types';
+import { ExperienceMode, Language, Page } from '../../types';
 
 interface LayoutProps {
   children: ReactNode;
   lang: Language;
-  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
-  // TopBar Props - Deprecated for Header but passed for logic if needed (Time/Location moved to overlay)
-  locationName?: string;
-  currentDate: Date;
-  isLiveTime: boolean;
-  onSetLiveTime: () => void;
-  onShiftTime: (hours: number) => void;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
   onToggleLang: () => void;
+  mode: ExperienceMode;
+  onToggleMode: () => void;
+  nightVision: boolean;
+  onToggleNightVision: () => void;
 }
 
 const Layout: React.FC<LayoutProps> = ({
@@ -23,12 +21,10 @@ const Layout: React.FC<LayoutProps> = ({
   currentPage,
   onNavigate,
   onToggleLang,
-  // Unused props in Layout now, but kept for interface compatibility
-  locationName,
-  currentDate,
-  isLiveTime,
-  onSetLiveTime,
-  onShiftTime,
+  mode,
+  onToggleMode,
+  nightVision,
+  onToggleNightVision,
 }) => {
   // Scroll to top when page changes
   React.useEffect(() => {
@@ -39,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col relative bg-dark text-white font-sans selection:bg-secondary/30 selection:text-secondary">
       {/* Subtle grid background overlay */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay z-0"></div>
+      <div className="noise-overlay absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay z-0"></div>
 
       {/* Header */}
       <Header 
@@ -47,6 +43,10 @@ const Layout: React.FC<LayoutProps> = ({
         onToggleLang={onToggleLang} 
         currentPage={currentPage} 
         onNavigate={onNavigate} 
+        mode={mode}
+        onToggleMode={onToggleMode}
+        nightVision={nightVision}
+        onToggleNightVision={onToggleNightVision}
       />
 
       {/* Main Content Area */}
@@ -58,7 +58,7 @@ const Layout: React.FC<LayoutProps> = ({
             </div>
             
             {/* Footer - Only show if not on Starmap */}
-            {currentPage !== 'starmap' && <Footer lang={lang} />}
+            {currentPage !== 'starmap' && currentPage !== 'hero' && <Footer lang={lang} />}
         </div>
       </main>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Language } from '../types';
 import { translations } from '../utils/i18n';
 import { MapStyle } from './StarMap';
@@ -13,6 +13,7 @@ interface StarMapControlsProps {
     onToggleAnimation: () => void;
     animationSpeed: number;
     onSetSpeed: (speed: number) => void;
+    onUseRealTime: () => void;
     onZoomIn: () => void;
     onZoomOut: () => void;
     onResetZoom: () => void;
@@ -26,6 +27,10 @@ interface StarMapControlsProps {
     onToggleGuide: () => void;
     // Legend
     onToggleLegend: () => void;
+    onToggleTutorial: () => void;
+    onCameraClick: () => void;
+    enableGyro: boolean;
+    onToggleGyro: () => void;
 }
 
 const StarMapControls: React.FC<StarMapControlsProps> = ({
@@ -36,6 +41,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     onToggleAnimation,
     animationSpeed,
     onSetSpeed,
+    onUseRealTime,
     onZoomIn,
     onZoomOut,
     onResetZoom,
@@ -43,7 +49,11 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
     mapStyle,
     onMapStyleChange,
     onToggleGuide,
-    onToggleLegend
+    onToggleLegend,
+    onToggleTutorial,
+    onCameraClick,
+    enableGyro,
+    onToggleGyro
 }) => {
     const t = translations[lang];
     const [tempDate, setTempDate] = useState({
@@ -56,12 +66,22 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
 
     const [showCompass, setShowCompass] = useState(false);
 
+    useEffect(() => {
+        if (activePanel === 'time') return;
+        setTempDate({
+            month: currentDate.getMonth() + 1,
+            day: currentDate.getDate(),
+            time: currentDate.toTimeString().slice(0, 5),
+        });
+    }, [activePanel, currentDate]);
+
     // --- TIME LOGIC ---
     const handleGo = () => {
-        const now = new Date();
-        const year = now.getFullYear(); 
+        const year = currentDate.getFullYear();
         const [hours, minutes] = tempDate.time.split(':').map(Number);
-        const newDate = new Date(year, tempDate.month - 1, tempDate.day, hours, minutes);
+        const daysInMonth = new Date(year, tempDate.month, 0).getDate();
+        const day = Math.min(tempDate.day, daysInMonth);
+        const newDate = new Date(year, tempDate.month - 1, day, hours, minutes);
         onDateChange(newDate);
         setActivePanel('none');
     };
@@ -81,7 +101,7 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
             day: now.getDate(),
             time: now.toTimeString().slice(0, 5)
         });
-        onDateChange(now);
+        onUseRealTime();
         setActivePanel('none');
     };
 
@@ -166,6 +186,34 @@ const StarMapControls: React.FC<StarMapControlsProps> = ({
                         title={lang === 'zh-HK' ? '按鈕說明' : 'Button Legend'}
                     >
                         <i className="fas fa-info-circle text-lg"></i>
+                    </button>
+                    <button
+                        onClick={onToggleTutorial}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-cyan-300 flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '互動教學' : 'Interactive tutorial'}
+                    >
+                        <i className="fas fa-graduation-cap text-lg"></i>
+                    </button>
+                </div>
+
+                {/* Capture & motion tools */}
+                <div className="glass-panel rounded-2xl p-1.5 md:p-2 flex flex-col items-center gap-2 w-12 md:w-14 shadow-xl">
+                    <button
+                        onClick={onCameraClick}
+                        className="w-8 h-8 md:w-10 md:h-10 rounded-xl hover:bg-white/10 text-pink-300 flex items-center justify-center transition-colors"
+                        title={lang === 'zh-HK' ? '製作太空明信片' : 'Create a space postcard'}
+                    >
+                        <i className="fas fa-camera text-lg"></i>
+                    </button>
+                    <button
+                        onClick={onToggleGyro}
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-xl flex items-center justify-center transition-all ${
+                            enableGyro ? 'bg-red-500 text-white animate-pulse' : 'text-slate-300 hover:bg-white/10 hover:text-white'
+                        }`}
+                        title={lang === 'zh-HK' ? '裝置方向控制' : 'Device orientation control'}
+                        aria-pressed={enableGyro}
+                    >
+                        <i className="fas fa-mobile-alt text-lg"></i>
                     </button>
                 </div>
 

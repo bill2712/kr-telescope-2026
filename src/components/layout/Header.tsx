@@ -1,19 +1,22 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { Language } from '../../types';
+import { ExperienceMode, Language, Page } from '../../types';
 import { translations } from '../../utils/i18n';
-import { translations as t } from '../../utils/i18n'; // Double import compat
 
 // Update Page type to include hero
 interface HeaderProps {
   lang: Language;
   onToggleLang: () => void;
   // Navigation
-  currentPage: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia';
-  onNavigate: (page: 'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia') => void;
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
+  mode: ExperienceMode;
+  onToggleMode: () => void;
+  nightVision: boolean;
+  onToggleNightVision: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate }) => {
+export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage, onNavigate, mode, onToggleMode, nightVision, onToggleNightVision }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const text = translations[lang];
 
@@ -26,8 +29,11 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
     { id: 'guide', label: text.menuGuide },
     { id: 'encyclopedia', label: text.menuEncyclopedia },
   ];
+  const visibleNavItems = mode === 'beginner'
+    ? navItems.filter((item) => ['starmap', 'planner', 'guide'].includes(item.id))
+    : navItems;
 
-  const handleNavigate = (id: any) => {
+  const handleNavigate = (id: Page) => {
     onNavigate(id);
     setIsMenuOpen(false);
   };
@@ -37,19 +43,21 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
       <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 md:h-16 flex items-center justify-between">
         
         {/* Logo */}
-        <div 
-          className="flex items-center gap-2 cursor-pointer group z-50 relative" 
+        <button
+          type="button"
+          aria-label={text.homeTitle}
+          className="flex items-center gap-2 cursor-pointer group z-50 relative text-left"
           onClick={() => handleNavigate('hero')}
         >
           <img src={`${import.meta.env.BASE_URL}images/kidrise-logo_new.png`} alt="Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain group-hover:rotate-12 transition-transform" />
           <span className="font-bold text-lg md:text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 group-hover:to-white transition-colors">
             {text.homeTitle}
           </span>
-        </div>
+        </button>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-1 bg-black/20 backdrop-blur-sm p-1 rounded-full border border-white/5">
-          {navItems.map((item) => (
+          {visibleNavItems.map((item) => (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
@@ -66,8 +74,23 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 z-50 relative">
+            <button
+              type="button"
+              onClick={onToggleNightVision}
+              aria-pressed={nightVision}
+              aria-label={lang === 'zh-HK' ? (nightVision ? '關閉紅光模式' : '開啟紅光模式') : (nightVision ? 'Turn off red-light mode' : 'Turn on red-light mode')}
+              title={lang === 'zh-HK' ? '紅光夜視模式' : 'Red-light night mode'}
+              className={`hidden h-10 w-10 place-items-center rounded-xl border transition-colors xl:grid ${nightVision ? 'border-red-400 bg-red-500/25 text-red-100' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10'}`}
+            >
+              <i className="fas fa-eye" aria-hidden="true" />
+            </button>
+            <button type="button" onClick={onToggleMode} className="hidden min-h-10 items-center rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-slate-200 hover:bg-white/10 lg:inline-flex">
+              {mode === 'beginner' ? text.homeExperience.beginner : text.homeExperience.advanced}
+            </button>
             {/* Language Toggle */}
             <button 
+            type="button"
+            aria-label={lang === 'zh-HK' ? 'Switch to English' : '切換至繁體中文'}
             onClick={onToggleLang}
             className="flex items-center gap-2 px-3 py-1.5 md:py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-colors active:scale-95"
             >
@@ -77,6 +100,9 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
 
             {/* Mobile Menu Button */}
             <button 
+                type="button"
+                aria-label={isMenuOpen ? (lang === 'zh-HK' ? '關閉選單' : 'Close menu') : (lang === 'zh-HK' ? '開啟選單' : 'Open menu')}
+                aria-expanded={isMenuOpen}
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="md:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 active:bg-white/10 w-9 h-9 flex items-center justify-center"
             >
@@ -89,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
       {isMenuOpen && createPortal(
         <div className="fixed inset-0 top-[56px] z-[9999] bg-dark opacity-100 border-t border-white/10 flex flex-col p-4 md:hidden">
             <nav className="flex flex-col gap-2">
-                {navItems.map((item) => (
+                {visibleNavItems.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => handleNavigate(item.id)}
@@ -104,9 +130,16 @@ export const Header: React.FC<HeaderProps> = ({ lang, onToggleLang, currentPage,
                     </button>
                 ))}
             </nav>
+            <button type="button" onClick={onToggleMode} className="mt-3 min-h-12 rounded-xl border border-cyan-400/30 bg-cyan-500/10 px-4 text-left font-bold text-cyan-200">
+              {mode === 'beginner' ? `${text.homeExperience.beginner} → ${text.homeExperience.advanced}` : `${text.homeExperience.advanced} → ${text.homeExperience.beginner}`}
+            </button>
+            <button type="button" onClick={onToggleNightVision} aria-pressed={nightVision} className={`mt-2 min-h-12 rounded-xl border px-4 text-left font-bold ${nightVision ? 'border-red-400/50 bg-red-500/20 text-red-100' : 'border-white/10 bg-white/5 text-slate-200'}`}>
+              <i className="fas fa-eye mr-2" aria-hidden="true" />
+              {lang === 'zh-HK' ? `紅光夜視模式：${nightVision ? '開' : '關'}` : `Red-light mode: ${nightVision ? 'On' : 'Off'}`}
+            </button>
             
             <div className="mt-auto pt-6 pb-8 text-center text-slate-500 text-sm">
-                KidRise Microscope Explorer
+                KidRise Telescope Explorer
             </div>
         </div>,
         document.body

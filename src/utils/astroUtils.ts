@@ -45,7 +45,6 @@ export function raToDegrees(raHours: number): number {
 export function getSunPosition(date: Date): { ra: number, dec: number } {
     const d = (date.getTime() / 86400000.0) - (date.getTimezoneOffset() / 1440.0) - 2451545.0; // Days since J2000
     const w = 282.9404 + 4.70935E-5 * d; // Longitude of perihelion
-    const a = 1.000000; // Mean distance, a.u.
     const e = 0.016709 - 1.151E-9 * d; // Eccentricity
     const M = (356.0470 + 0.9856002585 * d) % 360; // Mean anomaly
     
@@ -53,7 +52,6 @@ export function getSunPosition(date: Date): { ra: number, dec: number } {
     const obliq = 23.4393 - 3.563E-7 * d;
 
     // Eccentric anomaly
-    const L = w + M; // Mean longitude
     const E = M + (180/Math.PI) * e * Math.sin(M * (Math.PI/180)) * (1 + e * Math.cos(M * (Math.PI/180)));
 
     // Rectangular coordinates in the plane of the ecliptic
@@ -194,13 +192,8 @@ function getPlanetPosition(date: Date, N: number, i: number, w: number, a: numbe
 
     // We need Geocentric coordinates.
     // Earth Coordinates
-    const sunPos = getSunPosition(date); // This returns equatorial RA/Dec. We need Earth's heliocentric coords.
     // Simplifying: Use approximation:
     // Earth Heliocentric:
-    const d_e = d;
-    // Earth orbital elements
-    const M_e = (357.529 + 0.98560028 * d_e) % 360;
-    const L_e = (280.4665 + 0.98564736 * d_e) % 360; // Mean longitude
     // ... this is getting complicated to mix with existing getSunPosition.
     // Better: Retrieve Sun's geocentric rectangular coords (which are -Earth's heliocentric).
     // From existing getSunPosition logic, we had r, lon.

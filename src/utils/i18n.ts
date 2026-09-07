@@ -1,10 +1,21 @@
-import { Language } from '../types';
-
 export const translations = {
   'zh-HK': {
     appTitle: 'Kidrise 星空探索者',
     homeTitle: 'Kidrise 望遠鏡探秘',
     homeSlogan: '開啟你的科學探索之旅！',
+    homeExperience: {
+      prompt: '今日想做甚麼？揀一個任務，我哋會帶你完成。',
+      beginner: '初階模式',
+      advanced: '進階模式',
+      beginnerDesc: '保留星圖、今晚建議及使用教學，適合第一次使用。',
+      advancedDesc: '顯示完整天文知識、測驗及進階工具。',
+      replayGuide: '重播首次教學',
+      tasks: {
+        map: { title: '開啟實時星圖', desc: '查看此刻香港夜空及星座方向。', action: '打開星圖' },
+        tonight: { title: '今晚睇咩', desc: '按天氣、月相及季節揀容易觀察嘅目標。', action: '查看建議' },
+        resume: { title: '繼續上次探索', desc: '返回你最近使用的「{page}」。', empty: '完成第一個任務後，可以由這裡快速返回。', action: '繼續' },
+      },
+    },
     subtitle: '小小天文學家的實時星圖',
     visitShop: '參觀商店',
     locationTitle: '觀測地點',
@@ -736,6 +747,19 @@ export const translations = {
     appTitle: 'Kidrise Sky Explorer',
     homeTitle: 'Kidrise Telescope Explorer',
     homeSlogan: 'Start your scientific journey!',
+    homeExperience: {
+      prompt: 'What would you like to do tonight? Pick a mission and we will guide you.',
+      beginner: 'Beginner',
+      advanced: 'Advanced',
+      beginnerDesc: 'Keeps the star map, tonight’s picks and guide for first-time users.',
+      advancedDesc: 'Shows the complete knowledge, quiz and advanced toolkit.',
+      replayGuide: 'Replay first-time guide',
+      tasks: {
+        map: { title: 'Open the Live Star Map', desc: 'See the sky and constellation directions for Hong Kong now.', action: 'Open map' },
+        tonight: { title: 'Tonight’s Picks', desc: 'Choose simple targets using weather, Moon phase and season.', action: 'See recommendations' },
+        resume: { title: 'Continue Exploring', desc: 'Return to your most recent page: {page}.', empty: 'Complete one mission and you can quickly return here.', action: 'Continue' },
+      },
+    },
     subtitle: 'Real-time Star Chart for Young Astronomers',
     visitShop: 'Visit Shop',
     locationTitle: 'Location',

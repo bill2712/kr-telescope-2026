@@ -5,9 +5,10 @@ import CanvasConfetti from 'canvas-confetti';
 
 interface QuizProps {
     lang: Language;
+    onComplete?: () => void;
 }
 
-const Quiz: React.FC<QuizProps> = ({ lang }) => {
+const Quiz: React.FC<QuizProps> = ({ lang, onComplete }) => {
     const t = translations[lang];
     const [score, setScore] = useState(0);
     const [qIndex, setQIndex] = useState(0);
@@ -41,6 +42,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
     ];
 
     useEffect(() => {
+        if (finished) onComplete?.();
         if (finished && (score / questions.length >= 0.6)) {
             CanvasConfetti({
                 particleCount: 150,
@@ -48,7 +50,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                 origin: { y: 0.6 }
             });
         }
-    }, [finished, score]);
+    }, [finished, score, onComplete]);
 
     const handleAnswer = (idx: number) => {
         if (feedback !== null || showExplanation) return;
@@ -203,7 +205,7 @@ const Quiz: React.FC<QuizProps> = ({ lang }) => {
                 {/* --- Hidden Certificate (Only visible in Print) --- */}
                 <div className="certificate-container hidden print:flex fixed inset-0 z-[9999] bg-white text-black flex-col items-center justify-center w-[297mm] h-[210mm] overflow-hidden">
                      {/* Certificate Border */}
-                     <div className="w-[280mm] h-[190mm] border-[8px] border-double border-slate-800 relative p-12 flex flex-col items-center bg-[url('https://www.transparenttextures.com/patterns/cream-paper.png')]">
+                     <div className="w-[280mm] h-[190mm] border-[8px] border-double border-slate-800 relative p-12 flex flex-col items-center certificate-paper">
                          
                          {/* Corner Ornaments */}
                          <div className="absolute top-4 left-4 w-16 h-16 border-t-4 border-l-4 border-amber-600"></div>
