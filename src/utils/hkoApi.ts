@@ -98,7 +98,6 @@ import { translations } from './i18n';
 
 export const deriveStargazingStatus = (
     current: RHRReadData | null, 
-    forecast: FNDData | null,
     lang: Language
 ): StargazingStatus => {
     const t = translations[lang];
@@ -118,27 +117,30 @@ export const deriveStargazingStatus = (
     let score = 70; // Start base
     let distinctReason = "";
 
-    // 1. Weather Icon Analysis
-    const icon = current.icon?.[0] || 0;
+    // HKO can return multiple icons (for example, a sky condition plus wind or humidity).
+    const icons = current.icon ?? [];
+    const hasAnyIcon = (candidates: number[]) => candidates.some((icon) => icons.includes(icon));
     
     let weatherStatus = 'Neutral';
     let weatherLabel = t.statusStable;
     
-    if ([50, 51, 52, 77].includes(icon)) {
-        score += 20;
-        weatherStatus = 'Good';
-        weatherLabel = t.statusClear;
-    } else if ([60, 61].includes(icon)) {
-        score -= 20;
-        weatherStatus = 'Fair';
-        weatherLabel = t.statusCloudy;
-        distinctReason = t.reasonCloud;
-    } else if (icon >= 62 || icon >= 80) {
+    if (hasAnyIcon([53, 54, 62, 63, 64, 65])) {
         score -= 50;
         weatherStatus = 'Poor';
         weatherLabel = t.statusRain;
         distinctReason = t.reasonRain;
+    } else if (hasAnyIcon([60, 61, 76, 83, 84, 85])) {
+        score -= 25;
+        weatherStatus = 'Fair';
+        weatherLabel = t.statusCloudy;
+        distinctReason = t.reasonCloud;
+    } else if (hasAnyIcon([50, 51, 52, 70, 71, 72, 73, 74, 75, 77])) {
+        score += 15;
+        weatherStatus = 'Good';
+        weatherLabel = t.statusClear;
     }
+
+    if (hasAnyIcon([80])) score -= 10;
 
     // 2. Moon Phase Analysis
     const moon = getMoonPhase(new Date());
@@ -156,7 +158,7 @@ export const deriveStargazingStatus = (
         "Waning Crescent": t.moonWanCres
     };
     const moonPhaseName = phaseKeyMap[moon.phase] || moon.phase;
-    let moonLabel = `${moonPhaseName} (${moon.illumination}%)`;
+    const moonLabel = `${moonPhaseName} (${moon.illumination}%)`;
 
     if (moon.illumination > 80) {
         score -= 20;
@@ -171,8 +173,8 @@ export const deriveStargazingStatus = (
     }
 
     // 3. Cloud Analysis
-    let cloudStatus = weatherStatus; 
-    let cloudLabel = weatherStatus === 'Good' ? t.conditionGood : (weatherStatus === 'Fair' ? t.conditionFair : t.conditionPoor);
+    const cloudStatus = weatherStatus;
+    const cloudLabel = weatherStatus === 'Good' ? t.conditionGood : (weatherStatus === 'Fair' ? t.conditionFair : t.conditionPoor);
 
 
     // Normalize Score

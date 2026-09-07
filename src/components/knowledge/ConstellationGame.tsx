@@ -5,7 +5,6 @@ import CanvasConfetti from 'canvas-confetti';
 
 interface ConstellationGameProps {
   lang: Language;
-  onBack: () => void;
 }
 
 interface StarPoint {
@@ -104,7 +103,7 @@ const LEVELS: Level[] = [
   }
 ];
 
-const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang, onBack }) => {
+const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang }) => {
   const t = translations[lang] as any; // Cast to access dynamic keys
   const [levelIndex, setLevelIndex] = useState(0);
   const [userLines, setUserLines] = useState<Connection[]>([]);
@@ -145,36 +144,31 @@ const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang, onBack }) =
     }
   }, [userLines, currentLevel, completed]);
 
-  const getStarCoordinates = (star: StarPoint) => {
-    if (!containerRef.current) return { x: 0, y: 0 };
-    const { width, height } = containerRef.current.getBoundingClientRect();
-    return {
-      x: (star.x / 100) * width,
-      y: (star.y / 100) * height,
-    };
-  };
-
-  const handleTouchStart = (star: StarPoint) => {
+  const handlePointerStart = (event: React.PointerEvent, star: StarPoint) => {
     if (completed) return;
+    event.preventDefault();
+    containerRef.current?.setPointerCapture(event.pointerId);
     setCurrentDragStart(star);
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePos({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+    }
   };
 
-  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!currentDragStart || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
     
     setMousePos({
-      x: clientX - rect.left,
-      y: clientY - rect.top
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
     });
   };
 
-  const handleTouchEnd = (star: StarPoint) => {
+  const completeConnection = (star: StarPoint | undefined) => {
     if (!currentDragStart || completed) return;
     
-    if (star.id !== currentDragStart.id) {
+    if (star && star.id !== currentDragStart.id) {
        // Validate Connection
        const isValid = currentLevel.solution.some(sol => 
          (sol.start === currentDragStart.id && sol.end === star.id) ||
@@ -194,44 +188,23 @@ const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang, onBack }) =
     setCurrentDragStart(null);
   };
 
-  // Helper to render lines
-  const renderLines = () => {
-    if (!containerRef.current) return null;
-    
-    return (
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-        {userLines.map((line, i) => {
-            const startStar = currentLevel.stars.find(s => s.id === line.start);
-            const endStar = currentLevel.stars.find(s => s.id === line.end);
-            if (!startStar || !endStar) return null;
-            
-            // Percentage based line drawing to avoid resizing issues
-            return (
-                <line 
-                   key={i}
-                    x1={`${startStar.x}%`} y1={`${startStar.y}%`}
-                    x2={`${endStar.x}%`} y2={`${endStar.y}%`}
-                    stroke={completed && (currentLevel.id === 'orion' ? "cyan" : currentLevel.id === 'cassiopeia' ? "magenta" : "gold") || "#4ade80"}
-                    strokeWidth="4"
-                    strokeLinecap="round"
-                    className="animate-fade-in"
-                />
-            );
-        })}
-        
-        {/* Drag Line */}
-        {currentDragStart && (
-           <line 
-              x1={`${currentDragStart.x}%`} y1={`${currentDragStart.y}%`}
-              x2={mousePos.x} y2={mousePos.y} // Need to convert px to % OR verify SVG coord system
-              // SVG here is 100% size, so we can mix units if carefully done? 
-              // Actually better to map mousePos back to % or use absolute px for SVG
-              // Let's rely on standard SVG scaling.
-           />
-        )}
-      </svg>
-    );
-  }
+  const handlePointerEnd = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (!currentDragStart || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const releaseX = event.clientX - rect.left;
+    const releaseY = event.clientY - rect.top;
+    const hitRadius = Math.max(28, Math.min(rect.width, rect.height) * 0.055);
+    const target = currentLevel.stars.find((star) => {
+      const starX = (star.x / 100) * rect.width;
+      const starY = (star.y / 100) * rect.height;
+      return Math.hypot(releaseX - starX, releaseY - starY) <= hitRadius;
+    });
+
+    completeConnection(target);
+    if (containerRef.current.hasPointerCapture(event.pointerId)) {
+      containerRef.current.releasePointerCapture(event.pointerId);
+    }
+  };
 
   // Handle Mouse Drag Line logic separately because mixing % and px in SVG is tricky
   // Let's just create a separate FULL SCREEN SVG overlay for the drag line that uses pixels? 
@@ -248,25 +221,18 @@ const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang, onBack }) =
   const dragPct = getMousePct();
 
   return (
-    <div className="flex flex-col h-full bg-[#0B0D17] text-white">
-      {/* Header */}
-      <div className="flex justify-between items-center p-4">
-         <button onClick={onBack} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
-            <i className="fas fa-arrow-left"></i>
-         </button>
+    <div className="flex min-h-[520px] h-[70vh] max-h-[700px] flex-col bg-[#0B0D17] text-white">
+      <div className="flex justify-center items-center p-4">
          <h2 className="text-xl font-bold">{t[currentLevel.nameKey] || currentLevel.id}</h2>
-         <div className="w-10"></div>
       </div>
 
       {/* Game Area */}
       <div 
          ref={containerRef}
-         className="flex-1 relative m-4 bg-[#161825] rounded-3xl overflow-hidden border border-white/10 shadow-inner touch-none select-none"
-         onMouseMove={handleTouchMove}
-         onTouchMove={handleTouchMove}
-         onMouseUp={() => setCurrentDragStart(null)}
-         onTouchEnd={() => setCurrentDragStart(null)}
-         onMouseLeave={() => setCurrentDragStart(null)}
+         className="relative m-4 min-h-[360px] flex-1 bg-[#161825] rounded-3xl overflow-hidden border border-white/10 shadow-inner touch-none select-none"
+         onPointerMove={handlePointerMove}
+         onPointerUp={handlePointerEnd}
+         onPointerCancel={() => setCurrentDragStart(null)}
       >
           {/* Instructions Overlay (Top) */}
           <div className="absolute top-4 left-0 right-0 text-center pointer-events-none">
@@ -315,28 +281,20 @@ const ConstellationGame: React.FC<ConstellationGameProps> = ({ lang, onBack }) =
               // Check if this star is connected
               const isConnected = userLines.some(l => l.start === star.id || l.end === star.id);
               return (
-                  <div
+                  <button
+                     type="button"
                      key={star.id}
                      className={`absolute w-8 h-8 -ml-4 -mt-4 rounded-full flex items-center justify-center transition-all z-20 cursor-pointer
                         ${isConnected ? 'bg-white shadow-[0_0_15px_white]' : 'bg-white/30 hover:bg-white/60'}
                         ${currentDragStart?.id === star.id ? 'scale-125 bg-white' : ''}
                      `}
                      style={{ left: `${star.x}%`, top: `${star.y}%` }}
-                     onMouseDown={() => handleTouchStart(star)}
-                     onTouchStart={() => handleTouchStart(star)}
-                     onMouseUp={() => handleTouchEnd(star)}
-                     onTouchEnd={(e) => {
-                         // Touch end doesn't give target easily if finger moved off
-                         // We rely on the global END to reset, but verifying HIT is hard without document.elementFromPoint
-                         // For simplicity, let's assume the user lifts finger ON the target.
-                         // Or better: use simple distance check in global touchEnd?
-                         // React's onTouchEnd on the ELEMENT fires if let go on it.
-                         handleTouchEnd(star);
-                     }}
+                     onPointerDown={(event) => handlePointerStart(event, star)}
+                     aria-label={`${t.conGameLink || 'Connect star'} ${star.id}`}
                   >
                       {/* Star Core */}
                       <div className={`w-3 h-3 bg-white rounded-full ${star.isMain ? 'w-4 h-4' : ''}`}></div>
-                  </div>
+                  </button>
               );
           })}
       </div>

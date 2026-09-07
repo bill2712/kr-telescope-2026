@@ -1,5 +1,3 @@
-import { Language } from '../types';
-
 export const translations = {
   'zh-HK': {
     appTitle: 'Kidrise 星空探索者',

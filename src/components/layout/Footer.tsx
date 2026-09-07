@@ -1,6 +1,5 @@
 import React from 'react';
 import { Language } from '../../types';
-import { translations } from '../../utils/i18n';
 
 interface FooterProps {
   lang: Language;

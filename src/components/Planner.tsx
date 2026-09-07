@@ -42,27 +42,8 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
       return iconSunny;
   };
 
-  const calculateScore = (s: StargazingStatus | null) => {
-      if (!s) return 0;
-      let score = 50; // Base
-      
-      // Cloud factor
-      if (s.factors.cloud.label === 'Clear') score += 40;
-      else if (s.factors.cloud.label === 'Partly Cloudy') score += 20;
-      else if (s.factors.cloud.label === 'Cloudy') score -= 20;
-      
-      // Moon factor
-      if (s.factors.moon.phase.includes('New')) score += 10;
-      else if (s.factors.moon.phase.includes('Full')) score -= 10;
-
-      // Status override
-      if (s.status === 'Good') score = Math.max(score, 80);
-      if (s.status === 'Poor') score = Math.min(score, 40);
-
-      return Math.min(100, Math.max(0, score));
-  };
-
   useEffect(() => {
+    let cancelled = false;
     const loadData = async () => {
         setLoading(true);
         const [curr, fnd] = await Promise.all([
@@ -70,12 +51,13 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
             fetchForecast(lang)
         ]);
         
+        if (cancelled) return;
         setCurrent(curr);
         setForecast(fnd);
         
-        const derived = deriveStargazingStatus(curr, fnd, lang);
+        const derived = deriveStargazingStatus(curr, lang);
         setStatus(derived);
-        setStargazingScore(calculateScore(derived));
+        setStargazingScore(derived.score);
         
         // Extract Districts
         if (curr && curr.temperature && curr.temperature.data.length > 0) {
@@ -89,7 +71,10 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
         
         setLoading(false);
     };
-    loadData();
+    void loadData();
+    return () => {
+        cancelled = true;
+    };
   }, [lang]); 
 
   if (loading) {
@@ -106,7 +91,7 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
       const temp = current.temperature.data.find(d => d.place === district)?.value;
       
       let humid = current.humidity.data.find(d => d.place === district)?.value;
-      if (!humid && current.humidity.data.length > 0) {
+      if (humid === undefined && current.humidity.data.length > 0) {
           humid = current.humidity.data[0].value; // General fallback
       }
       return { temp: temp ?? '--', humid: humid ?? '--' };
@@ -249,4 +234,3 @@ const Planner: React.FC<PlannerProps> = ({ lang }) => {
 };
 
 export default Planner;
-

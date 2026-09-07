@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import html2canvas from 'html2canvas';
 
 interface SpacePostcardProps {
@@ -21,13 +22,13 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
     const [decorations, setDecorations] = useState<Decoration[]>([]);
     const [activeId, setActiveId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [captureError, setCaptureError] = useState(false);
     const [showSaved, setShowSaved] = useState(false);
     
     // For manual text input
     const [isEditingText, setIsEditingText] = useState(false);
     const [textInput, setTextInput] = useState('');
 
-    const containerRef = useRef<HTMLDivElement>(null);
     const editorRef = useRef<HTMLDivElement>(null);
     const dragRef = useRef<{ startX: number, startY: number, initX: number, initY: number } | null>(null);
 
@@ -76,7 +77,10 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
                     setCapturedImage(canvas.toDataURL('image/png'));
                 } catch (error) {
                     console.error("Capture failed:", error);
+                    setCaptureError(true);
                 }
+            } else {
+                setCaptureError(true);
             }
             setIsLoading(false);
         };
@@ -191,8 +195,12 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
         }
     };
 
-    return (
-        <div className="fixed inset-0 z-50 bg-black/90 flex flex-col items-center justify-center p-4 animate-fade-in"
+    return createPortal(
+        <div
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="space-postcard-title"
+             className="fixed inset-0 z-[200] bg-black/90 flex flex-col items-center justify-center p-4 animate-fade-in"
              onPointerUp={handlePointerUp}
              onPointerMove={handlePointerMove}
         >
@@ -216,15 +224,20 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
                 </div>
             )}
 
-            <div className="w-full max-w-4xl flex flex-col h-full md:h-auto items-center">
+             <div className="w-full max-w-4xl flex flex-col h-full md:h-auto items-center">
+                {captureError && !isLoading && (
+                    <div role="alert" className="mb-4 w-full rounded-xl border border-red-400/30 bg-red-500/15 p-3 text-center text-sm text-red-100">
+                        {lang === 'zh-HK' ? '未能擷取星圖，請關閉後重試。' : 'The star map could not be captured. Close this window and try again.'}
+                    </div>
+                )}
                 
                 {/* Header */}
                 <div className="w-full flex justify-between items-center mb-4 px-4 text-white">
-                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <h2 id="space-postcard-title" className="text-2xl font-bold flex items-center gap-2">
                         <i className="fas fa-camera text-kidrise-orange"></i>
                         {t.title}
                     </h2>
-                    <button onClick={onClose} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
+                    <button aria-label={t.close} onClick={onClose} className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20">
                         <i className="fas fa-times text-xl"></i>
                     </button>
                 </div>
@@ -313,8 +326,8 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
 
                         <button 
                             onClick={handleSave}
-                            disabled={isLoading}
-                            className={`px-8 py-3 bg-gradient-to-r from-kidrise-orange to-red-500 rounded-xl text-white font-bold shadow-lg shadow-orange-500/20 active:scale-95 transition-all text-sm md:text-base flex items-center gap-2 whitespace-nowrap ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+                            disabled={isLoading || captureError}
+                            className={`px-8 py-3 bg-gradient-to-r from-kidrise-orange to-red-500 rounded-xl text-white font-bold shadow-lg shadow-orange-500/20 active:scale-95 transition-all text-sm md:text-base flex items-center gap-2 whitespace-nowrap ${isLoading || captureError ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
                         >
                             <i className="fas fa-download"></i>
                             {t.save}
@@ -331,7 +344,8 @@ const SpacePostcard: React.FC<SpacePostcardProps> = ({ onClose, lang }) => {
                     </div>
                 )}
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

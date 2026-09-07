@@ -1,33 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
-import StarMap, { StarMapHandle, MapStyle } from './components/StarMap';
-
-import Tutorial from './components/Tutorial';
-import StarInfoCard from './components/StarInfoCard';
-import Planner from './components/Planner';
-import Knowledge from './components/Knowledge';
-import StarGuide from './components/StarGuide';
-import Quiz from './components/Quiz';
+import { lazy, Suspense, useState, useEffect, useRef } from 'react';
+import type { StarMapHandle, MapStyle } from './components/StarMap';
 import Layout from './components/layout/Layout';
-import MapTools from './components/MapTools';
-import StarMapControls from './components/StarMapControls';
-import UsageGuide from './components/UsageGuide';
-import ButtonLegend from './components/ButtonLegend';
-import UsageGuideWizard from './components/UsageGuideWizard';
-import TelescopeManual from './components/guide/TelescopeManual';
 import Hero from './components/Hero';
-import { Coordinates, Language, Star } from './types';
+import { Language } from './types';
 import { translations } from './utils/i18n';
 import { LoginGate } from './components/LoginGate';
 
-import SpacePostcard from './components/SpacePostcard';
+const StarMap = lazy(() => import('./components/StarMap'));
+const StarMapControls = lazy(() => import('./components/StarMapControls'));
+const Tutorial = lazy(() => import('./components/Tutorial'));
+const Planner = lazy(() => import('./components/Planner'));
+const Knowledge = lazy(() => import('./components/Knowledge'));
+const Quiz = lazy(() => import('./components/Quiz'));
+const UsageGuide = lazy(() => import('./components/UsageGuide'));
+const ButtonLegend = lazy(() => import('./components/ButtonLegend'));
+const UsageGuideWizard = lazy(() => import('./components/UsageGuideWizard'));
+const TelescopeManual = lazy(() => import('./components/guide/TelescopeManual'));
+const SpacePostcard = lazy(() => import('./components/SpacePostcard'));
 
-
-
-// Default to Hong Kong Coordinates
-const DEFAULT_LOCATION: Coordinates = {
-  latitude: 22.3193,
-  longitude: 114.1694
-};
+const LoadingView = () => (
+  <div role="status" className="flex min-h-[320px] items-center justify-center text-secondary">
+    <span className="h-10 w-10 animate-spin rounded-full border-4 border-current border-t-transparent" />
+    <span className="sr-only">Loading</span>
+  </div>
+);
 
 
 
@@ -36,17 +32,23 @@ function App() {
   
   // Auth State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('kr_telescope_auth') === 'true';
+    try {
+      return localStorage.getItem('kr_telescope_auth') === 'true';
+    } catch {
+      return false;
+    }
   });
 
   const t = translations[lang];
 
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.title = t.appTitle;
+  }, [lang, t.appTitle]);
 
 
-  const [location, setLocation] = useState<Coordinates>(DEFAULT_LOCATION);
+
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [viewMode, setViewMode] = useState<'stereo' | 'ortho'>('stereo');
-  const [usingLiveLocation, setUsingLiveLocation] = useState(false);
   const [isLiveTime, setIsLiveTime] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showPostcard, setShowPostcard] = useState(false);
@@ -62,12 +64,15 @@ function App() {
 
   // Navigation State - Default to 'hero'
   const [currentPage, setCurrentPage] = useState<'hero' | 'starmap' | 'planner' | 'learn' | 'quiz' | 'guide' | 'encyclopedia'>('hero');
+  const [hasOpenedStarMap, setHasOpenedStarMap] = useState(false);
+
+  const navigate = (page: typeof currentPage) => {
+    if (page === 'starmap') setHasOpenedStarMap(true);
+    setCurrentPage(page);
+  };
 
   // New States
-  const [showArt, setShowArt] = useState(false);
   const [enableGyro, setEnableGyro] = useState(false);
-  const [selectedStar, setSelectedStar] = useState<Star | null>(null);
-  const [locationName, setLocationName] = useState<string>("");
 
   // Time ticker (Live Time)
   useEffect(() => {
@@ -107,43 +112,6 @@ function App() {
       return () => cancelAnimationFrame(animationFrame);
   }, [isAnimating, animationSpeed]);
 
-  // ... (handleGeolocation, toggleGyro, shiftTime) ...
-  const handleGeolocation = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
-
-    setUsingLiveLocation(true);
-    setLocationName("Locating..."); 
-    
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        setLocation({ latitude, longitude });
-
-        try {
-          const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&accept-language=${lang === 'zh-HK' ? 'zh-HK' : 'en'}`);
-          const data = await response.json();
-          if (data && data.address) {
-             const name = data.address.city || data.address.town || data.address.village || data.address.county || data.display_name.split(',')[0];
-             setLocationName(name);
-          } else {
-             setLocationName(lang === 'zh-HK' ? '未知位置' : 'Unknown Location');
-          }
-        } catch (error) {
-           console.error("Geocoding error:", error);
-           setLocationName(lang === 'zh-HK' ? '未知位置' : 'Unknown Location');
-        }
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-        setUsingLiveLocation(false);
-        setLocationName("");
-      }
-    );
-  };
-
   const toggleGyro = async () => {
     if (enableGyro) {
       setEnableGyro(false);
@@ -167,15 +135,6 @@ function App() {
     }
   };
 
-  const shiftTime = (hours: number) => {
-    setIsLiveTime(false);
-    const newDate = new Date(currentDate);
-    newDate.setHours(newDate.getHours() + hours);
-    setCurrentDate(newDate);
-  };
-
-
-
   if (!isAuthenticated) {
     return (
       <LoginGate 
@@ -191,20 +150,10 @@ function App() {
     <Layout
       lang={lang}
       currentPage={currentPage}
-      onNavigate={(page) => {
-        setCurrentPage(page);
-      }}
-      locationName={locationName}
-      currentDate={currentDate}
-      isLiveTime={isLiveTime}
-      onSetLiveTime={() => {
-        setIsLiveTime(true);
-        setCurrentDate(new Date());
-        setIsAnimating(false);
-      }}
-      onShiftTime={shiftTime}
+      onNavigate={navigate}
       onToggleLang={() => setLang(l => l === 'en' ? 'zh-HK' : 'en')}
     >
+      <Suspense fallback={<LoadingView />}>
       {showTutorial && currentPage === 'starmap' && <Tutorial lang={lang} onClose={() => setShowTutorial(false)} />}
       
       {showUsageGuide && <UsageGuide lang={lang} onClose={() => setShowUsageGuide(false)} />}
@@ -215,7 +164,7 @@ function App() {
         <div className="absolute inset-0 z-[110] bg-dark animate-fade-in">
           <Hero 
             lang={lang} 
-            onStart={() => setCurrentPage('starmap')} 
+            onStart={() => navigate('starmap')}
           />
         </div>
       )}
@@ -225,10 +174,9 @@ function App() {
 
 
       
-      <div className={`absolute inset-0 w-full h-full ${currentPage === 'starmap' ? 'visible' : 'invisible'}`}>
+      {hasOpenedStarMap && <div className={`absolute inset-0 w-full h-full ${currentPage === 'starmap' ? 'visible' : 'invisible'}`}>
           <StarMap
             ref={starMapRef}
-            location={location}
             date={currentDate}
             onDateChange={(d) => {
                 setCurrentDate(d);
@@ -236,12 +184,8 @@ function App() {
                 setIsAnimating(false);
             }}
             lang={lang}
-            // showArt={showArt}
             mapStyle={mapStyle}
             enableGyro={enableGyro}
-            // onStarClick={(star) => setSelectedStar(star)}
-            // targetBody={scavengerActive ? SCAVENGER_LEVELS[scavengerLevel - 1].target : null}
-            // onTargetLock={setScavengerLocked}
           />
 
           {/* Map Tools (Only on Starmap) */}
@@ -259,6 +203,11 @@ function App() {
                     onToggleAnimation={() => setIsAnimating(!isAnimating)}
                     animationSpeed={animationSpeed}
                     onSetSpeed={setAnimationSpeed}
+                    onUseRealTime={() => {
+                        setIsLiveTime(true);
+                        setCurrentDate(new Date());
+                        setIsAnimating(false);
+                    }}
                     onZoomIn={() => starMapRef.current?.zoomIn()}
                     onZoomOut={() => starMapRef.current?.zoomOut()}
                     onResetZoom={() => starMapRef.current?.resetZoom()}
@@ -269,29 +218,25 @@ function App() {
 
                     onToggleGuide={() => setShowUsageGuide(true)}
                     onToggleLegend={() => setShowLegend(true)}
+                    onToggleTutorial={() => setShowTutorial(true)}
+                    onCameraClick={() => setShowPostcard(true)}
+                    enableGyro={enableGyro}
+                    onToggleGyro={toggleGyro}
                 />
             </>
           )}
 
           {/* MapTools Removed - all functionality moved to StarMapControls for new UI Layout */ }
           {/* {currentPage === 'starmap' && ( <MapTools ... /> )} */}
-
-
-           {/* Selected Star Info Popup */}
-           {selectedStar && (
-                <StarInfoCard
-                star={selectedStar}
-                lang={lang}
-                onClose={() => setSelectedStar(null)}
-                />
-            )}
-      </div>
+      </div>}
 
       {currentPage === 'planner' && <Planner lang={lang} />}
       {currentPage === 'learn' && <Knowledge lang={lang} />}
       {currentPage === 'quiz' && <Quiz lang={lang} />}
-      {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => setCurrentPage('hero')} />}
-      {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => setCurrentPage('hero')} />}
+      {currentPage === 'guide' && <UsageGuideWizard lang={lang} onClose={() => navigate('hero')} />}
+      {currentPage === 'encyclopedia' && <TelescopeManual lang={lang} onClose={() => navigate('hero')} />}
+
+      </Suspense>
 
     </Layout>
   );

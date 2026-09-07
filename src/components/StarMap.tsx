@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } from 'react';
 import * as d3 from 'd3';
-import { Coordinates, Language } from '../types';
-import { getLocalSiderealTime } from '../utils/astroUtils';
+import { Language } from '../types';
 
 export type MapStyle = 'western' | 'chinese' | 'urban';
 
@@ -13,28 +12,50 @@ export interface StarMapHandle {
 }
 
 interface StarMapProps {
-  location: Coordinates;
   date: Date; // Drives rotation
   onDateChange: (newDate: Date) => void;
   lang: Language;
   mapStyle?: MapStyle;
   enableGyro?: boolean;
-  isPlanisphere?: boolean; 
 }
+
+const sanitizeSvg = (source: string): string => {
+  const parsed = new DOMParser().parseFromString(source, 'image/svg+xml');
+  if (parsed.querySelector('parsererror') || parsed.documentElement.localName !== 'svg') {
+    throw new Error('Response is not a valid SVG document');
+  }
+
+  parsed.querySelectorAll('script, foreignObject').forEach((node) => node.remove());
+  parsed.querySelectorAll('*').forEach((node) => {
+    for (const attribute of Array.from(node.attributes)) {
+      const value = attribute.value.trim().toLowerCase();
+      if (attribute.name.toLowerCase().startsWith('on') || value.startsWith('javascript:')) {
+        node.removeAttribute(attribute.name);
+      }
+    }
+  });
+
+  return new XMLSerializer().serializeToString(parsed.documentElement);
+};
+
+const fetchSvg = async (url: string, signal: AbortSignal): Promise<string> => {
+  const response = await fetch(url, { signal });
+  if (!response.ok) throw new Error(`Unable to load ${url} (${response.status})`);
+  return sanitizeSvg(await response.text());
+};
 
 const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) => {
   const {
-    location,
     date,
     onDateChange,
     lang,
     mapStyle = 'western',
     enableGyro,
-    isPlanisphere = true
   } = props;
   const [rotation, setRotation] = useState(0);
   const [jacketSvg, setJacketSvg] = useState<string>('');
   const [diskSvg, setDiskSvg] = useState<string>('');
+  const [assetError, setAssetError] = useState(false);
   
   // D3 Transform State (x, y, k)
   const [transform, setTransform] = useState<d3.ZoomTransform>(d3.zoomIdentity);
@@ -100,30 +121,37 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
 
   // 0. Fetch Jacket SVG for inline rendering
   useEffect(() => {
+    const controller = new AbortController();
     const fetchJacket = async () => {
         try {
-            const response = await fetch(`${import.meta.env.BASE_URL}planisphere/STARMAP_jacket_front.svg`);
-            const text = await response.text();
-            setJacketSvg(text);
+            const svg = await fetchSvg(`${import.meta.env.BASE_URL}planisphere/STARMAP_jacket_front.svg`, controller.signal);
+            setJacketSvg(svg);
         } catch (e) {
+            if (controller.signal.aborted) return;
             console.error('Failed to load jacket svg', e);
+            setAssetError(true);
         }
     };
-    fetchJacket();
+    void fetchJacket();
+    return () => controller.abort();
   }, []);
 
   // 0.1 Fetch Disk SVG for inline rendering
   useEffect(() => {
+    const controller = new AbortController();
     const fetchDisk = async () => {
         try {
-            const response = await fetch(diskUrl);
-            const text = await response.text();
-            setDiskSvg(text);
+            setAssetError(false);
+            const svg = await fetchSvg(diskUrl, controller.signal);
+            setDiskSvg(svg);
         } catch (e) {
+            if (controller.signal.aborted) return;
             console.error('Failed to load disk svg', e);
+            setAssetError(true);
         }
     };
-    fetchDisk();
+    void fetchDisk();
+    return () => controller.abort();
   }, [diskUrl]);
   
 
@@ -190,19 +218,19 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     // --- ZOOM BEHAVIOR (Pan & Scale) ---
     const zoom = d3.zoom<HTMLDivElement, unknown>()
         .scaleExtent([0.5, 5])
-        .filter((event) => {
+        .filter((event: MouseEvent | WheelEvent | TouchEvent) => {
              // 1. Always allow Wheel (Desktop Zoom)
              if (event.type === 'wheel') return true;
              
              // 2. Always allow Multi-touch (Pinch Zoom)
-             if (event.touches && event.touches.length > 1) return true;
+             if ('touches' in event && event.touches.length > 1) return true;
 
              // 3. For Single Touch / Mouse Down:
              //    Allow panning everywhere else (Jacket, Background, etc.)
              //    (Disk touches are handled by the separate Drag listener which stops propagation, preventing Zoom here)
              return true; 
         })
-        .on('zoom', (event) => {
+        .on('zoom', (event: d3.D3ZoomEvent<HTMLDivElement, unknown>) => {
             setTransform(event.transform);
         });
 
@@ -228,12 +256,12 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
     const drag = d3.drag<HTMLDivElement, unknown>()
          // No complex filter needed here because we attach ONLY to the disk (and events bubble to it)
          // But we should ensure we ignore multi-touch
-        .filter((event) => {
-             if (event.type === 'mousedown' && event.button !== 0) return false;
-             if (event.touches && event.touches.length > 1) return false;
+        .filter((event: MouseEvent | TouchEvent) => {
+             if (event instanceof MouseEvent && event.button !== 0) return false;
+             if ('touches' in event && event.touches.length > 1) return false;
              return true;
         })
-        .on('start', (event) => {
+        .on('start', (event: d3.D3DragEvent<HTMLDivElement, unknown, unknown>) => {
             // CRITICAL: Stop propagation so Container doesn't start Panning!
             if(event.sourceEvent && event.sourceEvent.stopPropagation) {
                 event.sourceEvent.stopPropagation();
@@ -249,7 +277,7 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
             startAngle = Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
             dragStartDate = latestProps.current.date; 
         })
-        .on('drag', (event) => {
+        .on('drag', (event: d3.D3DragEvent<HTMLDivElement, unknown, unknown>) => {
             // Stop propagation during drag too
             if(event.sourceEvent && event.sourceEvent.stopPropagation) {
                 event.sourceEvent.stopPropagation();
@@ -297,9 +325,15 @@ const StarMap = forwardRef((props: StarMapProps, ref: React.Ref<StarMapHandle>) 
 
   return (
     <div 
+        id="starmap-container"
         className="w-full h-full relative overflow-hidden bg-black select-none touch-none"
         ref={containerRef}
     >
+        {assetError && (
+          <div role="alert" className="absolute inset-0 z-50 flex items-center justify-center bg-slate-950 p-6 text-center text-red-200">
+            {lang === 'zh-HK' ? '星圖載入失敗，請重新整理再試。' : 'The star map could not be loaded. Please refresh and try again.'}
+          </div>
+        )}
         {/* Container for D3 Zoom + Gyro Rotation */}
         <div 
             className="absolute inset-0 flex items-center justify-center transition-transform duration-0 ease-out origin-top-left"
